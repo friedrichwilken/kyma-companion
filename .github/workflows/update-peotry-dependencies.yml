@@ -9,7 +9,7 @@ jobs:
   auto-update:
     runs-on: ubuntu-latest
     steps:
-        - uses: friedrichwilken/update-poetry-dependencies@main
+        - uses: friedrichwilken/update-poetry-dependencies@v1.0.0
           with:
             python-version: '3.12.11'
             poetry-version: '2.1.1'
