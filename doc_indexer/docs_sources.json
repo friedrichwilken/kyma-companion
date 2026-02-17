@@ -40,6 +40,7 @@
     "source_type": "Github",
     "url": "https://github.com/kyma-project/istio.git",
     "include_files": [
+      "https://github.com/kyma-project/istio/blob/main/docs/user/troubleshooting/03-30-istio-no-sidecar.md",
       "docs/user/04-00-istio-custom-resource.md",
       "docs/user/tutorials/01-10-external-authorization-provider.md",
       "docs/user/tutorials/01-20-expose-httbin-gateway-api.md",
