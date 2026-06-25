@@ -133,13 +133,13 @@ RELEASE_BODY="# Release Notes — v${RELEASE_TAG}
 
 ## New Features
 
-$(printf '%b' "${FEATURES}")
+$(printf '%s' "${FEATURES}")
 ## Bug Fixes
 
-$(printf '%b' "${FIXES}")
+$(printf '%s' "${FIXES}")
 ## Other
 
-$(printf '%b' "${OTHER}")
+$(printf '%s' "${OTHER}")
 ## Full Changelog
 
 Compare changes between versions: [Changelog](${CHANGELOG_LINK})"
