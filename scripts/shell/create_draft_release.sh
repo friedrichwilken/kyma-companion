@@ -87,6 +87,7 @@ FEATURES=""
 FIXES=""
 OTHER=""
 if [ -n "${PREVIOUS_TAG:-}" ]; then
+  # NOTE: RELEASE_TAG must already exist as a Git tag for the compare API to succeed.
   echo "Fetching commits between ${PREVIOUS_TAG} and ${RELEASE_TAG}..."
   compare_response=$(curl -sL \
     -H "Accept: application/vnd.github+json" \
@@ -94,7 +95,9 @@ if [ -n "${PREVIOUS_TAG:-}" ]; then
     -H "X-GitHub-Api-Version: 2022-11-28" \
     "${GITHUB_URL}/compare/${PREVIOUS_TAG}...${RELEASE_TAG}")
   compare_status=$(echo "${compare_response}" | jq -r '.status // empty')
-  if [ -n "${compare_status}" ]; then
+  # a successful compare response has .status as "ahead"|"behind"|"diverged"|"identical".
+  # an error response has .status as a numeric HTTP code string (e.g. "404").
+  if echo "${compare_status}" | grep -qE '^[0-9]+$'; then
     echo "Warning: Failed to fetch compare (status: ${compare_status}). Sections will be empty."
   else
     # extract first line of each commit message and group by conventional commit prefix.
@@ -115,9 +118,9 @@ if [ -n "${PREVIOUS_TAG:-}" ]; then
       fi
       prefix=$(echo "${msg}" | grep -oE '^[a-z]+(\([^)]*\))?:' | grep -oE '^[a-z]+' || true)
       case "${prefix}" in
-        feat)    FEATURES="${FEATURES}${entry}\n" ;;
-        fix|sec) FIXES="${FIXES}${entry}\n" ;;
-        *)       OTHER="${OTHER}${entry}\n" ;;
+        feat)    FEATURES="${FEATURES}${entry}"$'\n' ;;
+        fix|sec) FIXES="${FIXES}${entry}"$'\n' ;;
+        *)       OTHER="${OTHER}${entry}"$'\n' ;;
       esac
     done < <(echo "${compare_response}" | jq -r '.commits[] | .commit.message | split("\n")[0]')
   fi
