@@ -59,7 +59,10 @@ def _summary_section(
         parts.append(f"{m} page{'s' if m != 1 else ''} removed")
     if needs_decision_count:
         k = needs_decision_count
-        parts.append(f"{k} item{'s' if k != 1 else ''} need a decision")
+        if k == 1:
+            parts.append("1 item needs a decision")
+        else:
+            parts.append(f"{k} items need a decision")
     body = ", ".join(parts) if parts else "No changes."
     return f"## Summary\n\n{body}"
 
@@ -175,7 +178,7 @@ def generate_pr_body(
     errors = [r for r in results if r.rationale.startswith(CLASSIFIER_ERROR_PREFIX)]
     included = [r for r in results if r.decision == "include" and r not in errors]
     excluded = [r for r in results if r.decision == "exclude" and r not in errors]
-    unsure = [r for r in results if r.decision == "unsure"]
+    unsure = [r for r in results if r.decision == "unsure" and r not in errors]
 
     sections: list[str] = [_summary_section(added_pages, removed_pages, len(unsure))]
 

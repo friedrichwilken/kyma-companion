@@ -43,6 +43,8 @@ class TestNeedsDecision:
             repo_url="https://github.com/kyma-project/kyma",
         )
         assert "[View file](https://github.com/kyma-project/kyma/blob/HEAD/docs/foo.md)" in body
+        # View link must be on its own indented line, not appended to the checkbox line
+        assert "\n  [View file](" in body
 
     def test_unsure_item_no_view_link_without_repo_url(self):
         result = _make_result("unsure", "rationale", path="docs/foo.md")
@@ -111,10 +113,33 @@ class TestUnclassified:
         assert "docs/fail.md" in body
         assert "classifier error: timeout" in body
 
-    def test_classifier_error_not_in_removed_pages(self):
+    def test_classifier_error_exact_line_format(self):
+        result = _make_result("exclude", "classifier error: timeout", path="docs/fail.md")
+        body = generate_pr_body([result], added_pages=[], removed_pages=[])
+        assert "- `kyma-project/kyma::docs/fail.md`: classifier error: timeout" in body
+
+    def test_classifier_error_not_in_removed_pages_when_removed_pages_empty(self):
         result = _make_result("exclude", "classifier error: timeout", path="docs/fail.md")
         body = generate_pr_body([result], added_pages=[], removed_pages=[])
         assert "## Removed pages" not in body
+
+    def test_classifier_error_path_in_removed_pages_shows_page_without_rationale(self):
+        # When the failed path is also listed in removed_pages, it should appear in
+        # "Removed pages" without a rationale (the error item is excluded from `excluded`).
+        result = _make_result("exclude", "classifier error: timeout", path="docs/fail.md")
+        body = generate_pr_body([result], added_pages=[], removed_pages=["docs/fail.md"])
+        assert "## Removed pages" in body
+        assert "docs/fail.md" in body
+        # The error rationale must not leak into "Removed pages"
+        assert "classifier error" not in body.split("## Removed pages")[1].split("##")[0]
+
+    def test_unsure_with_classifier_error_rationale_goes_to_unclassified_not_needs_decision(self):
+        # Edge case: decision="unsure" but rationale is a classifier error.
+        # Should appear in Unclassified, not Needs a decision.
+        result = _make_result("unsure", "classifier error: unexpected response", path="docs/edge.md")
+        body = generate_pr_body([result], added_pages=[], removed_pages=[])
+        assert "## Unclassified" in body
+        assert "## Needs a decision" not in body
 
 
 class TestEmptySections:
@@ -139,6 +164,29 @@ class TestEmptySections:
     def test_summary_always_present(self):
         body = generate_pr_body([], added_pages=[], removed_pages=[])
         assert "## Summary" in body
+
+    def test_summary_no_changes_when_empty(self):
+        body = generate_pr_body([], added_pages=[], removed_pages=[])
+        assert "No changes." in body
+
+    def test_summary_singular_counts(self):
+        result = _make_result("unsure", "rationale", path="docs/foo.md")
+        body = generate_pr_body([result], added_pages=["docs/added.md"], removed_pages=["docs/removed.md"])
+        assert "1 page added" in body
+        assert "1 page removed" in body
+        assert "1 item needs a decision" in body
+
+    def test_summary_plural_counts(self):
+        unsure1 = _make_result("unsure", "rationale", path="docs/a.md")
+        unsure2 = _make_result("unsure", "rationale", path="docs/b.md")
+        body = generate_pr_body(
+            [unsure1, unsure2],
+            added_pages=["docs/c.md", "docs/d.md"],
+            removed_pages=["docs/e.md", "docs/f.md"],
+        )
+        assert "2 pages added" in body
+        assert "2 pages removed" in body
+        assert "2 items need a decision" in body
 
 
 class TestLinks:
