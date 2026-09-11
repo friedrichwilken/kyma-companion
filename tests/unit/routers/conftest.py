@@ -3,15 +3,16 @@ Shared fixtures for router unit tests.
 """
 
 from http import HTTPStatus
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
 
 from main import app
-from routers.common import init_models_dict
+from routers.common import init_doc_index, init_models_dict
 from routers.k8s_tools_api import init_k8s_client as init_k8s_client_k8s
 from routers.kyma_tools_api import init_k8s_client as init_k8s_client_kyma
+from docs.types import DocPage
 from services.k8s import IK8sClient
 from services.k8s_models import (
     ContainerStatus,
@@ -207,7 +208,7 @@ def k8s_client_factory():
 @pytest.fixture(scope="function")
 def test_client():
     """
-    Simple test client fixture with mocked models and RAG dependencies.
+    Simple test client fixture with mocked models and DocIndex dependencies.
 
     This fixture is used by tests that don't need K8s cluster access
     but need models (e.g., search endpoint).
@@ -224,25 +225,33 @@ def test_client():
     def get_mock_models():
         return mock_models
 
-    # Mock RAGSystem to avoid Hana connection
-    with patch("agents.kyma.tools.search.RAGSystem") as mock_rag_class:
-        # Create mock RAG instance
-        mock_rag_instance = Mock()
-        mock_rag_instance.aretrieve = AsyncMock(
-            return_value=[
-                Mock(
-                    page_content="Mock Kyma documentation.",
-                    metadata={"title": "Mock Doc", "url": "https://kyma.io/mock", "module": "mock-module"},
-                ),
-                Mock(
-                    page_content="Another Kyma document.",
-                    metadata={"title": "Another Doc", "url": "https://kyma.io/another"},
-                ),
-            ]
-        )
-        mock_rag_class.return_value = mock_rag_instance
+    # Mock DocIndex to avoid loading the /docs directory
+    mock_index = Mock()
+    mock_index.search.return_value = [
+        DocPage(
+            title="Mock Doc",
+            url="https://kyma.io/mock",
+            repo="kyma-project/kyma",
+            path="docs/mock.md",
+            module="mock-module",
+            content="Mock Kyma documentation.",
+        ),
+        DocPage(
+            title="Another Doc",
+            url="https://kyma.io/another",
+            repo="kyma-project/kyma",
+            path="docs/another.md",
+            module="",
+            content="Another Kyma document.",
+        ),
+    ]
 
-        # Override the models dependency
-        app.dependency_overrides[init_models_dict] = get_mock_models
-        client = TestClient(app)
-        yield client
+    def get_mock_index():
+        return mock_index
+
+    # Override the models and doc index dependencies
+    app.dependency_overrides[init_models_dict] = get_mock_models
+    app.dependency_overrides[init_doc_index] = get_mock_index
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
