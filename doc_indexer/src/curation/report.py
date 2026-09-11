@@ -87,7 +87,7 @@ def _added_pages_section(
     for page in added_pages:
         result = include_by_path.get(page)
         page_cell = _page_link(page, repo_url)
-        module = result.candidate.repo if result else ""
+        module = result.module or result.candidate.repo if result else ""
         rationale = result.rationale if result else ""
         lines.append(f"| {page_cell} | {module} | {rationale} |")
     return "\n".join(lines)

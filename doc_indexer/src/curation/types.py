@@ -9,7 +9,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-
 # ---------------------------------------------------------------------------
 # Phase 1 types (issues #51-#53)
 # ---------------------------------------------------------------------------
@@ -74,6 +73,10 @@ class CuratorConfig:
         langfuse_secret_key: Secret key for Langfuse API authentication (Phase 3).
         eval_questions_per_page: Maximum number of eval questions to draft per
             changed page (Phase 3).
+        floor_precision: Minimum acceptable precision (0-1) for the eval-classifier.
+            Exits with code 1 when the measured precision falls below this value.
+        floor_recall: Minimum acceptable recall (0-1) for the eval-classifier.
+            Exits with code 1 when the measured recall falls below this value.
     """
 
     residue_to_agent: bool = False
@@ -83,6 +86,8 @@ class CuratorConfig:
     langfuse_public_key: str = ""
     langfuse_secret_key: str = ""
     eval_questions_per_page: int = 3
+    floor_precision: float = 0.85
+    floor_recall: float = 0.80
 
 
 # ---------------------------------------------------------------------------

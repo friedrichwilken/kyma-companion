@@ -270,25 +270,25 @@ def run_curator(
     lines.append(_row("  include", include_count))
     lines.append(_row("  exclude", exclude_count))
     lines.append(_row("  unsure", unsure_count))
-    lines.append(_row("  unclassified (agent disabled)", unclassified_count))
+    if unclassified_count or not residue_to_agent:
+        label = "  unclassified (agent disabled)" if not residue_to_agent else "  unclassified"
+        lines.append(_row(label, unclassified_count))
 
     logger.info("\n".join(lines))
 
 
 def run_report(
     decisions_file: str = "curation/decisions.jsonl",
-    sources_file: str = DOCS_SOURCES_FILE_PATH,
     out_file: str | None = None,
     repo_url: str = "",
 ) -> None:
     """Generate a Markdown PR body from curation decisions.
 
-    Reads classification results from a JSONL file and the docs sources list,
-    then writes a Markdown PR body to stdout or a file.
+    Reads classification results from a JSONL file and writes a Markdown PR
+    body to stdout or a file.
 
     Args:
         decisions_file: Path to the JSONL file with classification results.
-        sources_file: Path to docs_sources.json used to compute added/removed pages.
         out_file: If set, write the Markdown to this file path instead of stdout.
         repo_url: Base URL for generating file links in the report.
     """
@@ -296,22 +296,13 @@ def run_report(
     cache = DecisionsCache(decisions_file)
     results: list[ClassificationResult] = cache.results()
 
-    # Determine added/removed pages from sources file vs. classified paths
-    classified_paths: set[str] = {r.candidate.path for r in results}
-    baseline_paths: set[str] = set()
-    try:
-        with open(sources_file, encoding="utf-8") as f:
-            sources = json.load(f)
-        for entry in sources:
-            if "path" in entry:
-                baseline_paths.add(entry["path"])
-    except FileNotFoundError:
-        logger.warning(f"Sources file not found: {sources_file}. Added/removed pages will be empty.")
-    except Exception:
-        logger.exception(f"Failed to read sources file {sources_file}.")
-
-    added_pages = sorted(classified_paths - baseline_paths)
-    removed_pages = sorted(baseline_paths - classified_paths)
+    # added_pages / removed_pages represent the diff vs a previous snapshot.
+    # docs_sources.json contains include_files glob patterns, not resolved file
+    # paths, so we cannot reconstruct a reliable baseline from it here.
+    # Pass empty lists; callers that track snapshots across runs can supply them
+    # via a future --added-pages / --removed-pages flag.
+    added_pages: list[str] = []
+    removed_pages: list[str] = []
 
     body = generate_pr_body(results, added_pages, removed_pages, repo_url=repo_url)
 
@@ -339,7 +330,6 @@ def run_eval_classifier(
         floor_precision: Minimum acceptable precision (quality floor).
         floor_recall: Minimum acceptable recall (quality floor).
     """
-    from curation.config import CuratorConfig as EvalCuratorConfig
     from curation.eval_classifier import run_eval
     from curation.types import CandidateDoc
 
@@ -352,7 +342,7 @@ def run_eval_classifier(
         """Stub classifier: always predicts 'include'."""
         return ClassificationResult(candidate=candidate, decision="include", rationale="stub: always include")
 
-    cfg = EvalCuratorConfig(floor_precision=floor_precision, floor_recall=floor_recall)
+    cfg = CuratorConfig(floor_precision=floor_precision, floor_recall=floor_recall)
     run_eval(labels_path, _stub_classifier, cfg)
 
 

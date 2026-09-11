@@ -161,7 +161,7 @@ def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
                         path=rel_to_module,
                         h1=_extract_h1(content),
                         excerpt=_truncate_to_tokens(content, _EXCERPT_TOKEN_LIMIT),
-                        directory=root,
+                        directory=rel_to_module.split("/")[0] if "/" in rel_to_module else rel_to_module,
                         residue_reason=residue_reason,
                         content_hash=_content_hash(content),
                     )

@@ -3,7 +3,7 @@
 Usage::
 
     from curation.eval_classifier import run_eval
-    from curation.config import CuratorConfig
+    from curation.types import CuratorConfig
 
     result = run_eval("curation/labels.jsonl", my_classifier_fn, CuratorConfig())
 
@@ -20,8 +20,7 @@ import sys
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from curation.config import CuratorConfig
-from curation.types import CandidateDoc, ClassificationResult
+from curation.types import CandidateDoc, ClassificationResult, CuratorConfig
 
 from utils.logging import get_logger
 
