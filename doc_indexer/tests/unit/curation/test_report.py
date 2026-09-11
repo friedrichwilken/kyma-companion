@@ -2,7 +2,7 @@
 
 import pytest
 from curation.report import generate_pr_body
-from curation.types import Candidate, ClassificationResult
+from curation.types import CandidateDoc, ClassificationResult
 
 pytestmark = pytest.mark.unit
 
@@ -14,10 +14,19 @@ def _make_result(
     path: str = "docs/page.md",
     h1: str = "Page Title",
 ) -> ClassificationResult:
+    candidate = CandidateDoc(
+        repo=repo,
+        path=path,
+        h1=h1,
+        excerpt="",
+        directory="docs",
+        residue_reason="test",
+        content_hash="abc123",
+    )
     return ClassificationResult(
-        decision=decision,
+        decision=decision,  # type: ignore[arg-type]
         rationale=rationale,
-        candidate=Candidate(repo=repo, path=path, h1=h1),
+        candidate=candidate,
     )
 
 
