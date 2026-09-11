@@ -33,6 +33,7 @@ TASK_INDEX = "index"
 TASK_DROP = "drop"
 TASK_TABLES = "tables"
 TASK_VERIFY = "verify"
+TASK_EVAL_CLASSIFIER = "eval-classifier"
 logger = get_logger(__name__)
 
 
@@ -180,6 +181,39 @@ def run_verify(
         sys.exit(1)
 
 
+def run_eval_classifier(
+    labels_path: str = "curation/labels.jsonl",
+    floor_precision: float = 0.85,
+    floor_recall: float = 0.80,
+) -> None:
+    """Entry function to evaluate the classifier against the labeled dataset.
+
+    Reads the JSONL labels file, runs every labeled candidate through a
+    stub classifier (always-include), and reports precision/recall/F1.
+    Exits with code 1 if either metric is below the configured floor.
+
+    Args:
+        labels_path: Path to the JSONL labels file.
+        floor_precision: Minimum acceptable precision (quality floor).
+        floor_recall: Minimum acceptable recall (quality floor).
+    """
+    from curation.config import CuratorConfig
+    from curation.eval_classifier import run_eval
+    from curation.types import CandidateDoc, ClassificationResult
+
+    logger.info(
+        "Starting eval-classifier task",
+        extra={"labels_path": labels_path, "floor_precision": floor_precision, "floor_recall": floor_recall},
+    )
+
+    def _stub_classifier(candidate: CandidateDoc) -> ClassificationResult:
+        """Stub classifier: always predicts 'include'."""
+        return ClassificationResult(candidate=candidate, decision="include", rationale="stub: always include")
+
+    cfg = CuratorConfig(floor_precision=floor_precision, floor_recall=floor_recall)
+    run_eval(labels_path, _stub_classifier, cfg)
+
+
 def _print_verify_report(stats: VerifyStats, table_name: str) -> None:
     """Print the verification report to the logger.
 
@@ -211,8 +245,37 @@ def _print_verify_report(stats: VerifyStats, table_name: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kyma Documentation Fetcher and Indexer.")
-    parser.add_argument("task", choices=["index", "fetch", "drop", "tables", "verify"])
+    subparsers = parser.add_subparsers(dest="task")
+
+    subparsers.add_parser("fetch", help="Fetch documents from configured sources.")
+    subparsers.add_parser("index", help="Index fetched documents into HANA.")
+    subparsers.add_parser("drop", help="Drop the HANA documentation table.")
+    subparsers.add_parser("tables", help="List all HANA tables owned by the configured user.")
+    subparsers.add_parser("verify", help="Verify the indexed documentation table.")
+
+    eval_parser = subparsers.add_parser("eval-classifier", help="Evaluate classifier against labeled dataset.")
+    eval_parser.add_argument(
+        "--labels",
+        default="curation/labels.jsonl",
+        help="Path to the JSONL labels file (default: curation/labels.jsonl).",
+    )
+    eval_parser.add_argument(
+        "--floor-precision",
+        type=float,
+        default=0.85,
+        help="Minimum acceptable precision (default: 0.85).",
+    )
+    eval_parser.add_argument(
+        "--floor-recall",
+        type=float,
+        default=0.80,
+        help="Minimum acceptable recall (default: 0.80).",
+    )
+
     args = parser.parse_args()
+    if args.task is None:
+        parser.print_help()
+        sys.exit(1)
 
     logger.info("Indexer job starting", extra={"task": args.task})
 
@@ -226,5 +289,11 @@ if __name__ == "__main__":
         run_list_tables()
     elif args.task == TASK_VERIFY:
         run_verify()
+    elif args.task == TASK_EVAL_CLASSIFIER:
+        run_eval_classifier(
+            labels_path=args.labels,
+            floor_precision=args.floor_precision,
+            floor_recall=args.floor_recall,
+        )
     else:
-        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify.")
+        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify, eval-classifier.")  # noqa: T201
