@@ -28,10 +28,11 @@ from starlette.applications import Starlette
 from starlette.routing import Route
 
 from agents.kyma.react_agent import KymaReActAgent, UINavigationContext
+from agents.kyma.tools.search import DocSearchTool
 from agents.memory.async_redis_checkpointer import AsyncRedisSaver, IUsageMemory
 from routers.common import (
+    _DocIndexRegistry,
     _ModelsRegistry,
-    _SearchToolRegistry,
     get_k8s_auth_headers_from_encrypted_payload,
     init_config,
     load_conversation_history,
@@ -121,7 +122,8 @@ class KymaAgentExecutor(AgentExecutor):
             k8s_client = K8sClient(k8s_auth_headers=k8s_auth_headers, data_sanitizer=data_sanitizer)
 
             models = _ModelsRegistry(config).models
-            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=_SearchToolRegistry(models).tool)
+            search_tool = DocSearchTool(_DocIndexRegistry().index)
+            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=search_tool)
 
             chat_history = await load_conversation_history(redis_conn, session_id)
             ui_context = UINavigationContext(

@@ -2101,24 +2101,6 @@ files = [
 ]
 
 [[package]]
-name = "hdbcli"
-version = "2.29.25"
-description = "SAP HANA Python Client"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "hdbcli-2.29.25-cp310-abi3-macosx_13_0_arm64.whl", hash = "sha256:c08c985d943e56863714aa4b03a9336ae4ea867af089bf8a9c5ae32c52644196"},
-    {file = "hdbcli-2.29.25-cp310-abi3-macosx_13_0_x86_64.whl", hash = "sha256:d3b90f6536048f9d0087673f100a1a7e9fd2c52dcec8e0a38d7f84e14ec70d6b"},
-    {file = "hdbcli-2.29.25-cp310-abi3-manylinux2014_aarch64.whl", hash = "sha256:44a0424d094eefb43caa41dbf903c8f1d68e0a7fc8f1e3f3e641710175017341"},
-    {file = "hdbcli-2.29.25-cp310-abi3-manylinux2014_ppc64le.whl", hash = "sha256:89a077e792df20bdc17e484af28370d3a52c7c8fb2e4099a1543ab8f95ea3996"},
-    {file = "hdbcli-2.29.25-cp310-abi3-manylinux2014_x86_64.whl", hash = "sha256:bb2fdcd712ce10098610d2e386e9797661f98f4fa322d88fc8a9fb8615c10ba6"},
-    {file = "hdbcli-2.29.25-cp310-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:22a574f9ed3b5f075f084ad289d127e79a6e0a08a0a1aee09efac0c4b7094394"},
-    {file = "hdbcli-2.29.25-cp310-abi3-win32.whl", hash = "sha256:44dff5b4cb6e1e2bf21773f2fc75de9368c84f892883acfabba2aa7b59d3a23f"},
-    {file = "hdbcli-2.29.25-cp310-abi3-win_amd64.whl", hash = "sha256:7d588b44a4baaf285c78baa3600960eac775b4e7286f4f5e0bd609dd4e3cf876"},
-]
-
-[[package]]
 name = "hf-xet"
 version = "1.6.0"
 description = "Fast transfer of large files with the Hugging Face Hub."
@@ -2949,26 +2931,6 @@ filetype = ">=1.2.0,<2.0.0"
 google-genai = ">=1.65.0,<3.0.0"
 langchain-core = ">=1.4.7,<2.0.0"
 pydantic = ">=2.0.0,<3.0.0"
-
-[[package]]
-name = "langchain-hana"
-version = "1.2.0"
-description = "An integration package connecting SAP HANA Cloud and LangChain"
-optional = false
-python-versions = "<4.0,>=3.10"
-groups = ["main"]
-files = [
-    {file = "langchain_hana-1.2.0-py3-none-any.whl", hash = "sha256:6733dae9387d8be4e53840fea64f22bccd85fd46e5fa02fefec094be1bf82e71"},
-    {file = "langchain_hana-1.2.0.tar.gz", hash = "sha256:d3e9ebb185eef6e3c325974e61ea7d0470b5fd91dff24a7251289da45574a736"},
-]
-
-[package.dependencies]
-hdbcli = ">=2.23.24,<3.0.0"
-langchain = ">=1.0.0,<2.0.0"
-langchain-classic = ">=1.0.0,<2.0.0"
-langchain-core = ">=1.0.0,<2.0.0"
-numpy = {version = ">=2.1.0", markers = "python_version >= \"3.13\""}
-rdflib = ">=7.0.0,<8.0.0"
 
 [[package]]
 name = "langchain-openai"
@@ -5325,21 +5287,6 @@ files = [
 crypto = ["cryptography (>=3.4.0)"]
 
 [[package]]
-name = "pyparsing"
-version = "3.3.2"
-description = "pyparsing - Classes and methods to define and execute parsing grammars"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "pyparsing-3.3.2-py3-none-any.whl", hash = "sha256:850ba148bd908d7e2411587e247a1e4f0327839c40e2e5e6d05a007ecc69911d"},
-    {file = "pyparsing-3.3.2.tar.gz", hash = "sha256:c777f4d763f140633dcb6d8a3eda953bf7a214dc4eff598413c070bcdc117cbc"},
-]
-
-[package.extras]
-diagrams = ["jinja2", "railroad-diagrams"]
-
-[[package]]
 name = "pyproject-hooks"
 version = "1.2.0"
 description = "Wrappers to call pyproject.toml-based build backend hooks."
@@ -5771,6 +5718,24 @@ test = ["scipy"]
 tracing = ["langfuse (>=3.2.4)", "mlflow (>=3.1.4)"]
 
 [[package]]
+name = "rank-bm25"
+version = "0.2.2"
+description = "Various BM25 algorithms for document ranking"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "rank_bm25-0.2.2-py3-none-any.whl", hash = "sha256:7bd4a95571adadfc271746fa146a4bcfd89c0cf731e49c3d1ad863290adbe8ae"},
+    {file = "rank_bm25-0.2.2.tar.gz", hash = "sha256:096ccef76f8188563419aaf384a02f0ea459503fdf77901378d4fd9d87e5e51d"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+dev = ["pytest"]
+
+[[package]]
 name = "rapidfuzz"
 version = "3.14.5"
 description = "rapid fuzzy string matching"
@@ -5865,30 +5830,6 @@ files = [
 
 [package.extras]
 all = ["numpy"]
-
-[[package]]
-name = "rdflib"
-version = "7.6.0"
-description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
-optional = false
-python-versions = ">=3.8.1"
-groups = ["main"]
-files = [
-    {file = "rdflib-7.6.0-py3-none-any.whl", hash = "sha256:30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"},
-    {file = "rdflib-7.6.0.tar.gz", hash = "sha256:6c831288d5e4a5a7ece85d0ccde9877d512a3d0f02d7c06455d00d6d0ea379df"},
-]
-
-[package.dependencies]
-pyparsing = ">=2.1.0,<4"
-
-[package.extras]
-berkeleydb = ["berkeleydb (>=18.1.0,<19.0.0)"]
-graphdb = ["httpx (>=0.28.1,<0.29.0)"]
-html = ["html5rdf (>=1.2,<2)"]
-lxml = ["lxml (>=4.3,<6.0)"]
-networkx = ["networkx (>=2,<4)"]
-orjson = ["orjson (>=3.9.14,<4)"]
-rdf4j = ["httpx (>=0.28.1,<0.29.0)"]
 
 [[package]]
 name = "redis"
@@ -8172,4 +8113,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "==3.14.*"
-content-hash = "2485fb7b509f82f3472e1fefb10167a45dac87a5bc85a9cefd95307b36f716e9"
+content-hash = "aff15093cf33c9428eb4266fd0c6e538d659986556123a17f7e515fef330c816"

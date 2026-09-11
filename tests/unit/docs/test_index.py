@@ -7,6 +7,12 @@ import pytest
 
 from docs import DocIndex, DocPage
 
+# Number of .md files created by the docs_dir fixture.
+FIXTURE_PAGE_COUNT = 4
+# Number of Eventing pages in the fixture (overview.md + advanced/scaling.md).
+FIXTURE_EVENTING_PAGE_COUNT = 2
+# top_k cap used in the top_k-limit test.
+SEARCH_TOP_K_LIMIT = 2
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -128,7 +134,7 @@ def test_empty_docs_dir(tmp_path: pytest.TempPathFactory) -> None:
 
 def test_load_page_count(loaded_index: DocIndex) -> None:
     """All .md files under docs_dir are indexed (4 pages expected)."""
-    assert loaded_index.page_count == 4
+    assert loaded_index.page_count == FIXTURE_PAGE_COUNT
 
 
 def test_load_is_loaded(loaded_index: DocIndex) -> None:
@@ -201,8 +207,8 @@ def test_search_ranked_results(loaded_index: DocIndex) -> None:
 
 def test_search_top_k_respected(loaded_index: DocIndex) -> None:
     """search() never returns more than top_k results."""
-    results = loaded_index.search("the", top_k=2)
-    assert len(results) <= 2
+    results = loaded_index.search("the", top_k=SEARCH_TOP_K_LIMIT)
+    assert len(results) <= SEARCH_TOP_K_LIMIT
 
 
 def test_search_module_filter(loaded_index: DocIndex) -> None:
@@ -264,7 +270,7 @@ def test_list_module_all(loaded_index: DocIndex) -> None:
 def test_list_module_filtered(loaded_index: DocIndex) -> None:
     """list_module('Eventing') returns only Eventing pages."""
     pages = loaded_index.list_module("Eventing")
-    assert len(pages) == 2
+    assert len(pages) == FIXTURE_EVENTING_PAGE_COUNT
     assert all(p.module == "Eventing" for p in pages)
 
 

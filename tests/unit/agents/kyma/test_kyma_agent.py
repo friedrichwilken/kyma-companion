@@ -1,194 +1,105 @@
-from dataclasses import dataclass
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
-from langchain_core.embeddings import Embeddings
 
 from agents.kyma.react_agent import _tool_summarizer
-from agents.kyma.tools.search import SearchKymaDocTool
-from rag.system import RAGSystem
-from utils.models.factory import IModel
-from utils.settings import MAIN_EMBEDDING_MODEL_NAME, MAIN_MODEL_NAME, TOTAL_CHUNKS_LIMIT
+from agents.kyma.tools.search import DocSearchTool, SearchKymaDocTool
+from docs.index import DocIndex
+from docs.types import DocPage
+from utils.settings import TOTAL_CHUNKS_LIMIT
 
 
-@pytest.fixture
-def mock_models():
-    gpt40 = MagicMock(spec=IModel)
-    gpt40.name = MAIN_MODEL_NAME
-
-    text_embedding_3_large = MagicMock(spec=Embeddings)
-    text_embedding_3_large.name = "text-embedding-3-large"
-
-    return {
-        MAIN_MODEL_NAME: gpt40,
-        MAIN_EMBEDDING_MODEL_NAME: text_embedding_3_large,
-    }
+def _make_page(
+    title: str = "Untitled",
+    url: str = "",
+    module: str = "",
+    content: str = "",
+) -> DocPage:
+    """Build a minimal DocPage for testing."""
+    return DocPage(title=title, url=url, repo="repo", path="path.md", module=module, content=content)
 
 
-@pytest.fixture
-def doc_search_tool(mock_models):
-    """Create a mock search tool."""
-    # mock RAGSystem
-    mock_rag_system = Mock(spec=RAGSystem)
-    with patch("agents.kyma.tools.search.RAGSystem", return_value=mock_rag_system):
-        tool = SearchKymaDocTool(mock_models)
-        yield tool
-
-
-@dataclass
-class MockDocument:
-    page_content: str
+def _make_tool(pages: list[DocPage]) -> DocSearchTool:
+    """Create a DocSearchTool backed by a mocked DocIndex returning *pages*."""
+    mock_index = Mock(spec=DocIndex)
+    mock_index.search = Mock(return_value=[p for p in pages if p.content.strip()])
+    return DocSearchTool(mock_index)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "mock_documents,expected_output",
+    "pages,expected_output",
     [
         # Single document case
-        ([MockDocument("Single document content")], "Single document content"),
+        ([_make_page(content="Single document content")], "### Untitled\n\nSingle document content"),
         # Multiple documents case
         (
-            [MockDocument("First doc"), MockDocument("Second doc")],
-            "First doc\n\n -- next document -- \n\nSecond doc",
+            [_make_page(content="First doc"), _make_page(content="Second doc")],
+            "### Untitled\n\nFirst doc\n\n---\n\n### Untitled\n\nSecond doc",
         ),
         # Three documents case
         (
-            [MockDocument("Doc 1"), MockDocument("Doc 2"), MockDocument("Doc 3")],
-            "Doc 1\n\n -- next document -- \n\nDoc 2\n\n -- next document -- \n\nDoc 3",
+            [_make_page(content="Doc 1"), _make_page(content="Doc 2"), _make_page(content="Doc 3")],
+            "### Untitled\n\nDoc 1\n\n---\n\n### Untitled\n\nDoc 2\n\n---\n\n### Untitled\n\nDoc 3",
         ),
-        # Empty documents list - should return fallback message
+        # Empty list - should return fallback message
         ([], "No relevant documentation found."),
-        # Documents with empty content
-        ([MockDocument("")], "No relevant documentation found."),
-        # Documents with only whitespace
-        (
-            [MockDocument("   "), MockDocument("\n\n")],
-            "No relevant documentation found.",
-        ),
+        # Documents with empty content - filtered by the tool
+        ([_make_page(content="")], "No relevant documentation found."),
         # Mixed content with special characters
         (
             [
-                MockDocument("Content with special chars: !@#$"),
-                MockDocument("Unicode: αβγ"),
+                _make_page(content="Content with special chars: !@#$"),
+                _make_page(content="Unicode: αβγ"),
             ],
-            "Content with special chars: !@#$\n\n -- next document -- \n\nUnicode: αβγ",
+            "Content with special chars: !@#$\n\n---\n\nUnicode: αβγ",
         ),
         # Documents with newlines
         (
-            [MockDocument("Multi\nline\ncontent"), MockDocument("Another\ndocument")],
-            "Multi\nline\ncontent\n\n -- next document -- \n\nAnother\ndocument",
+            [_make_page(content="Multi\nline\ncontent"), _make_page(content="Another\ndocument")],
+            "### Untitled\n\nMulti\nline\ncontent\n\n---\n\n### Untitled\n\nAnother\ndocument",
         ),
     ],
 )
-async def test_arun(mock_models, mock_documents, expected_output):
-    """Test _arun method with different document scenarios"""
-
-    mock_rag_system = Mock(spec=RAGSystem)
-    with patch("agents.kyma.tools.search.RAGSystem", return_value=mock_rag_system):
-        instance = SearchKymaDocTool(mock_models)
-        instance.rag_system.aretrieve.return_value = mock_documents
-
-        result = await instance._arun("test query")
-
-        # Assert the output matches expected result
-        assert result == expected_output
-
-        # Verify aretrieve was called with correct Query object
-        instance.rag_system.aretrieve.assert_called_once()
-        called_query = instance.rag_system.aretrieve.call_args[0][0]
-        assert called_query.text == "test query"
+async def test_arun(pages: list[DocPage], expected_output: str) -> None:
+    """Test _arun formats DocPage results into the expected Markdown string."""
+    tool = _make_tool(pages)
+    result = await tool._arun("test query")
+    assert result == expected_output
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "mock_documents,expected_output,top_k",
+    "pages,expected_output",
     [
-        # Single document case with default top_k
-        ([MockDocument("Single document content")], ["Single document content"], 4),
-        # Multiple documents case
+        # Single document
+        ([_make_page(content="Single document content")], ["Single document content"]),
+        # Multiple documents
         (
-            [MockDocument("First doc"), MockDocument("Second doc")],
+            [_make_page(content="First doc"), _make_page(content="Second doc")],
             ["First doc", "Second doc"],
-            4,
         ),
-        # Three documents case
+        # Empty list
+        ([], []),
+        # Empty content filtered by the mock
+        ([_make_page(content="")], []),
+        # Mixed: some empty, some valid
         (
-            [MockDocument("Doc 1"), MockDocument("Doc 2"), MockDocument("Doc 3")],
-            ["Doc 1", "Doc 2", "Doc 3"],
-            4,
-        ),
-        # Empty documents list - should return empty list
-        ([], [], 4),
-        # Documents with empty content - should be filtered out
-        ([MockDocument("")], [], 4),
-        # Documents with only whitespace - should be filtered out
-        ([MockDocument("   "), MockDocument("\n\n")], [], 4),
-        # Mixed content: some empty, some with content
-        (
-            [
-                MockDocument("Valid content"),
-                MockDocument(""),
-                MockDocument("Another valid"),
-            ],
+            [_make_page(content="Valid content"), _make_page(content=""), _make_page(content="Another valid")],
             ["Valid content", "Another valid"],
-            4,
         ),
-        # Documents with special characters
-        (
-            [
-                MockDocument("Content with special chars: !@#$"),
-                MockDocument("Unicode: αβγ"),
-            ],
-            ["Content with special chars: !@#$", "Unicode: αβγ"],
-            4,
-        ),
-        # Documents with newlines
-        (
-            [MockDocument("Multi\nline\ncontent"), MockDocument("Another\ndocument")],
-            ["Multi\nline\ncontent", "Another\ndocument"],
-            4,
-        ),
-        # Mixed: whitespace and valid content
-        (
-            [MockDocument("   "), MockDocument("Valid"), MockDocument("\t\n")],
-            ["Valid"],
-            4,
-        ),
-        # Test with custom top_k=5
-        (
-            [MockDocument(f"Doc {i}") for i in range(5)],
-            [f"Doc {i}" for i in range(5)],
-            5,
-        ),
-        # Test with custom top_k=10
-        (
-            [MockDocument(f"Doc {i}") for i in range(10)],
-            [f"Doc {i}" for i in range(10)],
-            10,
-        ),
-        # Test with minimum top_k=1
-        ([MockDocument("Single doc")], ["Single doc"], 1),
     ],
 )
-async def test_arun_list(mock_models, mock_documents, expected_output, top_k):
-    """Test arun_list method with different document scenarios and top_k values"""
+async def test_arun_list(pages: list[DocPage], expected_output: list[str]) -> None:
+    """Test arun_list returns the content strings from the matched pages."""
+    tool = _make_tool(pages)
+    result = await tool.arun_list("test query")
+    assert result == expected_output
 
-    mock_rag_system = Mock(spec=RAGSystem)
-    with patch("agents.kyma.tools.search.RAGSystem", return_value=mock_rag_system):
-        instance = SearchKymaDocTool(mock_models, top_k=top_k)
-        instance.rag_system.aretrieve.return_value = mock_documents
 
-        result = await instance.arun_list("test query")
-
-        # Assert the output matches expected result
-        assert result == expected_output
-
-        # Verify aretrieve was called with correct Query object and top_k
-        instance.rag_system.aretrieve.assert_called_once()
-        called_query = instance.rag_system.aretrieve.call_args[0][0]
-        assert called_query.text == "test query"
-        call_kwargs = instance.rag_system.aretrieve.call_args[1]
-        assert call_kwargs["top_k"] == top_k
+def test_search_kyma_doc_tool_is_alias() -> None:
+    """SearchKymaDocTool is an alias for DocSearchTool."""
+    assert SearchKymaDocTool is DocSearchTool
 
 
 # ---------------------------------------------------------------------------
@@ -200,7 +111,7 @@ class TestToolSummarizer:
     """Tests for _maybe_summarize."""
 
     @pytest.mark.asyncio
-    async def test_short_response_returned_unchanged(self):
+    async def test_short_response_returned_unchanged(self) -> None:
         """When the response is within the token limit, summarizer is not called."""
 
         summarizer = MagicMock()
@@ -215,7 +126,7 @@ class TestToolSummarizer:
         summarizer.summarize_tool_response.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_long_response_triggers_summarizer(self):
+    async def test_long_response_triggers_summarizer(self) -> None:
         """When the response exceeds the token limit, summarizer.summarize_tool_response is called."""
 
         summarizer = MagicMock()
@@ -234,7 +145,7 @@ class TestToolSummarizer:
         assert call_kwargs["nums_of_chunks"] == TOTAL_CHUNKS_LIMIT
 
     @pytest.mark.asyncio
-    async def test_summarizer_failure_falls_back_to_original_text(self):
+    async def test_summarizer_failure_falls_back_to_original_text(self) -> None:
         """If summarizer raises a generic error, the original text is returned instead of propagating."""
 
         summarizer = MagicMock()
@@ -249,7 +160,7 @@ class TestToolSummarizer:
         assert result == text
 
     @pytest.mark.asyncio
-    async def test_chunks_limit_exceeded_returns_message(self):
+    async def test_chunks_limit_exceeded_returns_message(self) -> None:
         """If num_chunks exceeds TOTAL_CHUNKS_LIMIT, CHUNK_LIMIT_EXCEEDED_RESPONSE is returned."""
         from agents.kyma.react_agent import CHUNK_LIMIT_EXCEEDED_RESPONSE
 
