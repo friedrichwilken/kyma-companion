@@ -4,6 +4,8 @@ import os
 import sys
 import time
 
+from curation.report import generate_pr_body
+from curation.types import ClassificationResult
 from fetcher.fetcher import DocumentsFetcher
 from hdbcli import dbapi
 from indexing.adaptive_indexer import AdaptiveSplitMarkdownIndexer
@@ -33,6 +35,7 @@ TASK_INDEX = "index"
 TASK_DROP = "drop"
 TASK_TABLES = "tables"
 TASK_VERIFY = "verify"
+TASK_REPORT = "report"
 logger = get_logger(__name__)
 
 
@@ -209,10 +212,89 @@ def _print_verify_report(stats: VerifyStats, table_name: str) -> None:
     logger.info("\n".join(lines))
 
 
+def run_report(
+    decisions_file: str = "curation/decisions.jsonl",
+    sources_file: str = DOCS_SOURCES_FILE_PATH,
+    out_file: str | None = None,
+    repo_url: str = "",
+) -> None:
+    """Generate a Markdown PR body from curation decisions.
+
+    Reads classification results from a JSONL file and the docs sources list,
+    then writes a Markdown PR body to stdout or a file.
+
+    Args:
+        decisions_file: Path to the JSONL file with classification results.
+        sources_file: Path to docs_sources.json used to compute added/removed pages.
+        out_file: If set, write the Markdown to this file path instead of stdout.
+        repo_url: Base URL for generating file links in the report.
+    """
+    # Read classification results
+    results: list[ClassificationResult] = []
+    with open(decisions_file, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                results.append(ClassificationResult.model_validate_json(line))
+
+    # Determine added/removed pages from sources file vs. classified paths
+    classified_paths: set[str] = {r.candidate.path for r in results}
+    baseline_paths: set[str] = set()
+    try:
+        with open(sources_file, encoding="utf-8") as f:
+            sources = json.load(f)
+        for entry in sources:
+            if "path" in entry:
+                baseline_paths.add(entry["path"])
+    except FileNotFoundError:
+        logger.warning(f"Sources file not found: {sources_file}. Added/removed pages will be empty.")
+    except Exception:
+        logger.exception(f"Failed to read sources file {sources_file}.")
+
+    added_pages = sorted(classified_paths - baseline_paths)
+    removed_pages = sorted(baseline_paths - classified_paths)
+
+    body = generate_pr_body(results, added_pages, removed_pages, repo_url=repo_url)
+
+    if out_file:
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(body)
+        logger.info(f"PR body written to {out_file}")
+    else:
+        sys.stdout.write(body)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kyma Documentation Fetcher and Indexer.")
-    parser.add_argument("task", choices=["index", "fetch", "drop", "tables", "verify"])
+    subparsers = parser.add_subparsers(dest="task")
+
+    # Legacy positional-style subcommands
+    for _cmd in [TASK_FETCH, TASK_INDEX, TASK_DROP, TASK_TABLES, TASK_VERIFY]:
+        subparsers.add_parser(_cmd)
+
+    # report subcommand
+    report_parser = subparsers.add_parser(TASK_REPORT, help="Generate a Markdown PR body from curation decisions.")
+    report_parser.add_argument(
+        "--decisions",
+        default="curation/decisions.jsonl",
+        help="Path to the JSONL file with classification results (default: curation/decisions.jsonl).",
+    )
+    report_parser.add_argument(
+        "--out",
+        default=None,
+        help="Write the Markdown to this file path instead of stdout.",
+    )
+    report_parser.add_argument(
+        "--repo-url",
+        default="",
+        help="Base repository URL for generating file links.",
+    )
+
     args = parser.parse_args()
+
+    if args.task is None:
+        parser.print_help()
+        sys.exit(1)
 
     logger.info("Indexer job starting", extra={"task": args.task})
 
@@ -226,5 +308,11 @@ if __name__ == "__main__":
         run_list_tables()
     elif args.task == TASK_VERIFY:
         run_verify()
+    elif args.task == TASK_REPORT:
+        run_report(
+            decisions_file=args.decisions,
+            out_file=args.out,
+            repo_url=args.repo_url,
+        )
     else:
-        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify.")
+        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify, report.")
