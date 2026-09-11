@@ -5,9 +5,10 @@ import sys
 import time
 
 from curation.classifier import classify_residue
-from curation.decisions_cache import DecisionsCache
+from curation.decisions_cache import DecisionsCache, _result_from_dict
+from curation.report import generate_pr_body
 from curation.residue import find_residue
-from curation.types import CuratorConfig
+from curation.types import ClassificationResult, CuratorConfig
 from fetcher.fetcher import DocumentsFetcher
 from hdbcli import dbapi
 from indexing.adaptive_indexer import AdaptiveSplitMarkdownIndexer
@@ -41,6 +42,7 @@ TASK_DROP = "drop"
 TASK_TABLES = "tables"
 TASK_VERIFY = "verify"
 TASK_CURATE = "curate"
+TASK_REPORT = "report"
 TASK_EVAL_CLASSIFIER = "eval-classifier"
 logger = get_logger(__name__)
 
@@ -273,6 +275,58 @@ def run_curator(
     logger.info("\n".join(lines))
 
 
+def run_report(
+    decisions_file: str = "curation/decisions.jsonl",
+    sources_file: str = DOCS_SOURCES_FILE_PATH,
+    out_file: str | None = None,
+    repo_url: str = "",
+) -> None:
+    """Generate a Markdown PR body from curation decisions.
+
+    Reads classification results from a JSONL file and the docs sources list,
+    then writes a Markdown PR body to stdout or a file.
+
+    Args:
+        decisions_file: Path to the JSONL file with classification results.
+        sources_file: Path to docs_sources.json used to compute added/removed pages.
+        out_file: If set, write the Markdown to this file path instead of stdout.
+        repo_url: Base URL for generating file links in the report.
+    """
+    # Read classification results
+    results: list[ClassificationResult] = []
+    with open(decisions_file, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                results.append(_result_from_dict(json.loads(line)))
+
+    # Determine added/removed pages from sources file vs. classified paths
+    classified_paths: set[str] = {r.candidate.path for r in results}
+    baseline_paths: set[str] = set()
+    try:
+        with open(sources_file, encoding="utf-8") as f:
+            sources = json.load(f)
+        for entry in sources:
+            if "path" in entry:
+                baseline_paths.add(entry["path"])
+    except FileNotFoundError:
+        logger.warning(f"Sources file not found: {sources_file}. Added/removed pages will be empty.")
+    except Exception:
+        logger.exception(f"Failed to read sources file {sources_file}.")
+
+    added_pages = sorted(classified_paths - baseline_paths)
+    removed_pages = sorted(baseline_paths - classified_paths)
+
+    body = generate_pr_body(results, added_pages, removed_pages, repo_url=repo_url)
+
+    if out_file:
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(body)
+        logger.info(f"PR body written to {out_file}")
+    else:
+        sys.stdout.write(body)
+
+
 def run_eval_classifier(
     labels_path: str = "curation/labels.jsonl",
     floor_precision: float = 0.85,
@@ -291,7 +345,7 @@ def run_eval_classifier(
     """
     from curation.config import CuratorConfig as EvalCuratorConfig
     from curation.eval_classifier import run_eval
-    from curation.types import CandidateDoc, ClassificationResult
+    from curation.types import CandidateDoc
 
     logger.info(
         "Starting eval-classifier task",
@@ -346,6 +400,23 @@ if __name__ == "__main__":
     subparsers.add_parser("verify", help="Verify the indexed documentation table.")
     subparsers.add_parser("curate", help="Detect and classify residue documentation files.")
 
+    report_parser = subparsers.add_parser(TASK_REPORT, help="Generate a Markdown PR body from curation decisions.")
+    report_parser.add_argument(
+        "--decisions",
+        default="curation/decisions.jsonl",
+        help="Path to the JSONL file with classification results (default: curation/decisions.jsonl).",
+    )
+    report_parser.add_argument(
+        "--out",
+        default=None,
+        help="Write the Markdown to this file path instead of stdout.",
+    )
+    report_parser.add_argument(
+        "--repo-url",
+        default="",
+        help="Base repository URL for generating file links.",
+    )
+
     eval_parser = subparsers.add_parser("eval-classifier", help="Evaluate classifier against labeled dataset.")
     eval_parser.add_argument(
         "--labels",
@@ -384,6 +455,12 @@ if __name__ == "__main__":
         run_verify()
     elif args.task == TASK_CURATE:
         run_curator()
+    elif args.task == TASK_REPORT:
+        run_report(
+            decisions_file=args.decisions,
+            out_file=args.out,
+            repo_url=args.repo_url,
+        )
     elif args.task == TASK_EVAL_CLASSIFIER:
         run_eval_classifier(
             labels_path=args.labels,
@@ -391,4 +468,4 @@ if __name__ == "__main__":
             floor_recall=args.floor_recall,
         )
     else:
-        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify, curate, eval-classifier.")  # noqa: T201
+        print("Invalid task. Valid tasks are: index, fetch, drop, tables, verify, curate, report, eval-classifier.")  # noqa: T201
