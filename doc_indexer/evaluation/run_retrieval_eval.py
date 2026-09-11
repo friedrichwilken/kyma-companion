@@ -6,13 +6,17 @@ compares results to a baseline to catch regressions.
 
 Usage examples
 --------------
+BM25 mode (in-process DocIndex over a local docs artifact):
+    python evaluation/run_retrieval_eval.py \\
+        --mode bm25 --docs-path /path/to/docs --k 10
+
 Vector mode (direct HANA similarity search):
     python evaluation/run_retrieval_eval.py \\
         --table kyma_docs --k 10 --mode vector
 
 With baseline regression check:
     python evaluation/run_retrieval_eval.py \\
-        --table kyma_docs --k 10 --mode vector \\
+        --mode bm25 --docs-path /path/to/docs --k 10 \\
         --baseline evaluation/baseline.json \\
         --out evaluation/results.json
 """
@@ -31,11 +35,15 @@ from typing import Any
 # ---------------------------------------------------------------------------
 # Path bootstrap: when run from outside the doc_indexer package the src/
 # directory must be on the path so that the indexer utils can be imported.
+# Also add the companion app src/ so DocIndex can be imported for BM25 mode.
 # ---------------------------------------------------------------------------
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _SRC_DIR = _SCRIPT_DIR.parent / "src"
+_APP_SRC_DIR = _SCRIPT_DIR.parent.parent / "src"
 if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
+if str(_APP_SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(_APP_SRC_DIR))
 
 
 def _load_queries(queries_file: Path) -> list[dict[str, Any]]:
@@ -174,6 +182,58 @@ def _run_vector_mode(
     return per_query, total_elapsed
 
 
+def _run_bm25_mode(
+    queries: list[dict[str, Any]],
+    docs_path: str,
+    k: int,
+) -> tuple[list[dict[str, Any]], float]:
+    """Run evaluation using the in-process BM25 DocIndex.
+
+    The ``source`` for each result is ``<repo>/<path>`` so it is compatible
+    with the same ``_source_matches`` logic used in vector mode.
+
+    Returns (per_query_results, total_elapsed_seconds).
+    """
+    from docs.index import DocIndex  # noqa: PLC0415
+
+    print(f"Loading DocIndex from {docs_path} ...")
+    index = DocIndex(docs_path)
+    index.load()
+    print(f"DocIndex loaded: {index.page_count} pages")
+
+    per_query: list[dict[str, Any]] = []
+    t0 = time.monotonic()
+
+    for entry in queries:
+        q_start = time.monotonic()
+        results = index.search(entry["query"], top_k=k)
+        latency_ms = (time.monotonic() - q_start) * 1000
+
+        # Build source strings compatible with _source_matches: "<repo>/<path>"
+        doc_dicts = [{"source": f"{r.repo}/{r.path}"} for r in results]
+
+        hit5 = _hits_at_k(doc_dicts, entry["expected"], k=5)
+        hit10 = _hits_at_k(doc_dicts, entry["expected"], k=min(k, 10))
+        rr = _reciprocal_rank(doc_dicts, entry["expected"])
+
+        per_query.append(
+            {
+                "id": entry["id"],
+                "kind": entry["kind"],
+                "query": entry["query"],
+                "expected": entry["expected"],
+                "hit@5": hit5,
+                "hit@10": hit10,
+                "rr": rr,
+                "latency_ms": latency_ms,
+                "top_sources": [d["source"] for d in doc_dicts[:5]],
+            }
+        )
+
+    total_elapsed = time.monotonic() - t0
+    return per_query, total_elapsed
+
+
 def _compute_metrics(per_query: list[dict[str, Any]]) -> dict[str, Any]:
     """Aggregate per-query results into overall + per-kind metrics."""
 
@@ -261,9 +321,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--k", type=int, default=10, help="Number of results to retrieve per query")
     parser.add_argument(
         "--mode",
-        choices=["vector", "app"],
-        default="vector",
-        help="'vector' = direct HANA similarity_search; 'app' = reserved for future HTTP-based mode",
+        choices=["vector", "bm25", "app"],
+        default="bm25",
+        help=(
+            "'bm25' = in-process DocIndex BM25 search (default); "
+            "'vector' = direct HANA similarity_search; "
+            "'app' = reserved for future HTTP-based mode"
+        ),
+    )
+    parser.add_argument(
+        "--docs-path",
+        default=None,
+        help="Path to the docs artifact directory (required for --mode bm25)",
     )
     parser.add_argument(
         "--baseline",
@@ -288,7 +357,10 @@ def main(argv: list[str] | None = None) -> int:
     queries = _load_queries(args.queries)
     print(f"Loaded {len(queries)} queries from {args.queries}")
 
-    if args.mode == "vector":
+    if args.mode == "bm25":
+        docs_path = args.docs_path or os.environ.get("DOCS_PATH", "/docs")
+        per_query, elapsed = _run_bm25_mode(queries, docs_path, args.k)
+    elif args.mode == "vector":
         per_query, elapsed = _run_vector_mode(queries, args.table, args.k)
     else:
         raise NotImplementedError("'app' mode is not yet implemented")
