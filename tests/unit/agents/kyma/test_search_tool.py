@@ -8,6 +8,8 @@ from agents.kyma.tools.search import DocSearchTool, SearchKymaDocTool
 from docs.index import DocIndex
 from docs.types import DocPage
 
+_TWO_PAGE_COUNT = 2
+
 
 def _make_page(
     title: str = "Test Page",
@@ -111,7 +113,7 @@ class TestDocSearchToolArunDocuments:
         result = await tool.arun_documents("query")
 
         assert isinstance(result, list)
-        assert len(result) == 2
+        assert len(result) == _TWO_PAGE_COUNT
         assert all(isinstance(p, DocPage) for p in result)
         assert result[0].title == "A"
         assert result[1].title == "B"

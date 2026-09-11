@@ -160,10 +160,7 @@ class DocIndex:
                     self._page_list.append(page)
 
         if self._page_list:
-            corpus = [
-                _tokenize(page.title * _TITLE_WEIGHT + " " + page.content)
-                for page in self._page_list
-            ]
+            corpus = [_tokenize(page.title * _TITLE_WEIGHT + " " + page.content) for page in self._page_list]
             self._bm25 = BM25Okapi(corpus)
 
         self._loaded = True
@@ -190,11 +187,7 @@ class DocIndex:
         indexed = list(enumerate(scores))
 
         if module:
-            filtered = [
-                (i, s)
-                for i, s in indexed
-                if self._page_list[i].module.lower() == module.lower()
-            ]
+            filtered = [(i, s) for i, s in indexed if self._page_list[i].module.lower() == module.lower()]
             if filtered:
                 filtered.sort(key=lambda x: x[1], reverse=True)
                 return [self._page_list[i] for i, _ in filtered[:top_k]]
