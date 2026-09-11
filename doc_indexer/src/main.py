@@ -5,7 +5,7 @@ import sys
 import time
 
 from curation.classifier import classify_residue
-from curation.decisions_cache import DecisionsCache, _result_from_dict
+from curation.decisions_cache import DecisionsCache
 from curation.report import generate_pr_body
 from curation.residue import find_residue
 from curation.types import ClassificationResult, CuratorConfig
@@ -293,12 +293,8 @@ def run_report(
         repo_url: Base URL for generating file links in the report.
     """
     # Read classification results
-    results: list[ClassificationResult] = []
-    with open(decisions_file, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                results.append(_result_from_dict(json.loads(line)))
+    cache = DecisionsCache(decisions_file)
+    results: list[ClassificationResult] = cache.results()
 
     # Determine added/removed pages from sources file vs. classified paths
     classified_paths: set[str] = {r.candidate.path for r in results}

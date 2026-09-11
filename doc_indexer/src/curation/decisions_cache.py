@@ -169,3 +169,13 @@ class DecisionsCache:
             self.load()
         key = _cache_key(candidate.repo, candidate.path, candidate.content_hash)
         return self._cache.get(key)
+
+    def results(self) -> list[ClassificationResult]:
+        """Return all cached results as an ordered list.
+
+        Returns:
+            All :class:`ClassificationResult` entries in load order.
+        """
+        if not self._loaded:
+            self.load()
+        return list(self._cache.values())
