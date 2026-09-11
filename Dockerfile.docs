@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+# Docs init-container image.
+# Fetches all documentation from the lockfile at build time and ships the
+# result at /docs.  Mount this image as an init container that copies /docs
+# into an emptyDir shared with the main app container.
+
+ARG GARDENLINUX_VERSION=2150.9.0
+ARG PYTHON_VERSION=3.14.7
+
+FROM ghcr.io/gardenlinux/gardenlinux:${GARDENLINUX_VERSION} AS builder
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+       gcc libc6-dev make ca-certificates \
+       libssl-dev zlib1g-dev libbz2-dev liblzma-dev git \
+  && rm -rf /var/lib/apt/lists/*
+
+ARG PYTHON_VERSION
+ADD --checksum=sha256:62859805f6fdf25e2bcbf3fa3217801e1996887ca33e6a2af80674bdfa2dbe07 \
+    https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz /src/
+RUN cd /src && tar xzf Python-${PYTHON_VERSION}.tgz && cd Python-${PYTHON_VERSION} \
+  && ./configure --prefix=/opt/python --with-openssl=/usr --with-ensurepip=install \
+       --disable-test-modules --without-static-libpython > /tmp/python.log 2>&1 \
+  && make -j"$(nproc)" >> /tmp/python.log 2>&1 \
+  && make install >> /tmp/python.log 2>&1 \
+  || { tail -50 /tmp/python.log; exit 1; }
+
+ENV PATH="/opt/python/bin:$PATH"
+
+COPY doc_indexer/ /build/doc_indexer/
+WORKDIR /build/doc_indexer
+
+RUN pip install --no-cache-dir "poetry>=2.1" \
+  && poetry config virtualenvs.in-project true \
+  && poetry install --only main --no-interaction --no-ansi
+
+RUN DOCS_PATH=/docs poetry run python src/main.py fetch
+
+FROM scratch
+COPY --from=builder /docs /docs

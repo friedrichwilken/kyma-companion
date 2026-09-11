@@ -7,7 +7,6 @@ from starlette.responses import JSONResponse
 from starlette.status import HTTP_200_OK, HTTP_503_SERVICE_UNAVAILABLE
 
 from routers.common import HealthModel, ReadinessModel
-from services.hana import get_hana
 from services.k8s_resource_discovery import K8sResourceDiscovery
 from services.key_store import KeyStore
 from services.probes import (
@@ -34,32 +33,6 @@ class IUsageTrackerProbe(Protocol):
 
     def is_healthy(self) -> bool:
         """Checks if the failure count is equal or greater than the threshold."""
-
-
-class IHanaConnection(Protocol):
-    """Protocol for the Hana database connection."""
-
-    def isconnected(self) -> bool:
-        """Verifies if a connection to a Hana database is ready."""
-
-
-class IHana(Protocol):
-    """
-    Protocol for defining an IHana service.
-
-    Attributes:
-        connection (IHanaConnection): Represents the connection to the Hana database.
-    """
-
-    connection: IHanaConnection
-
-    def is_connection_operational(self) -> bool:
-        """
-        Check if the Hana service is operational.
-        """
-
-    def has_connection(self) -> bool:
-        """Check if a connection exists."""
 
 
 class IRedisConnection(Protocol):
@@ -115,7 +88,6 @@ class ILLMProbe(Protocol):
 
 @router.get("/healthz")
 async def healthz(
-    hana: IHana = Depends(get_hana),  # noqa: B008
     redis: IRedis = Depends(get_redis),  # noqa: B008
     usage_tracker_probe: IUsageTrackerProbe = Depends(  # noqa: B008
         get_usage_tracker_probe
@@ -126,7 +98,6 @@ async def healthz(
 
     logger.debug("Health probe called.")
     response = HealthModel(
-        is_hana_healthy=hana.is_connection_operational(),
         is_redis_healthy=await redis.is_connection_operational(),
         is_usage_tracker_healthy=usage_tracker_probe.is_healthy(),
         is_key_store_healthy=KeyStore().is_healthy(),
@@ -150,7 +121,6 @@ async def healthz(
 
 @router.get("/readyz")
 async def readyz(
-    hana: IHana = Depends(get_hana),  # noqa: B008
     redis: IRedis = Depends(get_redis),  # noqa: B008
     llm_probe: ILLMProbe = Depends(get_llm_probe),  # noqa: B008
 ) -> JSONResponse:
@@ -163,7 +133,6 @@ async def readyz(
 
     # Check all the required statuses.
     response = ReadinessModel(
-        is_hana_initialized=hana.has_connection(),
         is_redis_initialized=redis.has_connection(),
         are_models_initialized=llm_probe.has_models(),
         is_key_store_initialized=KeyStore().is_healthy(),
@@ -187,7 +156,6 @@ def all_ready(response: HealthModel | ReadinessModel) -> bool:
     if isinstance(response, HealthModel):
         return (
             response.is_redis_healthy
-            and response.is_hana_healthy
             and response.is_usage_tracker_healthy
             and response.is_key_store_healthy
             and bool(response.llms)
@@ -196,7 +164,6 @@ def all_ready(response: HealthModel | ReadinessModel) -> bool:
     if isinstance(response, ReadinessModel):
         return (
             response.is_redis_initialized
-            and response.is_hana_initialized
             and response.are_models_initialized
             and response.is_key_store_initialized
         )
