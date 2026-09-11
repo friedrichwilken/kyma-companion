@@ -14,7 +14,8 @@ from agents.kyma.tools.query import (
     fetch_kyma_resource_version,
     kyma_query_tool,
 )
-from agents.kyma.tools.search import SearchKymaDocTool
+from agents.kyma.tools.search import DocSearchTool
+from docs.index import DocIndex
 from routers.common import (
     API_PREFIX,
     KymaQueryRequest,
@@ -24,8 +25,8 @@ from routers.common import (
     SearchKymaDocRequest,
     SearchKymaDocResponse,
     SearchKymaDocResult,
+    init_doc_index,
     init_k8s_client,
-    init_search_tool,
 )
 from services.k8s import IK8sClient
 from utils.exceptions import K8sClientError
@@ -126,22 +127,23 @@ async def get_resource_version(
 @router.post("/search", response_model=SearchKymaDocResponse)
 async def search_kyma_documentation(
     request: Annotated[SearchKymaDocRequest, Body()],
-    search_tool: Annotated[SearchKymaDocTool, Depends(init_search_tool)],
+    index: Annotated[DocIndex, Depends(init_doc_index)],
 ) -> SearchKymaDocResponse:
     """
-    Search Kyma documentation using semantic search.
+    Search Kyma documentation using the in-process BM25 index.
     """
     logger.info(f"Search request: query={request.query}")
 
     try:
+        search_tool = DocSearchTool(index)
         docs = await search_tool.arun_documents(query=request.query, top_k=request.top_k)
-        results = [doc.page_content for doc in docs]
+        results = [doc.content for doc in docs]
         documents = [
             SearchKymaDocResult(
-                title=doc.metadata.get("title") or "Untitled",
-                url=doc.metadata.get("url") or doc.metadata.get("source") or "",
-                module=doc.metadata.get("module") or None,
-                content=doc.page_content,
+                title=doc.title,
+                url=doc.url,
+                module=doc.module or None,
+                content=doc.content,
             )
             for doc in docs
         ]

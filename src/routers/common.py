@@ -11,7 +11,7 @@ from langchain_core.embeddings import Embeddings
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
 
-from agents.kyma.tools.search import SearchKymaDocTool
+from docs.index import DocIndex
 from services.data_sanitizer import DataSanitizer, IDataSanitizer
 from services.encryption import Encryption
 from services.encryption_cache import EncryptionCache, get_encryption_cache
@@ -22,7 +22,7 @@ from services.redis import Redis
 from utils.config import Config, get_config
 from utils.logging import get_logger
 from utils.models.factory import IModel, ModelFactory
-from utils.settings import KYMA_AGENT_CONVERSATION_TTL
+from utils.settings import DOCS_PATH, KYMA_AGENT_CONVERSATION_TTL
 from utils.singleton_meta import SingletonMeta
 
 logger = get_logger(__name__)
@@ -309,26 +309,27 @@ class _ModelsRegistry(metaclass=SingletonMeta):
             ) from e
 
 
-class _SearchToolRegistry(metaclass=SingletonMeta):
-    """Singleton registry for SearchKymaDocTool to avoid reinitializing RAGSystem on every request."""
+class _DocIndexRegistry(metaclass=SingletonMeta):
+    """Singleton registry for DocIndex to avoid re-loading the BM25 index on every request."""
 
-    def __init__(self, models: dict[str, IModel | Embeddings]):
+    def __init__(self) -> None:
+        """Load the DocIndex from DOCS_PATH once and cache the instance."""
         try:
-            self.tool = SearchKymaDocTool(models)
+            self.index = DocIndex(DOCS_PATH)
+            self.index.load()
         except Exception as e:
-            logger.exception("Failed to initialize search tool")
-            SingletonMeta.reset_instance(_SearchToolRegistry)
+            logger.exception("Failed to initialize DocIndex")
+            SingletonMeta.reset_instance(_DocIndexRegistry)
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Failed to initialize search tool: {str(e)}",
+                detail=f"Failed to initialize docs index: {e}",
             ) from e
 
 
 def init_models_dict(
     config: Annotated[Config, Depends(init_config)],
 ) -> dict[str, IModel | Embeddings]:
-    """
-    Initialize models dictionary from config.
+    """Initialize models dictionary from config.
 
     Creates a dict of model_name -> model instance for use by tools
     that require LLM models and embeddings.
@@ -337,16 +338,13 @@ def init_models_dict(
     return _ModelsRegistry(config).models
 
 
-def init_search_tool(
-    models: Annotated[dict[str, IModel | Embeddings], Depends(init_models_dict)],
-) -> SearchKymaDocTool:
-    """
-    Initialize SearchKymaDocTool singleton.
+def init_doc_index() -> DocIndex:
+    """Initialize and cache the in-process BM25 docs index.
 
-    Instantiates SearchKymaDocTool (and therefore RAGSystem) once and caches it.
-    Uses SingletonMeta to avoid reinitializing RAGSystem on every request.
+    Returns:
+        The singleton DocIndex loaded from DOCS_PATH.
     """
-    return _SearchToolRegistry(models).tool
+    return _DocIndexRegistry().index
 
 
 async def init_k8s_client(

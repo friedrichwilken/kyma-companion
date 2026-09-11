@@ -1,50 +1,45 @@
-from langchain_core.documents import Document
-from langchain_core.embeddings import Embeddings
-from langchain_core.tools import BaseTool
-from pydantic import BaseModel, Field
+"""BM25-backed tool for searching Kyma documentation."""
 
-from rag.system import Query, RAGSystem
-from utils.models.factory import IModel
+from langchain_core.tools import BaseTool
+from pydantic import BaseModel, Field, PrivateAttr
+
+from docs.index import DocIndex
+from docs.types import DocPage
 
 DEFAULT_TOP_K: int = 5
 SEARCH_KYMA_DOC_TOOL_NAME: str = "search_kyma_doc"
 
 
-class SearchKymaDocArgs(BaseModel):
+class DocSearchArgs(BaseModel):
     """Arguments for the search_kyma_doc tool."""
 
     query: str = Field(
-        description="The search query to find relevant Kyma documentation",
+        description="Search query to find relevant Kyma documentation",
         examples=["Help me get started with kyma", "What are Kyma components?"],
     )
 
 
-def _format_document(doc: Document) -> str:
-    """Format a single Document into a human-readable block with title and source URL.
+def _format_page(page: DocPage) -> str:
+    """Format a single DocPage into a human-readable block with title, source URL, module, and content.
 
     Args:
-        doc: A LangChain Document with page_content and optional metadata fields
-             (title, url, source, module).
+        page: A DocPage with title, url, module, and content fields.
 
     Returns:
-        Formatted string block for the document.
+        Formatted string block for the page.
     """
-    title = doc.metadata.get("title") or "Untitled"
-    url = doc.metadata.get("url") or doc.metadata.get("source") or ""
-    module = doc.metadata.get("module") or ""
-
-    lines = [f"### {title}"]
-    if url:
-        lines.append(f"Source: {url}")
-    if module:
-        lines.append(f"Module: {module}")
+    lines = [f"### {page.title}"]
+    if page.url:
+        lines.append(f"Source: {page.url}")
+    if page.module:
+        lines.append(f"Module: {page.module}")
     lines.append("")
-    lines.append(doc.page_content)
+    lines.append(page.content)
     return "\n".join(lines)
 
 
-class SearchKymaDocTool(BaseTool):
-    """Tool to search through Kyma documentation."""
+class DocSearchTool(BaseTool):
+    """Tool to search through Kyma documentation using the in-process BM25 index."""
 
     name: str = SEARCH_KYMA_DOC_TOOL_NAME
     description: str = """Used to search through Kyma documentation for relevant information about Kyma concepts,
@@ -56,58 +51,59 @@ class SearchKymaDocTool(BaseTool):
     - "How to troubleshoot Kyma Istio module?"
     """
 
-    args_schema: type[BaseModel] = SearchKymaDocArgs
+    args_schema: type[BaseModel] = DocSearchArgs
     return_direct: bool = False  # Let the agent process the search results
 
-    # the following fields are not part of the schema, but are used internally
-    rag_system: RAGSystem | None = Field(default=None, exclude=True)
-    top_k: int | None = Field(default=DEFAULT_TOP_K, exclude=True)
+    _index: DocIndex = PrivateAttr()
 
-    def __init__(self, models: dict[str, IModel | Embeddings], top_k: int = DEFAULT_TOP_K):
-        super().__init__()
-        self.rag_system = RAGSystem(models)
-        self.top_k = top_k
+    def __init__(self, index: DocIndex) -> None:
+        """Initialize the tool with a pre-loaded DocIndex.
 
-    def _run(
-        self,
-        query: str,
-    ) -> str:
-        """Execute the search through Kyma documentation."""
-        return ""
-
-    async def _arun(self, query: str) -> str:
-        """Async implementation of the search through Kyma documentation.
-
-        Returns documents formatted with title, source URL, module, and content,
-        separated by horizontal rules.
+        Args:
+            index: The in-process BM25 documentation index.
         """
-        docs = await self.arun_documents(query)
-        if not docs:
-            return "No relevant documentation found."
-        formatted = [_format_document(doc) for doc in docs]
-        return "\n\n---\n\n".join(formatted)
+        super().__init__()
+        self._index = index
 
-    async def arun_documents(self, query: str, top_k: int | None = None) -> list[Document]:
-        """Retrieve raw Document objects with metadata for the given query.
+    def _run(self, query: str) -> str:
+        """Synchronous execution — not used; async path is preferred.
 
         Args:
             query: The search query string.
-            top_k: Maximum number of documents to return. Falls back to the
-                   instance default when not provided.
 
         Returns:
-            List of Document objects with page_content and metadata (title, url, module).
+            Empty string (sync path not implemented).
         """
-        if self.rag_system is None:
-            return []
-        query_obj = Query(text=query)
-        relevant_docs = await self.rag_system.aretrieve(
-            query_obj,
-            top_k=top_k if top_k is not None else (self.top_k or DEFAULT_TOP_K),
-        )
-        return [doc for doc in relevant_docs if doc.page_content.strip()]
+        return ""
 
-    async def arun_list(self, query: str, top_k: int | None = None) -> list[str]:
+    async def _arun(self, query: str) -> str:
+        """Search Kyma documentation asynchronously and return formatted results.
+
+        Args:
+            query: The search query string.
+
+        Returns:
+            Formatted documentation pages separated by horizontal rules,
+            or a message indicating no results were found.
+        """
+        docs = self._index.search(query, top_k=DEFAULT_TOP_K)
+        if not docs:
+            return "No relevant documentation found."
+        return "\n\n---\n\n".join(_format_page(d) for d in docs)
+
+    async def arun_documents(self, query: str, top_k: int = DEFAULT_TOP_K) -> list[DocPage]:
+        """Retrieve raw DocPage objects for the given query.
+
+        Args:
+            query: The search query string.
+            top_k: Maximum number of documents to return.
+
+        Returns:
+            List of DocPage objects ordered by relevance descending.
+        """
+        return self._index.search(query, top_k=top_k)
+
+    async def arun_list(self, query: str, top_k: int = DEFAULT_TOP_K) -> list[str]:
         """Retrieve document content strings for the given query.
 
         Kept for backward compatibility with the REST endpoint and existing
@@ -118,7 +114,11 @@ class SearchKymaDocTool(BaseTool):
             top_k: Maximum number of documents to return.
 
         Returns:
-            List of page_content strings for matched documents.
+            List of content strings for matched documents.
         """
-        docs = await self.arun_documents(query, top_k=top_k)
-        return [doc.page_content for doc in docs]
+        return [d.content for d in self._index.search(query, top_k=top_k)]
+
+
+# Backward-compatibility alias so existing tests and callers that reference
+# SearchKymaDocTool continue to work until they are updated.
+SearchKymaDocTool = DocSearchTool

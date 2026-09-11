@@ -115,10 +115,7 @@ DATABASE_URL = config("DATABASE_URL", None)
 DATABASE_PORT = config("DATABASE_PORT", cast=int, default=443)
 DATABASE_USER = config("DATABASE_USER", None)
 DATABASE_PASSWORD = config("DATABASE_PASSWORD", None)
-DOCS_TABLE_NAME = config("DOCS_TABLE_NAME", default="kyma_docs")
-HANA_HEALTH_CHECK_CACHE_TTL_SECONDS = config(
-    "HANA_HEALTH_CHECK_CACHE_TTL_SECONDS", default=300, cast=int
-)  # Default 5 minutes
+DOCS_PATH = config("DOCS_PATH", default="/docs")
 
 # Encryption (Base64 encoded)
 default_private_key_path = config_path.parent / "encryption_key.pem"
