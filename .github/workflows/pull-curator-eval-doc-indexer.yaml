@@ -1,0 +1,56 @@
+name: Doc Indexer Curator Eval
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - "main"
+      - "release-**"
+    paths:
+      - "doc_indexer/src/curation/**"
+      - "doc_indexer/curation/labels.jsonl"
+      - ".github/workflows/pull-curator-eval-doc-indexer.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  curator-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        working-directory: ./doc_indexer
+        run: |
+          ../scripts/shell/extract-python-version.sh
+          echo "Got PYTHON_VERSION=${PYTHON_VERSION}"
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        working-directory: ./doc_indexer
+        run: poetry install --with test
+
+      - name: Run eval-classifier
+        working-directory: ./doc_indexer
+        env:
+          LOG_LEVEL: "INFO"
+          DOCS_SOURCES_FILE_PATH: "./docs_sources.json"
+          DOCS_PATH: "/tmp/test-data"
+          DOCS_TABLE_NAME: "kc_curator_eval"
+        run: |
+          poetry run python src/main.py eval-classifier \
+            --labels curation/labels.jsonl \
+            --floor-precision 0.85 \
+            --floor-recall 0.80

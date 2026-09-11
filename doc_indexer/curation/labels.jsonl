@@ -1,0 +1,40 @@
+{"repo": "kyma-project/istio", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing Kyma module doc -- overview page"}
+{"repo": "kyma-project/istio", "path": "docs/user/02-configuration.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing Kyma module doc -- configuration reference"}
+{"repo": "kyma-project/eventing-manager", "path": "README.md", "decision": "include", "source": "docs_sources.json", "rationale": "top-level README included by docs_sources.json"}
+{"repo": "kyma-project/eventing-manager", "path": "docs/user/01-eventing-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing eventing module doc"}
+{"repo": "kyma-project/nats-manager", "path": "README.md", "decision": "include", "source": "docs_sources.json", "rationale": "top-level README included by docs_sources.json"}
+{"repo": "kyma-project/nats-manager", "path": "docs/user/01-nats-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing NATS module doc"}
+{"repo": "kyma-project/warden", "path": "README.md", "decision": "include", "source": "docs_sources.json", "rationale": "top-level README included by docs_sources.json"}
+{"repo": "kyma-project/warden", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing warden module doc"}
+{"repo": "kyma-project/cloud-manager", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing cloud-manager module doc"}
+{"repo": "kyma-project/cloud-manager", "path": "docs/user/02-nfs-volumes.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing cloud-manager tutorial"}
+{"repo": "kyma-project/api-gateway", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing api-gateway module doc"}
+{"repo": "kyma-project/api-gateway", "path": "docs/user/02-expose-workloads.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing api-gateway tutorial"}
+{"repo": "kyma-project/telemetry-manager", "path": "docs/user/01-manager-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing telemetry module doc"}
+{"repo": "kyma-project/telemetry-manager", "path": "docs/user/02-logs.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing telemetry module doc -- logs pipeline"}
+{"repo": "kyma-project/btp-manager", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing btp-manager module doc"}
+{"repo": "kyma-project/btp-manager", "path": "docs/user/02-tutorials.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing btp-manager tutorials"}
+{"repo": "kyma-project/serverless", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing serverless module doc"}
+{"repo": "kyma-project/serverless", "path": "docs/user/02-create-function.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing serverless tutorial"}
+{"repo": "kyma-project/busola", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing busola UI doc"}
+{"repo": "kyma-project/busola", "path": "docs/resource-validation/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing busola resource-validation doc"}
+{"repo": "kyma-project/kyma-environment-broker", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing KEB module doc"}
+{"repo": "kyma-project/kyma-environment-broker", "path": "docs/user/02-service-instances.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing KEB service-instance doc"}
+{"repo": "kyma-project/lifecycle-manager", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing lifecycle-manager module doc"}
+{"repo": "kyma-project/lifecycle-manager", "path": "docs/user/02-module-integration.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing lifecycle-manager integration doc"}
+{"repo": "kyma-project/cli", "path": "docs/user/01-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing CLI module doc"}
+{"repo": "kyma-project/cli", "path": "docs/user/02-install.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing CLI installation guide"}
+{"repo": "kyma-project/kyma", "path": "README.md", "decision": "include", "source": "docs_sources.json", "rationale": "top-level Kyma repo README included by docs_sources.json"}
+{"repo": "kyma-project/kyma", "path": "docs/01-overview/01-kyma-overview.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing Kyma overview doc"}
+{"repo": "kyma-project/kyma", "path": "docs/02-get-started/01-quick-install.md", "decision": "include", "source": "docs_sources.json", "rationale": "user-facing Kyma get-started guide"}
+{"repo": "kyma-project/kyma", "path": "docs/glossary.md", "decision": "include", "source": "docs_sources.json", "rationale": "Kyma glossary explicitly listed in docs_sources.json"}
+{"repo": "kyma-project/istio", "path": "CONTRIBUTING.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "contributor guide -- not user-facing documentation"}
+{"repo": "kyma-project/eventing-manager", "path": "CONTRIBUTING.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "contributor guide -- not user-facing documentation"}
+{"repo": "kyma-project/kyma", "path": "docs/adr/ADR-001-use-react-for-ui.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "Architecture Decision Record -- internal design artifact, not user doc"}
+{"repo": "kyma-project/kyma", "path": "docs/adr/ADR-042-logging-strategy.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "Architecture Decision Record -- internal design artifact, not user doc"}
+{"repo": "kyma-project/kyma-companion", "path": ".github/workflows/build-and-push.yaml", "decision": "exclude", "source": "explicit_exclusion", "rationale": "CI workflow file -- not documentation"}
+{"repo": "kyma-project/kyma-companion", "path": ".github/workflows/pull-lint.yaml", "decision": "exclude", "source": "explicit_exclusion", "rationale": "CI workflow file -- not documentation"}
+{"repo": "kyma-project/telemetry-manager", "path": "docs/internal/benchmarks/pipeline-throughput.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "internal benchmark doc -- not user-facing"}
+{"repo": "kyma-project/serverless", "path": "docs/internal/design-decisions.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "internal design doc -- not user-facing"}
+{"repo": "kyma-project/api-gateway", "path": "docs/contributor/01-local-setup.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "contributor setup guide -- not user-facing documentation"}
+{"repo": "kyma-project/busola", "path": "docs/contributor/02-testing.md", "decision": "exclude", "source": "explicit_exclusion", "rationale": "contributor testing guide -- not user-facing documentation"}

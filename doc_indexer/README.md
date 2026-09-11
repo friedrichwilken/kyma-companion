@@ -71,6 +71,98 @@ poetry run poe test
 - **`tests/integration/test_main.py::test_run_indexer_fails_when_deployment_id_passed_as_model_name`** — negative check: passing a deployment ID instead of a model name raises `ValueError`.
 - **`tests/integration/test_main.py::test_run_indexer_e2e`** — full end-to-end: indexes real documents into a temporary Hana DB table and verifies chunks were stored.
 
+### Chunk snapshot tests
+
+`tests/unit/indexing/test_chunk_snapshots.py` runs the full chunking pipeline over a set of
+realistic fixture documents (under `tests/unit/fixtures/snapshot_docs/`) and compares the output
+against a committed JSON file (`tests/unit/fixtures/snapshots/chunks.json`).
+
+**Any change to the chunking logic or the fixture files must be followed by a snapshot update.**
+Review the diff carefully before committing -- the snapshot is the source of truth for what the
+indexer produces.
+
+To regenerate the snapshot:
+
+```bash
+cd doc_indexer
+UPDATE_SNAPSHOTS=1 poetry run pytest tests/unit/indexing/test_chunk_snapshots.py -v
+```
+
+Then review and commit `tests/unit/fixtures/snapshots/chunks.json`.
+
+## Retrieval Evaluation
+
+`evaluation/` contains a labelled query set and a script to measure how well the vector index retrieves the expected documents.
+
+### Query set
+
+`evaluation/queries.jsonl` -- 40 queries covering concept, howto, and troubleshooting scenarios.
+Each entry has the form:
+
+```json
+{"id": "ts-apirule-accessstrategies", "kind": "troubleshooting",
+ "query": "APIRule status Error: accessStrategies handler allow is deprecated in v1beta1, migrate to v2",
+ "expected": ["api-gateway/docs/user/apirule-migration/01-82-migrate-allow-noop-no_auth-v1beta1-to-v2.md"]}
+```
+
+`expected` is a list of path suffixes -- a retrieved chunk is considered a hit when its `source`
+metadata field ends with (or contains) any of the listed suffixes.
+
+### Running locally against an existing table
+
+Prerequisites: a populated HANA table and a `config/config.json` with HANA credentials
+(same format as for the indexer itself).
+
+```bash
+# From the doc_indexer/ directory:
+poetry install
+poetry run python evaluation/run_retrieval_eval.py \
+    --table kyma_docs \
+    --k 10 \
+    --mode vector
+```
+
+To write results to a file and check against the committed baseline:
+
+```bash
+poetry run python evaluation/run_retrieval_eval.py \
+    --table kyma_docs \
+    --k 10 \
+    --mode vector \
+    --baseline evaluation/baseline.json \
+    --out evaluation/results.json
+```
+
+The script exits with code 1 if `recall@5` drops more than 0.05 compared to the baseline.
+It prints a Markdown table and writes it to `$GITHUB_STEP_SUMMARY` when that variable is set.
+
+### Updating the baseline
+
+After verifying a run against the production table looks healthy, copy `results.json`
+metrics into `baseline.json`:
+
+```bash
+# Extract only the metrics block (not per-query details) for the baseline:
+python -c "
+import json, sys
+r = json.load(open('evaluation/results.json'))
+json.dump(r['metrics'], open('evaluation/baseline.json', 'w'), indent=2)
+print('baseline.json updated')
+"
+```
+
+Commit `evaluation/baseline.json` so future CI runs can catch regressions.
+
+### CI
+
+The workflow `.github/workflows/pull-retrieval-eval-doc-indexer.yaml` runs the evaluation:
+
+- **On PRs** when the label `run-retrieval-eval` is applied.
+- **Weekly** every Monday at 06:00 UTC against the production `kyma_docs` table.
+
+Results are uploaded as the `retrieval-eval-results` artifact and a summary table is written
+to the GitHub Actions run summary.
+
 ## Static Code Analysis
 ```bash
 poetry run poe codecheck

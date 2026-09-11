@@ -68,7 +68,11 @@ DATABASE_PORT = int(config("DATABASE_PORT", default=443))
 DATABASE_USER = str(config("DATABASE_USER", ""))
 DATABASE_PASSWORD = str(config("DATABASE_PASSWORD", default=""))
 
-INDEX_TO_FILE = bool(config("INDEX_TO_FILE", default=False))
+INDEX_TO_FILE = config("INDEX_TO_FILE", default=False, cast=bool)
+
+CURATOR_RESIDUE_TO_AGENT = config("CURATOR_RESIDUE_TO_AGENT", default=False, cast=bool)
+CURATOR_DECISIONS_FILE = str(config("CURATOR_DECISIONS_FILE", default="curation/decisions.jsonl"))
+CURATOR_MODEL_NAME = str(config("CURATOR_MODEL_NAME", default="")) or None
 
 
 def get_embedding_model_config(name: str) -> ModelConfig:
