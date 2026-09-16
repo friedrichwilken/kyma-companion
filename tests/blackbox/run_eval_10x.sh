@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 # Run the A2A evaluation 10 times against the locally-running app server.
 # Each run produces three files in eval_results/:
-#   run-N-<timestamp>.log          — full eval client output (scores, answers, expectations)
-#   run-N-<timestamp>.server.log   — app server output (JSON log lines, includes doc_search events)
+#   run-N-<timestamp>.log             — full eval client output (scores, answers, expectations)
+#   run-N-<timestamp>.server.log      — app server output (JSON log lines, includes doc_search events)
 #   run-N-<timestamp>.doc_search.json — extracted doc_search log entries for this run
+#   run-N-<timestamp>.metrics.json    — structured metrics report
 #
-# The app is restarted for every run so each run starts with a clean server state.
+# The docs artifact is built once before the first run from doc_indexer/manifest.json.
+# The app server is started/stopped for every run with a clean state.
 #
 # Usage:
 #   cd tests/blackbox
 #   bash run_eval_10x.sh
 #
 # Requirements:
-#   - config/config.json present in the repo root (copied from main worktree if missing)
-#   - docker redis-local running (or REDIS_URL set)
-#   - poetry install done in the repo root and in tests/blackbox/
+#   - config/config.json in the repo root (copied from main worktree if missing)
+#   - docker redis-local running  (or REDIS_URL set in env)
+#   - poetry install done in the repo root AND in tests/blackbox/
 
 set -euo pipefail
 
@@ -23,6 +25,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 RESULTS_DIR="$SCRIPT_DIR/eval_results"
 CONFIG_JSON="$REPO_ROOT/config/config.json"
 MAIN_CONFIG_JSON="/Users/I549741/claude/kyma/kyma-companion/main/config/config.json"
+DOCS_ARTIFACT="${DOCS_PATH:-/tmp/kyma-docs}"
 
 mkdir -p "$RESULTS_DIR"
 
@@ -41,24 +44,40 @@ if [[ ! -f "$CONFIG_JSON" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Helper: start the app server, return its PID
+# Build the docs artifact once (idempotent — skipped if already present)
+# ---------------------------------------------------------------------------
+
+if [[ -d "$DOCS_ARTIFACT" ]]; then
+    echo "=== Docs artifact already at $DOCS_ARTIFACT — skipping build ==="
+else
+    echo "=== Building docs artifact -> $DOCS_ARTIFACT ==="
+    (
+        cd "$REPO_ROOT/doc_indexer"
+        poetry run pinakes resolve --from-manifest manifest.json --artifact "$DOCS_ARTIFACT"
+    )
+    echo "=== Docs artifact built ==="
+fi
+
+# ---------------------------------------------------------------------------
+# Helper: start the app server, write logs to server_log, return PID
 # ---------------------------------------------------------------------------
 
 start_server() {
     local server_log="$1"
     (
         cd "$REPO_ROOT"
-        LOG_FORMAT=json CONFIG_PATH="$CONFIG_JSON" poetry run python src/main.py
-    ) >> "$server_log" 2>&1 &
+        PYTHONUNBUFFERED=1 LOG_FORMAT=json DOCS_PATH="$DOCS_ARTIFACT" CONFIG_PATH="$CONFIG_JSON" \
+            poetry run uvicorn src.main:app --host 0.0.0.0 --port 8000 --log-config /dev/null
+    ) > "$server_log" 2>&1 &
     echo $!
 }
 
 # ---------------------------------------------------------------------------
-# Helper: wait until the server is responding on /healthz
+# Helper: wait until /healthz is responding
 # ---------------------------------------------------------------------------
 
 wait_for_server() {
-    local max_wait=60
+    local max_wait=90
     local elapsed=0
     while [[ $elapsed -lt $max_wait ]]; do
         if curl -sf http://localhost:8000/healthz > /dev/null 2>&1; then
@@ -94,16 +113,15 @@ with open(server_log_path) as f:
             obj = json.loads(line)
         except json.JSONDecodeError:
             continue
-        # The search tool logs: logger.info("doc_search", extra={...})
-        # With LOG_FORMAT=json the message field is "doc_search"
+        # search.py logs: logger.info("doc_search", extra={"query": ..., "results": [...]})
+        # LOG_FORMAT=json serialises extra fields as top-level keys
         if obj.get("message") == "doc_search":
-            entry = {
+            entries.append({
                 "query": obj.get("query", ""),
                 "module_filter": obj.get("module_filter", ""),
                 "result_count": obj.get("result_count", 0),
                 "results": obj.get("results", []),
-            }
-            entries.append(entry)
+            })
 
 with open(out_path, "w") as f:
     json.dump(entries, f, indent=2)
@@ -123,36 +141,32 @@ for i in $(seq 1 10); do
     EVAL_LOG="$RESULTS_DIR/run-${i}-${TIMESTAMP}.log"
     SERVER_LOG="$RESULTS_DIR/run-${i}-${TIMESTAMP}.server.log"
     DOC_SEARCH_JSON="$RESULTS_DIR/run-${i}-${TIMESTAMP}.doc_search.json"
+    METRICS_JSON="$RESULTS_DIR/run-${i}-${TIMESTAMP}.metrics.json"
 
     echo ""
     echo "========================================================================"
     echo "=== Run $i/10 starting at $TIMESTAMP"
     echo "========================================================================"
 
-    # Start the app server
-    echo "=== Starting app server (log -> $SERVER_LOG) ==="
+    echo "=== Starting app server (log -> $(basename "$SERVER_LOG")) ==="
     SERVER_PID=$(start_server "$SERVER_LOG")
     echo "=== Server PID: $SERVER_PID ==="
 
-    # Wait for it to be ready
     if ! wait_for_server; then
-        echo "ERROR: server failed to start for run $i" >&2
+        echo "ERROR: server failed to start for run $i — check $SERVER_LOG" >&2
         kill "$SERVER_PID" 2>/dev/null || true
         continue
     fi
     echo "=== Server ready ==="
 
-    # Run the evaluation
-    echo "=== Running eval (log -> $EVAL_LOG) ==="
-    METRICS_REPORT_PATH="$RESULTS_DIR/run-${i}-${TIMESTAMP}.metrics.json" \
+    echo "=== Running eval (log -> $(basename "$EVAL_LOG")) ==="
+    METRICS_REPORT_PATH="$METRICS_JSON" \
         poetry run python src/run_a2a_evaluation.py > "$EVAL_LOG" 2>&1 || true
 
-    # Stop the server
     echo "=== Stopping server (PID $SERVER_PID) ==="
     kill "$SERVER_PID" 2>/dev/null || true
     wait "$SERVER_PID" 2>/dev/null || true
 
-    # Extract doc_search entries
     echo "=== Extracting doc_search entries ==="
     extract_doc_search "$SERVER_LOG" "$DOC_SEARCH_JSON"
 
@@ -171,27 +185,15 @@ done
 
 echo ""
 echo "========================================================================"
-echo "=== All 10 runs complete"
+echo "=== All 10 runs complete. Results in: $RESULTS_DIR"
 echo "========================================================================"
 echo ""
-echo "Scores:"
+printf "%-12s  %-10s  %s\n" "Run" "Score" "doc_search_calls"
 for f in "$RESULTS_DIR"/run-*.log; do
     [[ "$f" == *.server.log ]] && continue
     RUN=$(basename "$f" | grep -oE 'run-[0-9]+')
     SCORE=$(grep "Overall success score" "$f" | grep -oE '[0-9]+\.[0-9]+%' || echo "N/A")
-    DOC_COUNT=$(python3 -c "
-import json, glob, os
-base = '${f%.log}'
-ds = base + '.doc_search.json'
-if os.path.exists(ds):
-    d = json.load(open(ds))
-    print(len(d))
-else:
-    print('?')
-" 2>/dev/null || echo "?")
-    echo "  $RUN: score=$SCORE  doc_search_calls=$DOC_COUNT"
+    DS_FILE="${f%.log}.doc_search.json"
+    DOC_COUNT=$(python3 -c "import json; print(len(json.load(open('$DS_FILE'))))" 2>/dev/null || echo "?")
+    printf "%-12s  %-10s  %s\n" "$RUN" "$SCORE" "$DOC_COUNT"
 done
-
-echo ""
-echo "Files in $RESULTS_DIR:"
-ls -lh "$RESULTS_DIR"
