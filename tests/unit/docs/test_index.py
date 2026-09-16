@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from docs import DocIndex, DocPage
-from docs.index import _index_text, _tokenize
+from docs.index import _extract_title, _index_text, _tokenize
 
 # Number of .md files created by the docs_dir fixture.
 FIXTURE_PAGE_COUNT = 4
@@ -449,3 +449,25 @@ def test_search_does_not_collapse_untitled_pages(tmp_path: Path) -> None:
     index = DocIndex(str(tmp_path))
     index.load()
     assert len(index.search("kyma runtime notes")) == 2  # noqa: PLR2004
+
+
+# ---------------------------------------------------------------------------
+# Title extraction
+# ---------------------------------------------------------------------------
+
+
+def test_extract_title_prefers_h1_over_frontmatter() -> None:
+    """An H1 wins over the frontmatter title."""
+    text = "---\ntitle: Frontmatter Title\n---\n# Heading Title\n\nBody.\n"
+    assert _extract_title(text) == "Heading Title"
+
+
+def test_extract_title_falls_back_to_frontmatter() -> None:
+    """Pages without an H1 take the frontmatter title, quotes stripped."""
+    text = '---\ntitle: "Deploy in SAP BTP, Kyma Runtime"\ndescription: x\n---\n## You will learn\n\n- things\n'
+    assert _extract_title(text) == "Deploy in SAP BTP, Kyma Runtime"
+
+
+def test_extract_title_empty_without_h1_or_frontmatter() -> None:
+    """No H1 and no frontmatter yields an empty title."""
+    assert _extract_title("## Only a second-level heading\n\nBody.\n") == ""

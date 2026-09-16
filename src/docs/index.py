@@ -27,15 +27,39 @@ def _strip_frontmatter(text: str) -> str:
     return text
 
 
-def _extract_title(content: str, meta: dict[str, Any]) -> str:
-    """Extract a page title from content or metadata.
+_FRONTMATTER_TITLE_RE = re.compile(r"^title:\s*(.+?)\s*$", re.MULTILINE)
 
-    Looks for the first ``# `` H1 heading after stripping frontmatter.  Falls
-    back to the ``title`` key in *meta*, and finally returns an empty string.
+
+def _frontmatter_title(text: str) -> str:
+    """Return the ``title`` value of a YAML frontmatter block, or an empty string.
+
+    Args:
+        text: Raw Markdown text that may begin with a YAML frontmatter block.
+
+    Returns:
+        The title with surrounding quotes removed, or ``""`` when there is no
+        frontmatter or it has no ``title`` key.
+    """
+    if not text.startswith("---"):
+        return ""
+    end = text.find("\n---", 3)
+    if end == -1:
+        return ""
+    match = _FRONTMATTER_TITLE_RE.search(text[3:end])
+    if not match:
+        return ""
+    return match.group(1).strip().strip("'\"")
+
+
+def _extract_title(content: str) -> str:
+    """Extract a page title from content.
+
+    Looks for the first ``# `` H1 heading after stripping frontmatter. Falls
+    back to the frontmatter ``title`` key (used by the SAP tutorials, which
+    carry no H1), and finally returns an empty string.
 
     Args:
         content: Full Markdown text (may include frontmatter).
-        meta: Parsed ``meta.json`` dictionary for the containing module directory.
 
     Returns:
         The page title as a plain string (without the leading ``# ``).
@@ -44,7 +68,7 @@ def _extract_title(content: str, meta: dict[str, Any]) -> str:
     match = re.search(r"^#\s+(.+)", stripped, re.MULTILINE)
     if match:
         return match.group(1).strip()
-    return str(meta.get("title", ""))
+    return _frontmatter_title(content)
 
 
 def _build_url(base_url: str, repo: str, rel_path: str) -> str:
@@ -199,7 +223,7 @@ class DocIndex:
                     full_path = os.path.join(dirpath, filename)
                     rel_to_module = os.path.relpath(full_path, module_dir)
                     raw = self._read_file(full_path)
-                    title = _extract_title(raw, meta)
+                    title = _extract_title(raw)
                     content = _clean_content(raw)
                     url = _build_url(base_url, repo, rel_to_module)
                     page_id = f"{repo}::{rel_to_module}"
