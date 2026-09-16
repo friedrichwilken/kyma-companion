@@ -156,6 +156,15 @@ def _tokenize(text: str) -> list[str]:
 # Number of times title tokens are repeated to weight them higher than body tokens.
 _TITLE_WEIGHT = 3
 
+# Sources whose pages are the canonical version of a document. Pages from other
+# sources that share a title with a canonical page are treated as mirrors.
+_CANONICAL_REPO_PREFIX = "kyma-project/"
+
+
+def _title_key(title: str) -> str:
+    """Return the tokenized form of a title used to detect the same page across sources."""
+    return " ".join(_tokenize(title))
+
 
 class DocIndex:
     """In-process BM25 search index over a local documentation artifact directory.
@@ -207,6 +216,7 @@ class DocIndex:
         self._page_list = []
         self._bm25 = None
         self._loaded = False
+        title_keys: dict[str, set[str]] = {}
 
         for module_dir_name in sorted(os.listdir(self._docs_path)):
             module_dir = os.path.join(self._docs_path, module_dir_name)
@@ -228,7 +238,8 @@ class DocIndex:
                     nav: dict[str, Any] = page_meta.get(rel_to_module, {})
                     # The navigation title (sidebar or table of contents) is canonical;
                     # the H1 or frontmatter title is the fallback.
-                    title = str(nav.get("title") or _extract_title(raw))
+                    heading = _extract_title(raw)
+                    title = str(nav.get("title") or heading)
                     content = _clean_content(raw)
                     url = _build_url(base_url, repo, rel_to_module)
                     page_id = f"{repo}::{rel_to_module}"
@@ -244,6 +255,10 @@ class DocIndex:
                     )
                     self._pages[page_id] = page
                     self._page_list.append(page)
+                    title_keys[page_id] = {_title_key(t) for t in (title, heading) if t}
+
+        self._mark_mirrors(title_keys)
+        self._page_list = [page for page in self._page_list if not page.mirror_of]
 
         if self._page_list:
             corpus = [
@@ -252,6 +267,35 @@ class DocIndex:
             self._bm25 = BM25Okapi(corpus)
 
         self._loaded = True
+
+    def _mark_mirrors(self, title_keys: dict[str, set[str]]) -> None:
+        """Link non-canonical pages to the canonical page with the same title.
+
+        The SAP Help Portal republishes the module documentation from the
+        kyma-project repositories under the same titles. Indexing both copies
+        lets them compete for the same result slot and skews term statistics,
+        so the copy is marked as a mirror of the kyma-project page and left
+        out of the search corpus. It remains readable by its page ID.
+
+        Args:
+            title_keys: Per page ID, the tokenized navigation title and H1 of
+                the page. Both are compared, because a module sidebar may
+                label a page differently from its heading while the copy
+                keeps the heading.
+        """
+        canonical: dict[str, str] = {}
+        for page_id, page in self._pages.items():
+            if page.repo.startswith(_CANONICAL_REPO_PREFIX):
+                for key in title_keys.get(page_id, ()):
+                    canonical.setdefault(key, page_id)
+        for page_id, page in self._pages.items():
+            if page.repo.startswith(_CANONICAL_REPO_PREFIX):
+                continue
+            for key in title_keys.get(page_id, ()):
+                original = canonical.get(key)
+                if original and original != page_id:
+                    page.mirror_of = original
+                    break
 
     def search(self, query: str, top_k: int = 5, module: str = "") -> list[DocPage]:
         """Return the top-ranked pages for *query* using BM25.
@@ -344,8 +388,13 @@ class DocIndex:
 
     @property
     def page_count(self) -> int:
-        """Total number of pages currently held in the index."""
+        """Total number of pages currently held in the index, mirrors included."""
         return len(self._pages)
+
+    @property
+    def searchable_count(self) -> int:
+        """Number of pages in the search corpus (mirrors excluded)."""
+        return len(self._page_list)
 
     @property
     def is_loaded(self) -> bool:

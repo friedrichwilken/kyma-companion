@@ -511,3 +511,66 @@ def test_load_uses_navigation_title_and_doc_type(tmp_path: Path) -> None:
     assert plain is not None
     assert plain.title == "Plain"
     assert plain.doc_type == ""
+
+
+# ---------------------------------------------------------------------------
+# Mirror suppression
+# ---------------------------------------------------------------------------
+
+
+def _write_meta(root: Path, repo: str) -> None:
+    (root / "meta.json").write_text(json.dumps({"repo": repo, "module": root.name}), encoding="utf-8")
+
+
+def test_sap_help_copy_of_module_page_is_not_searched(tmp_path: Path) -> None:
+    """A page from a non-canonical source that shares a title with a kyma-project page is a mirror."""
+    module = tmp_path / "istio"
+    module.mkdir()
+    _write_meta(module, "kyma-project/istio")
+    (module / "README.md").write_text("# Istio Module\n\nThe Istio module is added by default.\n", encoding="utf-8")
+    sap = tmp_path / "btp-cloud-platform"
+    sap.mkdir()
+    _write_meta(sap, "SAP-docs/btp-cloud-platform")
+    (sap / "istio-module.md").write_text("# Istio Module\n\nThe Istio module is added by default.\n", encoding="utf-8")
+    (sap / "regions.md").write_text("# Regions\n\nWhere Kyma runs.\n", encoding="utf-8")
+    for i in range(3):
+        (module / f"filler-{i}.md").write_text(f"# Filler {i}\n\nUnrelated.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+
+    assert index.page_count == 6  # noqa: PLR2004
+    assert index.searchable_count == 5  # noqa: PLR2004
+    results = index.search("istio module default")
+    assert [r.repo for r in results if r.title == "Istio Module"] == ["kyma-project/istio"]
+    mirror = index.read("SAP-docs/btp-cloud-platform::istio-module.md")
+    assert mirror is not None
+    assert mirror.mirror_of == "kyma-project/istio::README.md"
+    # a page without a canonical twin is searched normally
+    assert index.read("SAP-docs/btp-cloud-platform::regions.md") is not None
+    assert any(r.title == "Regions" for r in index.search("regions"))
+
+
+def test_mirror_detected_by_heading_when_navigation_title_differs(tmp_path: Path) -> None:
+    """The sidebar may label a page differently from its H1; the copy still matches on the H1."""
+    module = tmp_path / "istio"
+    module.mkdir()
+    (module / "meta.json").write_text(
+        json.dumps(
+            {
+                "repo": "kyma-project/istio",
+                "pages": {"inject.md": {"title": "Enabling Istio Sidecar Injection", "doc_type": "tutorial"}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    (module / "inject.md").write_text("# Enabling Istio Sidecar Proxy Injection\n\nHow to.\n", encoding="utf-8")
+    sap = tmp_path / "btp-cloud-platform"
+    sap.mkdir()
+    _write_meta(sap, "SAP-docs/btp-cloud-platform")
+    (sap / "inject.md").write_text("# Enabling Istio Sidecar Proxy Injection\n\nHow to.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+    mirror = index.read("SAP-docs/btp-cloud-platform::inject.md")
+    assert mirror is not None
+    assert mirror.mirror_of == "kyma-project/istio::inject.md"
+    assert index.searchable_count == 1
