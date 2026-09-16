@@ -136,7 +136,7 @@ async def search_kyma_documentation(
 
     try:
         search_tool = DocSearchTool(index)
-        docs = await search_tool.arun_documents(query=request.query, top_k=request.top_k)
+        docs = await search_tool.arun_documents(query=request.query, top_k=request.top_k, module=request.module)
         results = [doc.content for doc in docs]
         documents = [
             SearchKymaDocResult(

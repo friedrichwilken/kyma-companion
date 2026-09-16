@@ -35,6 +35,7 @@ from agents.kyma.prompts import REACT_AGENT_INSTRUCTIONS, REACT_AGENT_PROMPT
 from agents.kyma.tools.query import DEPRECATED_API_VERSIONS
 from agents.kyma.tools.search import DocSearchTool, SearchKymaDocTool
 from docs.index import DocIndex
+from docs.modules import module_for_kind
 from services.k8s import IK8sClient
 from utils.logging import get_logger
 from utils.models.factory import IModel
@@ -67,11 +68,18 @@ class UINavigationContext(BaseModel):
     resource_api_version: str = ""
     namespace: str = ""
 
+    @property
+    def module(self) -> str:
+        """The Kyma module (docs source name) the viewed resource belongs to, or ``""``."""
+        return module_for_kind(self.resource_kind)
+
     def as_context_message(self) -> str:
         """Return a human-readable context string to prepend to the user query."""
         parts = []
         if self.resource_kind:
             parts.append(f"Resource kind: {self.resource_kind}")
+        if self.module:
+            parts.append(f"Kyma module: {self.module} (pass it as `module` to search_kyma_doc)")
         if self.resource_name:
             parts.append(f"Resource name: {self.resource_name}")
         if self.resource_api_version:

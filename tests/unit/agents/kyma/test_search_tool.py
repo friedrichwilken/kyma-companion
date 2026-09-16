@@ -30,6 +30,22 @@ def _make_tool(pages: list[DocPage]) -> DocSearchTool:
     return DocSearchTool(mock_index)
 
 
+class TestDocSearchToolModuleScope:
+    """The module argument is passed through to the index."""
+
+    @pytest.mark.asyncio
+    async def test_arun_passes_module_to_index(self) -> None:
+        tool = _make_tool([_make_page(content="Body.")])
+        await tool._arun("sidecar injection", module="istio")
+        tool.index.search.assert_called_once_with("sidecar injection", top_k=5, module="istio")
+
+    @pytest.mark.asyncio
+    async def test_arun_documents_passes_module_to_index(self) -> None:
+        tool = _make_tool([_make_page(content="Body.")])
+        await tool.arun_documents("sinks", top_k=3, module="eventing-manager")
+        tool.index.search.assert_called_once_with("sinks", top_k=3, module="eventing-manager")
+
+
 class TestDocSearchToolFormatting:
     """Formatting of navigation metadata."""
 

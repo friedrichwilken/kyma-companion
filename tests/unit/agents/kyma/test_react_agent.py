@@ -204,3 +204,23 @@ async def test_list_content_is_not_returned_as_python_repr(agent: KymaReActAgent
 
     assert result != broken_repr
     assert result == answer
+
+
+class TestUINavigationContextModule:
+    """The UI context derives the Kyma module from the resource kind."""
+
+    def test_module_and_context_message_for_module_kind(self) -> None:
+        from agents.kyma.react_agent import UINavigationContext
+
+        ctx = UINavigationContext(resource_kind="APIRule", resource_name="my-rule", namespace="default")
+        assert ctx.module == "api-gateway"
+        message = ctx.as_context_message()
+        assert "Resource kind: APIRule" in message
+        assert "Kyma module: api-gateway" in message
+
+    def test_no_module_line_for_kubernetes_kind(self) -> None:
+        from agents.kyma.react_agent import UINavigationContext
+
+        ctx = UINavigationContext(resource_kind="Deployment")
+        assert ctx.module == ""
+        assert "Kyma module" not in ctx.as_context_message()

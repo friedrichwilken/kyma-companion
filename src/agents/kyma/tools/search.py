@@ -20,6 +20,14 @@ class DocSearchArgs(BaseModel):
         description="Search query to find relevant Kyma documentation",
         examples=["Help me get started with kyma", "What are Kyma components?"],
     )
+    module: str = Field(
+        default="",
+        description=(
+            "Optional Kyma module to search in, e.g. 'istio', 'serverless', 'api-gateway', 'eventing-manager', "
+            "'telemetry-manager', 'btp-manager'. Use it when the question is about a resource of that module "
+            "(the UI context names the module). Leave empty for general Kyma questions."
+        ),
+    )
 
 
 def page_id(page: DocPage) -> str:
@@ -83,32 +91,41 @@ class DocSearchTool(BaseTool):
         super().__init__()
         self._index = index
 
-    def _run(self, query: str) -> str:
+    @property
+    def index(self) -> DocIndex:
+        """The documentation index this tool searches."""
+        return self._index
+
+    def _run(self, query: str, module: str = "") -> str:
         """Synchronous execution -- not used; async path is preferred.
 
         Args:
             query: The search query string.
+            module: Optional module to restrict the search to.
 
         Returns:
             Empty string (sync path not implemented).
         """
         return ""
 
-    async def _arun(self, query: str) -> str:
+    async def _arun(self, query: str, module: str = "") -> str:
         """Search Kyma documentation asynchronously and return formatted results.
 
         Args:
             query: The search query string.
+            module: Optional module to restrict the search to. When no page of
+                that module matches, the search falls back to all modules.
 
         Returns:
             Formatted documentation pages separated by horizontal rules,
             or a message indicating no results were found.
         """
-        docs = self._index.search(query, top_k=DEFAULT_TOP_K)
+        docs = self._index.search(query, top_k=DEFAULT_TOP_K, module=module)
         logger.info(
             "doc_search",
             extra={
                 "query": query,
+                "module_filter": module,
                 "result_count": len(docs),
                 "results": [{"title": d.title, "url": d.url, "module": d.module, "path": d.path} for d in docs],
             },
@@ -117,17 +134,18 @@ class DocSearchTool(BaseTool):
             return "No relevant documentation found."
         return "\n\n---\n\n".join(_format_page(d) for d in docs)
 
-    async def arun_documents(self, query: str, top_k: int = DEFAULT_TOP_K) -> list[DocPage]:
+    async def arun_documents(self, query: str, top_k: int = DEFAULT_TOP_K, module: str = "") -> list[DocPage]:
         """Retrieve raw DocPage objects for the given query.
 
         Args:
             query: The search query string.
             top_k: Maximum number of documents to return.
+            module: Optional module to restrict the search to.
 
         Returns:
             List of DocPage objects ordered by relevance descending.
         """
-        return self._index.search(query, top_k=top_k)
+        return self._index.search(query, top_k=top_k, module=module)
 
     async def arun_list(self, query: str, top_k: int = DEFAULT_TOP_K) -> list[str]:
         """Retrieve document content strings for the given query.

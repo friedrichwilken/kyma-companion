@@ -196,6 +196,10 @@ class SearchKymaDocRequest(BaseModel):
         ge=1,
         le=50,
     )
+    module: str = Field(
+        default="",
+        description="Optional Kyma module (docs source name) to restrict the search to, e.g. 'istio'",
+    )
 
 
 class SearchKymaDocResult(BaseModel):
