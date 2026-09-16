@@ -62,6 +62,7 @@ class TestDocSearchToolArun:
         assert result.startswith("### Kyma Functions")
         assert "Source: https://kyma.io/docs/functions" in result
         assert "Module: serverless" in result
+        assert "ID: kyma-project/kyma::docs/test.md" in result
         assert "Functions are short-lived." in result
 
     @pytest.mark.asyncio

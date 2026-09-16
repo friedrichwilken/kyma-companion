@@ -31,16 +31,18 @@ def _make_tool(pages: list[DocPage]) -> DocSearchTool:
     "pages,expected_output",
     [
         # Single document case
-        ([_make_page(content="Single document content")], "### Untitled\n\nSingle document content"),
+        ([_make_page(content="Single document content")], "### Untitled\nID: repo::path.md\n\nSingle document content"),
         # Multiple documents case
         (
             [_make_page(content="First doc"), _make_page(content="Second doc")],
-            "### Untitled\n\nFirst doc\n\n---\n\n### Untitled\n\nSecond doc",
+            "### Untitled\nID: repo::path.md\n\nFirst doc\n\n---\n\n### Untitled\nID: repo::path.md\n\nSecond doc",
         ),
         # Three documents case
         (
             [_make_page(content="Doc 1"), _make_page(content="Doc 2"), _make_page(content="Doc 3")],
-            "### Untitled\n\nDoc 1\n\n---\n\n### Untitled\n\nDoc 2\n\n---\n\n### Untitled\n\nDoc 3",
+            "### Untitled\nID: repo::path.md\n\nDoc 1\n\n---\n\n"
+            "### Untitled\nID: repo::path.md\n\nDoc 2\n\n---\n\n"
+            "### Untitled\nID: repo::path.md\n\nDoc 3",
         ),
         # Empty list - should return fallback message
         ([], "No relevant documentation found."),
@@ -52,12 +54,14 @@ def _make_tool(pages: list[DocPage]) -> DocSearchTool:
                 _make_page(content="Content with special chars: !@#$"),
                 _make_page(content="Unicode: αβγ"),
             ],
-            "Content with special chars: !@#$\n\n---\n\nUnicode: αβγ",
+            "### Untitled\nID: repo::path.md\n\nContent with special chars: !@#$\n\n---\n\n"
+            "### Untitled\nID: repo::path.md\n\nUnicode: αβγ",
         ),
         # Documents with newlines
         (
             [_make_page(content="Multi\nline\ncontent"), _make_page(content="Another\ndocument")],
-            "### Untitled\n\nMulti\nline\ncontent\n\n---\n\n### Untitled\n\nAnother\ndocument",
+            "### Untitled\nID: repo::path.md\n\nMulti\nline\ncontent\n\n---\n\n"
+            "### Untitled\nID: repo::path.md\n\nAnother\ndocument",
         ),
     ],
 )

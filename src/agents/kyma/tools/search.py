@@ -22,8 +22,20 @@ class DocSearchArgs(BaseModel):
     )
 
 
+def page_id(page: DocPage) -> str:
+    """Return the identifier under which ``DocIndex.read`` finds *page*.
+
+    Args:
+        page: The page to identify.
+
+    Returns:
+        The ``<repo>::<path>`` identifier.
+    """
+    return f"{page.repo}::{page.path}"
+
+
 def _format_page(page: DocPage) -> str:
-    """Format a single DocPage into a human-readable block with title, source URL, module, and content.
+    """Format a single DocPage into a human-readable block with title, source URL, module, ID, and content.
 
     Args:
         page: A DocPage with title, url, module, and content fields.
@@ -36,6 +48,7 @@ def _format_page(page: DocPage) -> str:
         lines.append(f"Source: {page.url}")
     if page.module:
         lines.append(f"Module: {page.module}")
+    lines.append(f"ID: {page_id(page)}")
     lines.append("")
     lines.append(page.content)
     return "\n".join(lines)
@@ -95,10 +108,7 @@ class DocSearchTool(BaseTool):
             extra={
                 "query": query,
                 "result_count": len(docs),
-                "results": [
-                    {"title": d.title, "url": d.url, "module": d.module, "path": d.path}
-                    for d in docs
-                ],
+                "results": [{"title": d.title, "url": d.url, "module": d.module, "path": d.path} for d in docs],
             },
         )
         if not docs:
