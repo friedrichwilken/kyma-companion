@@ -50,11 +50,30 @@ questions, is the next experiment.
   and the REST endpoint accept a `module` filter.
 - The prompt asks for a "Sources:" list of retrieved page URLs.
 
+## Curation status
+
+The curator is on the branch and its deterministic half has been run on the fetched corpus:
+`python src/main.py curate` finds 134 residue files. They are the files the resolvers left out
+and copied to `_residue/<source>/`: 53 SAP Help pages outside the Kyma subtrees that mention Kyma,
+61 tutorials without a Kyma path or tag, and 20 module pages that no sidebar links (for example
+`telemetry-manager/docs/user/03-traces.md`, six cloud-manager backup tutorials,
+`istio/docs/user/00-15-overview-istio-setup.md`). The LLM classification of those 134 files
+(include, exclude, unsure with a rationale) has not been run: it needs SAP AI Core access through
+`gen_ai_hub`, which is not available on this machine. Run it where the AI Core config exists:
+
+```bash
+cd doc_indexer
+CURATOR_RESIDUE_TO_AGENT=true DOCS_PATH=<fetched docs dir> python src/main.py curate
+python src/main.py report --decisions curation/decisions.jsonl --out /tmp/curation-report.md
+```
+
+`eval-classifier` still evaluates a stub classifier that always answers "include"; the real
+classifier is not wired into it yet.
+
 ## Not done
 
 - No end-to-end A2A evaluation run on this branch yet. Run `tests/blackbox/run_eval_10x.sh` against
   a deployment built from this branch to compare with the 93.86% BM25 mean and the 95.17% RAG mean.
-- The curator's LLM classification has not been exercised on the new orphan lists.
 - Phase 1 of the curator design (`docs_sources.yaml` and a committed lockfile with a CI check) is
   replaced here by the resolver config inside `docs_sources.json` and the generated `manifest.json`;
   a diff-and-PR workflow on top of the manifest does not exist yet.
