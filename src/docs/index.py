@@ -63,16 +63,70 @@ def _build_url(base_url: str, repo: str, rel_path: str) -> str:
     return f"{prefix}/{path_part}"
 
 
+_HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+_HTML_TAG_RE = re.compile(r"</?[a-zA-Z][^>]*>")
+_MD_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
+_MD_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+_TOKEN_RE = re.compile(r"[a-z0-9]+")
+
+# Very common English function words that carry no retrieval signal. Kept
+# deliberately small: domain words such as "module" or "cluster" must stay.
+_STOPWORDS = frozenset(
+    {
+        "a", "an", "and", "are", "as", "at", "be", "by", "can", "do", "does", "for", "from", "how",
+        "i", "if", "in", "is", "it", "its", "my", "of", "on", "or", "that", "the", "this", "to",
+        "was", "what", "when", "which", "with", "you", "your",
+    }
+)  # fmt: skip
+
+
+def _clean_content(text: str) -> str:
+    """Strip frontmatter and HTML comments from Markdown text.
+
+    This is the text handed to the agent, so the Markdown structure itself is
+    kept; only invisible or non-content blocks are removed.
+
+    Args:
+        text: Raw Markdown text as read from disk.
+
+    Returns:
+        Markdown text without YAML frontmatter and HTML comments.
+    """
+    return _HTML_COMMENT_RE.sub("", _strip_frontmatter(text)).strip("\n")
+
+
+def _index_text(text: str) -> str:
+    """Reduce cleaned Markdown to the text worth indexing.
+
+    Link and image targets, HTML tags and Markdown emphasis contribute tokens
+    such as ``https``, ``github`` or ``md`` that match nothing meaningful, so
+    they are dropped while link labels and code identifiers are kept.
+
+    Args:
+        text: Cleaned Markdown text (see :func:`_clean_content`).
+
+    Returns:
+        Plain text suitable for :func:`_tokenize`.
+    """
+    text = _MD_IMAGE_RE.sub(r"\1", text)
+    text = _MD_LINK_RE.sub(r"\1", text)
+    return _HTML_TAG_RE.sub(" ", text)
+
+
 def _tokenize(text: str) -> list[str]:
-    """Tokenize text for BM25 indexing.
+    """Tokenize text for BM25 indexing and querying.
+
+    Lowercases, splits on anything that is not a letter or digit (so
+    ``Kyma?``, a back-ticked ``APIRule`` and ``**Istio**`` become ``kyma``,
+    ``apirule`` and ``istio``), and drops a small set of English stopwords.
 
     Args:
         text: Input text to tokenize.
 
     Returns:
-        List of lowercase whitespace-split tokens.
+        List of lowercase alphanumeric tokens.
     """
-    return text.lower().split()
+    return [tok for tok in _TOKEN_RE.findall(text.lower()) if tok not in _STOPWORDS]
 
 
 # Number of times title tokens are repeated to weight them higher than body tokens.
@@ -144,8 +198,9 @@ class DocIndex:
                         continue
                     full_path = os.path.join(dirpath, filename)
                     rel_to_module = os.path.relpath(full_path, module_dir)
-                    content = self._read_file(full_path)
-                    title = _extract_title(content, meta)
+                    raw = self._read_file(full_path)
+                    title = _extract_title(raw, meta)
+                    content = _clean_content(raw)
                     url = _build_url(base_url, repo, rel_to_module)
                     page_id = f"{repo}::{rel_to_module}"
                     page = DocPage(
@@ -160,7 +215,9 @@ class DocIndex:
                     self._page_list.append(page)
 
         if self._page_list:
-            corpus = [_tokenize(page.title) * _TITLE_WEIGHT + _tokenize(page.content) for page in self._page_list]
+            corpus = [
+                _tokenize(page.title) * _TITLE_WEIGHT + _tokenize(_index_text(page.content)) for page in self._page_list
+            ]
             self._bm25 = BM25Okapi(corpus)
 
         self._loaded = True

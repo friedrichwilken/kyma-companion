@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from docs import DocIndex, DocPage
+from docs.index import _index_text, _tokenize
 
 # Number of .md files created by the docs_dir fixture.
 FIXTURE_PAGE_COUNT = 4
@@ -348,3 +349,61 @@ def test_multi_word_title_outranks_body_mention(tmp_path: Path) -> None:
     index.load()
     results = index.search("Kyma modules")
     assert results[0].title == "Kyma Modules"
+
+
+# ---------------------------------------------------------------------------
+# Tokenization and content cleaning
+# ---------------------------------------------------------------------------
+
+
+def test_tokenize_strips_punctuation_and_markdown() -> None:
+    """Punctuation and Markdown emphasis do not leak into tokens."""
+    assert _tokenize("What is Kyma?") == ["kyma"]
+    assert _tokenize("Use `APIRule` and **Istio**, then svc.cluster.local!") == [
+        "use",
+        "apirule",
+        "istio",
+        "then",
+        "svc",
+        "cluster",
+        "local",
+    ]
+
+
+def test_tokenize_keeps_identifiers_with_digits() -> None:
+    """Version-like identifiers stay a single token."""
+    assert _tokenize("eventing v1alpha2 sink") == ["eventing", "v1alpha2", "sink"]
+
+
+def test_index_text_drops_link_targets_and_html() -> None:
+    """Link labels survive; URLs, image targets and HTML tags do not."""
+    text = "See [the guide](https://github.com/x/y.md) and ![alt text](img.png)<br>done"
+    assert _tokenize(_index_text(text)) == ["see", "guide", "alt", "text", "done"]
+
+
+def test_load_strips_frontmatter_and_html_comments(tmp_path: Path) -> None:
+    """Frontmatter and HTML comments are removed from the page content handed to the agent."""
+    root = tmp_path / "tutorials"
+    root.mkdir()
+    (root / "page.md").write_text(
+        "---\ntitle: Deploy to Kyma\ntags: [kyma]\n---\n<!-- loio abc123 -->\n# Deploy to Kyma\n\nBody text.\n",
+        encoding="utf-8",
+    )
+    index = DocIndex(str(tmp_path))
+    index.load()
+    page = index.read("tutorials::page.md")
+    assert page is not None
+    assert page.content == "# Deploy to Kyma\n\nBody text."
+
+
+def test_search_ignores_punctuation_in_query(tmp_path: Path) -> None:
+    """A query with trailing punctuation matches the same page as the bare words."""
+    root = tmp_path / "kyma"
+    root.mkdir()
+    (root / "overview.md").write_text("# Kyma Overview\n\nKyma is a runtime.\n", encoding="utf-8")
+    (root / "vs.md").write_text("# Editors\n\nInstall the VS Code extension.\n", encoding="utf-8")
+    for i in range(3):
+        (root / f"filler-{i}.md").write_text(f"# Filler {i}\n\nUnrelated text.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+    assert index.search("What is Kyma?")[0].title == "Kyma Overview"
