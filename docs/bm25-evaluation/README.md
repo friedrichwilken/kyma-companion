@@ -87,7 +87,7 @@ searches. The tokenizer and title fixes below bring the Istio Module page to ran
 
 ## Doc search log analysis
 
-145 search calls were logged across all 10 runs. Full logs: [`doc_search_logs.json`](doc_search_logs.json).
+145 search calls were logged across all 10 runs. Full logs: `doc_search_logs.json` on branch `docs/bm25-eval-logs`.
 
 ### Summary statistics
 
@@ -225,6 +225,6 @@ not retrieved. Re-run the A2A evaluation on this branch to confirm the fix end t
 | File | Description |
 |------|-------------|
 | `README.md` | This document |
-| `doc_search_logs.json` | All 145 `doc_search` log entries (query + results, no sensitive data) |
+| `doc_search_logs.json` | All 145 `doc_search` log entries; moved to branch `docs/bm25-eval-logs` with the run logs |
 | run logs | The full A2A output of the 10 BM25 runs (70,000 lines) lives on branch `docs/bm25-eval-logs` of the fork, not here |
 | `retrieval-eval-2026-09-16.md` | Retrieval eval (recall@k, MRR) before and after the index fixes |
