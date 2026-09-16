@@ -407,3 +407,45 @@ def test_search_ignores_punctuation_in_query(tmp_path: Path) -> None:
     index = DocIndex(str(tmp_path))
     index.load()
     assert index.search("What is Kyma?")[0].title == "Kyma Overview"
+
+
+# ---------------------------------------------------------------------------
+# Mirror-page de-duplication
+# ---------------------------------------------------------------------------
+
+
+def test_search_collapses_pages_with_the_same_title(tmp_path: Path) -> None:
+    """Only the best-scoring page of a group sharing a title is returned, and the freed slot goes to another page."""
+    module_repo = tmp_path / "eventing-manager"
+    mirror_repo = tmp_path / "sap-help"
+    module_repo.mkdir()
+    mirror_repo.mkdir()
+    (module_repo / "README.md").write_text(
+        "# Eventing Module\n\nEventing delivers events to subscribers.\n", encoding="utf-8"
+    )
+    (mirror_repo / "eventing-module.md").write_text(
+        "# Eventing Module\n\nEventing delivers events to subscribers in Kyma.\n", encoding="utf-8"
+    )
+    (module_repo / "sink.md").write_text(
+        "# Subscription Sink\n\nThe sink receives events for subscribers.\n", encoding="utf-8"
+    )
+    for i in range(5):
+        (module_repo / f"filler-{i}.md").write_text(f"# Filler {i}\n\nUnrelated text.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+
+    results = index.search("events subscribers", top_k=2)
+    titles = [r.title for r in results]
+    assert titles.count("Eventing Module") == 1
+    assert titles == ["Eventing Module", "Subscription Sink"]
+
+
+def test_search_does_not_collapse_untitled_pages(tmp_path: Path) -> None:
+    """Pages without a title are all kept."""
+    root = tmp_path / "notes"
+    root.mkdir()
+    (root / "a.md").write_text("Kyma runtime notes, first file.\n", encoding="utf-8")
+    (root / "b.md").write_text("Kyma runtime notes, second file.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+    assert len(index.search("kyma runtime notes")) == 2  # noqa: PLR2004

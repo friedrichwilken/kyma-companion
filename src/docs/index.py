@@ -225,6 +225,10 @@ class DocIndex:
     def search(self, query: str, top_k: int = 5, module: str = "") -> list[DocPage]:
         """Return the top-ranked pages for *query* using BM25.
 
+        Pages that share a title are collapsed to the highest-scoring one, so
+        a page and its mirror in another source (for example a module page
+        and its SAP Help copy) do not both occupy a result slot.
+
         Args:
             query: Free-text search query.
             top_k: Maximum number of results to return.
@@ -241,17 +245,43 @@ class DocIndex:
 
         tokens = _tokenize(query)
         scores: list[float] = self._bm25.get_scores(tokens).tolist()
-        indexed = list(enumerate(scores))
+        ranked = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
 
         if module:
-            filtered = [(i, s) for i, s in indexed if self._page_list[i].module.lower() == module.lower()]
+            filtered = [(i, s) for i, s in ranked if self._page_list[i].module.lower() == module.lower()]
             if filtered:
-                filtered.sort(key=lambda x: x[1], reverse=True)
-                return [self._page_list[i] for i, _ in filtered[:top_k]]
+                return self._unique_by_title(filtered, top_k)
             # Fall back to global ranking when filter yields nothing.
 
-        indexed.sort(key=lambda x: x[1], reverse=True)
-        return [self._page_list[i] for i, _ in indexed[:top_k]]
+        return self._unique_by_title(ranked, top_k)
+
+    def _unique_by_title(self, ranked: list[tuple[int, float]], top_k: int) -> list[DocPage]:
+        """Take pages from *ranked* (descending score) until *top_k*, skipping repeated titles.
+
+        Titles are compared after tokenization, so differences in case or
+        punctuation do not keep two copies of the same page apart. Untitled
+        pages are never collapsed.
+
+        Args:
+            ranked: ``(page index, score)`` pairs in descending score order.
+            top_k: Maximum number of pages to return.
+
+        Returns:
+            Up to *top_k* distinct-title ``DocPage`` objects.
+        """
+        seen: set[str] = set()
+        results: list[DocPage] = []
+        for i, _score in ranked:
+            page = self._page_list[i]
+            key = " ".join(_tokenize(page.title))
+            if key:
+                if key in seen:
+                    continue
+                seen.add(key)
+            results.append(page)
+            if len(results) == top_k:
+                break
+        return results
 
     def read(self, page_id: str) -> DocPage | None:
         """Return the page identified by *page_id*, or ``None`` if not found.
