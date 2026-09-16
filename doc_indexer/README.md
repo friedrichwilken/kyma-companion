@@ -174,3 +174,10 @@ the image build switches to `pinakes resolve --from-manifest doc_indexer/manifes
 <DOCS_PATH>`, which reproduces the committed manifest byte for byte without needing network resolution
 logic at build time. Until then, `pinakes.yaml`, `manifest.json`, `residue.jsonl` and `duplicates.jsonl`
 are curated independently of `docs_sources.json`; keeping both in sync is manual.
+
+### Where the BM25 evaluation write-ups live
+
+The write-ups documenting the switch from HANA/RAG to the in-process BM25 `DocIndex` (evaluation
+methodology, the corpus and docs-stack fixes that closed the gap with RAG, and the retrieval eval
+numbers before and after) are not kept on this branch — evaluation history and evidence live on the
+branch `docs/bm25-eval-logs`, alongside the raw run logs and search-query logs they were built from.
