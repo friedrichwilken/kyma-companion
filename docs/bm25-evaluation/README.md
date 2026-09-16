@@ -72,11 +72,16 @@ RAG would catch -- see log analysis below for candidates.
 
 ### Note on test-question-23
 
-`test-question-23` fails in every single BM25 run (3 attempts each). It also fails in the
-earlier local run before the 10-run series started. This scenario involves complex multi-error
-cluster state (image pull errors, Subscription validation errors, scheduler errors) and may
-be flaky independent of the search backend. It should be investigated separately to determine
-whether it fails on RAG as well.
+`test-question-23` fails in every single BM25 run (3 attempts each). It is the scenario
+"How can I use Istio in Kyma?" with the single required expectation "points out that Istio comes
+preinstalled in Kyma". The RAG baseline (`tests/blackbox/baseline_metrics.json`) passes it.
+
+This is a retrieval regression, not a flaky test: both the Istio module README
+(`istio/docs/user/README.md`) and its SAP Help copy (`istio-module-26ffe00.md`) state that the
+module "is automatically added when you create a Kyma runtime instance", both are in the corpus,
+and neither appeared in the top 5 for the query "How to use Istio in Kyma" in any of the 33 logged
+searches. The tokenizer and title fixes below bring the Istio Module page to rank 3; see
+[`retrieval-eval-2026-09-16.md`](retrieval-eval-2026-09-16.md).
 
 ---
 
@@ -104,35 +109,40 @@ loading the docs artifact, which means:
 - The agent cannot scope searches to a specific Kyma module (e.g. "search only in Istio docs")
 - Log entries show `"module": ""` for all 725 results
 
-**Root cause to investigate**: how `DocPage` objects are constructed when loading the artifact --
-check whether the `module` field is written to the artifact JSON and whether it is read back.
+**Root cause (found)**: `DocIndex` reads an optional `meta.json` per source directory, but the
+fetcher never wrote one. The same gap left every `url` a bare relative path
+(`btp-cloud-platform/docs/...`) instead of a link. The fetcher now writes `meta.json` with the
+repo slug, module (source name), a base URL pinned to the fetched commit, and the commit itself.
 
 ### Finding 2: Duplicate results in 68% of searches
 
-99 out of 145 search calls return at least one duplicate title in the top-5 results. Example:
+99 out of 145 search calls return at least one repeated title in the top-5 results. Example:
 
 ```
 query: "expose endpoint using Kyma APIRule"
 results:
-  -> Expose and Secure Workloads
-  -> Expose and Secure Workloads    <-- duplicate
+  -> Expose and Secure Workloads          (api-gateway/docs/user/expose-workloads/README.md)
+  -> Expose and Secure Workloads          (btp-cloud-platform/docs/30-development/expose-and-secure-workloads-19e332b.md)
   -> Deploy the SAPUI5 Frontend in SAP BTP, Kyma Runtime
   -> Expose a Function Using the APIRule Custom Resource
   -> Expose and Secure a Workload with OAuth2 Proxy ...
 ```
 
-The same page appears as multiple chunks (BM25 scores each chunk independently). The agent
-receives repeated content, wasting context window and potentially confusing the LLM.
+The index holds whole pages, not chunks, and no search ever returned the same URL twice. The
+repeats are the same page in two sources: the module repository on kyma-project and its copy in
+the SAP Help repository (`btp-cloud-platform`). The corpus has 207 title groups covering 461 pages
+this way. The agent receives the same content twice, wasting context window.
 
-**Fix**: de-duplicate results by URL (or title) after scoring, keeping only the highest-scored
-chunk per page. This is a one-liner in `DocIndex.search()`.
+**Fix (applied)**: collapse results by tokenized title while walking the ranked list, keeping the
+highest-scoring copy. De-duplicating by URL, as first proposed, would not have removed anything.
 
 ### Finding 3: Empty titles for two query patterns
 
 "Kyma vs Cloud Foundry differences" and "Kyma vs other Kubernetes environments hyperscalers
 differences" consistently return results with empty titles (22 and 11 empty titles respectively
-across all runs). These are likely docs without a proper H1 header or with a frontmatter-only
-title that is not being extracted.
+across all runs). These are SAP tutorials (`btp-dev-guidance`) that carry the title in YAML frontmatter and start
+with an H2; the title extractor only looked for an H1. It now falls back to the frontmatter
+`title` key, which leaves 2 untitled pages in the corpus instead of 14.
 
 ---
 
@@ -140,38 +150,31 @@ title that is not being extracted.
 
 Listed roughly by expected impact / ease of implementation.
 
-### 1. De-duplicate results by URL (high impact, trivial to implement)
+### 0. Root causes found in the index itself (applied on this branch)
 
-In `DocIndex.search()`, after sorting by score, filter out pages with duplicate URLs:
+The log analysis above pointed at symptoms; reading `DocIndex` found the causes. Two of them are
+outright bugs and explain most of the gap to RAG:
 
-```python
-seen_urls: set[str] = set()
-unique: list[tuple[int, float]] = []
-for i, s in indexed[:top_k * 3]:  # over-fetch to have enough after dedup
-    url = self._page_list[i].url
-    if url not in seen_urls:
-        seen_urls.add(url)
-        unique.append((i, s))
-    if len(unique) == top_k:
-        break
-return [self._page_list[i] for i, _ in unique]
-```
+- **Tokenizer kept punctuation and Markdown.** `text.lower().split()` made `Kyma?`, `` `APIRule` ``
+  and `**Istio**` distinct, rare, high-IDF tokens. "Kyma vs Cloud Foundry" matched "VS Code" in the
+  MCP server pages. Fixed: alphanumeric tokenization, small stopword list, frontmatter and HTML
+  comments stripped from content, link targets and HTML tags dropped from the indexed text.
+- **Title weighting was broken.** `page.title * 3` produced `Kyma ModulesKyma ModulesKyma Modules`,
+  so multi-word titles got no boost and garbage tokens. Fixed: repeat the token list, not the string.
+- **Retrieval is deterministic.** Every one of the 16 distinct queries returned exactly one result
+  set across all 10 runs. The run-to-run variance in the table above is LLM noise, not retrieval.
 
-This should immediately reduce the wasted context window and likely improve scores on queries
-that currently get 2-3 unique docs instead of 5.
+### 1. De-duplicate results (applied)
 
-### 2. Fix module field population (medium impact, easy to implement)
+See Finding 2. Same-title pages are collapsed at search time.
 
-Investigate the artifact loading path to ensure `DocPage.module` is populated. Once fixed,
-the agent can use module-scoped search for Kyma-specific queries, reducing noise from
-unrelated modules.
+### 2. Module field population (applied)
 
-### 3. Fix empty-title docs (low-medium impact)
+See Finding 1. `meta.json` is now written by the fetcher; module-scoped search works.
 
-Docs without H1 titles return empty title strings. Options:
-- Fall back to filename or path as title during indexing
-- Use frontmatter `title:` field if present
-- Skip titleless chunks entirely (they may be low-quality)
+### 3. Empty-title docs (applied)
+
+See Finding 3. Frontmatter `title` is used when there is no H1.
 
 ### 4. Expose BM25 scores in results (observability)
 
@@ -196,11 +199,24 @@ HANA vector DB is already available. A hybrid approach would:
 This is the natural next step if the 1.3pp gap matters for production. Worth doing after
 fixes 1-3 are in place, to isolate the contribution of each improvement.
 
-### 7. Investigate test-question-23 independently
+### 7. test-question-23 (resolved as a retrieval regression)
 
-Determine whether this scenario also fails on RAG (by checking CI run logs for failed
-scenarios). If it fails on both, it is a flaky test unrelated to the search backend and
-should be fixed or marked as known-flaky separately.
+See the note above. The scenario passes on RAG and fails on BM25 because the Istio module page was
+not retrieved. Re-run the A2A evaluation on this branch to confirm the fix end to end.
+
+### 8. Next candidates
+
+- **Corpus scoping.** 2064 of 2584 pages come from `btp-cloud-platform` (`docs/*` matches every
+  file) and 53% of all returned results came from there. Restrict it to the Kyma section of its
+  table of contents, as proposed in `docs/doc-indexer-improvement-options.md`.
+- **Section-level indexing.** Long overview pages lose to short pages under BM25 length
+  normalisation ("What is Kyma?" returns Kyma CLI command pages). Index H2 sections, return the
+  page. Alternatively tune `b` (length normalisation) downwards and measure.
+- **Snippets instead of full pages.** Search returns five full pages. With page IDs now in the
+  output, `read_kyma_doc` could fetch the full text on demand. `read_kyma_doc` and
+  `list_kyma_docs` exist but are not bound into the agent; decide whether to bind or delete them.
+- **Grow the eval set from the logs.** The 16 logged agent queries are real callers; add them with
+  expected pages. Fix the query-set issues listed in `retrieval-eval-2026-09-16.md`.
 
 ---
 
@@ -211,3 +227,4 @@ should be fixed or marked as known-flaky separately.
 | `README.md` | This document |
 | `doc_search_logs.json` | All 145 `doc_search` log entries (query + results, no sensitive data) |
 | `run-1-*.txt` through `run-10-*.txt` | Full A2A evaluation output for each of the 10 BM25 runs |
+| `retrieval-eval-2026-09-16.md` | Retrieval eval (recall@k, MRR) before and after the index fixes |
