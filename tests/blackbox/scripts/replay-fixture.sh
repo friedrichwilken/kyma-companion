@@ -295,6 +295,7 @@ for doc in docs:
         'storage': doc.get('spec', {}).get('resources', {}).get('requests', {}).get('storage', '1Gi'),
         'storageClassName': doc.get('spec', {}).get('storageClassName', 'standard'),
         'accessModes': doc.get('spec', {}).get('accessModes', ['ReadWriteOnce']),
+        'originalPhase': doc.get('status', {}).get('phase', 'Pending'),
     })
 print(json.dumps(pvcs))
 PYEOF
@@ -796,9 +797,10 @@ for pvc in pvcs:
     )
     actual_uid = r2.stdout.strip() or pv_uid
 
+    pvc_phase = pvc.get('originalPhase', 'Bound')
     pvc_status = json.dumps({
         'status': {
-            'phase': 'Bound',
+            'phase': pvc_phase,
             'accessModes': access_modes,
             'capacity': {'storage': storage},
         }
@@ -811,7 +813,7 @@ for pvc in pvcs:
     if r3.returncode != 0:
         print(f"  WARNING: PVC {name} status patch: {r3.stderr.strip()}", file=sys.stderr)
     else:
-        print(f"  PVC {name} -> Bound ok", file=sys.stderr)
+        print(f"  PVC {name} -> {pvc_phase} ok", file=sys.stderr)
 PYEOF
 else
     log "No PVCs found — skipping PV/PVC setup."
