@@ -6,7 +6,7 @@
 #   run-N-<timestamp>.doc_search.json — extracted doc_search log entries for this run
 #   run-N-<timestamp>.metrics.json    — structured metrics report
 #
-# The docs artifact is built once before the first run from doc_indexer/manifest.json.
+# Uses the pre-built docs artifact at doc_indexer/artifact/ (checked into the repo).
 # The app server is started/stopped for every run with a clean state.
 #
 # Usage:
@@ -25,7 +25,8 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 RESULTS_DIR="$SCRIPT_DIR/eval_results"
 CONFIG_JSON="$REPO_ROOT/config/config.json"
 MAIN_CONFIG_JSON="/Users/I549741/claude/kyma/kyma-companion/main/config/config.json"
-DOCS_ARTIFACT="${DOCS_PATH:-/tmp/kyma-docs}"
+# Use the artifact already checked in under doc_indexer/artifact/ (DOCS_PATH overrides if set)
+DOCS_ARTIFACT="${DOCS_PATH:-$REPO_ROOT/doc_indexer/artifact}"
 
 mkdir -p "$RESULTS_DIR"
 
@@ -43,20 +44,26 @@ if [[ ! -f "$CONFIG_JSON" ]]; then
     fi
 fi
 
+MAIN_CONFIG_DIR="$(dirname "$MAIN_CONFIG_JSON")"
+CONFIG_DIR="$(dirname "$CONFIG_JSON")"
+for f in encryption_key.pem resource_relations.json api_resources.json; do
+    if [[ ! -f "$CONFIG_DIR/$f" ]] && [[ -f "$MAIN_CONFIG_DIR/$f" ]]; then
+        echo "=== Copying $f from main worktree ==="
+        cp "$MAIN_CONFIG_DIR/$f" "$CONFIG_DIR/$f"
+    fi
+done
+
 # ---------------------------------------------------------------------------
-# Build the docs artifact once (idempotent — skipped if already present)
+# Validate docs artifact
 # ---------------------------------------------------------------------------
 
-if [[ -d "$DOCS_ARTIFACT" ]]; then
-    echo "=== Docs artifact already at $DOCS_ARTIFACT — skipping build ==="
-else
-    echo "=== Building docs artifact -> $DOCS_ARTIFACT ==="
-    (
-        cd "$REPO_ROOT/doc_indexer"
-        poetry run pinakes resolve --from-manifest manifest.json --artifact "$DOCS_ARTIFACT"
-    )
-    echo "=== Docs artifact built ==="
+if [[ ! -d "$DOCS_ARTIFACT" ]]; then
+    echo "ERROR: docs artifact not found at $DOCS_ARTIFACT" >&2
+    echo "  Set DOCS_PATH to an existing artifact directory, or run:" >&2
+    echo "  pinakes resolve  (inside doc_indexer/)" >&2
+    exit 1
 fi
+echo "=== Using docs artifact at $DOCS_ARTIFACT ==="
 
 # ---------------------------------------------------------------------------
 # Helper: start the app server, write logs to server_log, return PID
@@ -67,7 +74,7 @@ start_server() {
     (
         cd "$REPO_ROOT"
         PYTHONUNBUFFERED=1 LOG_FORMAT=json DOCS_PATH="$DOCS_ARTIFACT" CONFIG_PATH="$CONFIG_JSON" \
-            poetry run uvicorn src.main:app --host 0.0.0.0 --port 8000 --log-config /dev/null
+            poetry run fastapi run src/main.py --port 8000
     ) > "$server_log" 2>&1 &
     echo $!
 }
@@ -77,7 +84,7 @@ start_server() {
 # ---------------------------------------------------------------------------
 
 wait_for_server() {
-    local max_wait=90
+    local max_wait=120
     local elapsed=0
     while [[ $elapsed -lt $max_wait ]]; do
         if curl -sf http://localhost:8000/healthz > /dev/null 2>&1; then
