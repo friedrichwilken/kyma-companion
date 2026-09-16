@@ -198,6 +198,15 @@ class SearchKymaDocRequest(BaseModel):
     )
 
 
+class SearchKymaDocResult(BaseModel):
+    """A single search result with title, URL, module, and content."""
+
+    title: str = Field(..., description="Document title")
+    url: str = Field(..., description="Source URL")
+    module: str | None = Field(None, description="Kyma module name")
+    content: str = Field(..., description="Document content")
+
+
 class SearchKymaDocResponse(BaseModel):
     """Response model for Kyma documentation search."""
 

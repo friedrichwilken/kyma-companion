@@ -5,9 +5,12 @@ from pydantic import BaseModel, Field, PrivateAttr
 
 from docs.index import DocIndex
 from docs.types import DocPage
+from utils.logging import get_logger
 
 DEFAULT_TOP_K: int = 5
 SEARCH_KYMA_DOC_TOOL_NAME: str = "search_kyma_doc"
+
+logger = get_logger(__name__)
 
 
 class DocSearchArgs(BaseModel):
@@ -87,6 +90,17 @@ class DocSearchTool(BaseTool):
             or a message indicating no results were found.
         """
         docs = self._index.search(query, top_k=DEFAULT_TOP_K)
+        logger.info(
+            "doc_search",
+            extra={
+                "query": query,
+                "result_count": len(docs),
+                "results": [
+                    {"title": d.title, "url": d.url, "module": d.module, "path": d.path}
+                    for d in docs
+                ],
+            },
+        )
         if not docs:
             return "No relevant documentation found."
         return "\n\n---\n\n".join(_format_page(d) for d in docs)
