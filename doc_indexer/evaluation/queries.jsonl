@@ -38,3 +38,4 @@
 {"id": "ts-apirule-jwt-invalid-issuer", "kind": "troubleshooting", "query": "APIRule status Error: jwt issuer URL is not reachable or JWKS endpoint returns invalid response", "expected": ["api-gateway/docs/user"]}
 {"id": "ts-btp-operator-not-ready", "kind": "troubleshooting", "query": "BTPOperator status Warning: secret sap-btp-manager not found in kyma-system, BTP manager cannot authenticate", "expected": ["btp-manager/docs/user"]}
 {"id": "ts-nats-not-ready", "kind": "troubleshooting", "query": "NATS status NotReady: StatefulSet nats replicas unavailable, PVC provisioning failed", "expected": ["nats-manager/docs/user"]}
+{"id": "concept-istio-preinstalled", "kind": "concept", "query": "How can I use Istio in Kyma?", "expected": ["istio/docs/user/README.md", "btp-cloud-platform/docs/30-development/istio-module-26ffe00.md"]}
