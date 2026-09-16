@@ -101,12 +101,13 @@ resolver types:
 - Eight module repos also get a second `<name>-crds` source that renders `config/crd/bases/*.yaml` into
   reference pages with pinakes's built-in `openapi` renderer.
 
-pinakes's `vitepress` resolver has no per-source `include` key, unlike the retired Python `sidebar`
-resolver, which always added a module's landing README even when the sidebar does not link it. The
-equivalent here is `decisions.jsonl`: the resolver's residue `scope` is widened to also cover the landing
-README and the old `include_files` extras, and `pinakes decide <id> include --reason "…"` selects them
-once resolved, without changing which source a page belongs to (which matters because
-`evaluation/queries.jsonl` expects ids of the form `<source>/<path>`).
+Every resolver, including `vitepress`, accepts a per-source `include` glob list (pinakes 1.0.1,
+SPEC.md §2.1): a module's landing README, and every other file the old Python `include_files` list
+carried, is selected directly with `include` in `pinakes.yaml` even though the sidebar does not link
+it, landing in the manifest with `selected_by: "include"` — without changing which source a page
+belongs to (which matters because `evaluation/queries.jsonl` expects ids of the form
+`<source>/<path>`). `decisions.jsonl` is reserved for genuine curation calls on residue a fresh
+`resolve` turns up (see "How a reviewer reads the PR" below), not for these known extras.
 
 ### Running it locally
 
@@ -119,10 +120,14 @@ pinakes verify            # checks the committed manifest still matches the conf
 pinakes report --old manifest.json > report.md   # sanity-check the report renders; a real diff needs an older manifest
 ```
 
-`pinakes` is not packaged for this repository; build it from
-[friedrichwilken/pinakes](https://github.com/friedrichwilken/pinakes) (pinned commit
-`a990185fa22ba4c93b8f9c1c191a92cdd7f50bbe` — see `.github/workflows/curate-docs.yaml` for the exact
-steps) with `cargo build --release` and put `target/release/pinakes` on `PATH`.
+`pinakes` is not packaged for this repository; install release
+[v1.0.1](https://github.com/friedrichwilken/pinakes/releases/tag/v1.0.1) and put the `pinakes` binary
+on `PATH`. In CI, `.github/workflows/curate-docs.yaml` does this with pinakes's own composite setup
+action, `friedrichwilken/pinakes@v1` (pinned to `version: 1.0.1`), which downloads the release asset
+for the runner's platform and verifies it against the release's `SHA256SUMS`. Locally, download the
+same release asset for your platform (e.g.
+`pinakes-1.0.1-aarch64-apple-darwin.tar.gz`), verify it against the release's `SHA256SUMS`, and
+extract it.
 
 After a fresh `resolve`, some pages the vitepress resolver did not select land in `residue.jsonl`
 instead of the manifest; if they should be part of the corpus, decide them and re-resolve:
@@ -134,10 +139,11 @@ pinakes resolve
 
 ### What the workflow does
 
-`.github/workflows/curate-docs.yaml` (`workflow_dispatch` only) builds pinakes from source at the pinned
-commit, re-resolves `pinakes.yaml`, diffs the result against the committed `manifest.json` and stops when
-nothing changed (unless the `force` input is set), measures recall/MRR before and after with `pinakes
-eval`, runs `pinakes duplicates`, and opens a pull request on branch `pinakes/curated-docs` with
+`.github/workflows/curate-docs.yaml` (`workflow_dispatch` only) installs pinakes 1.0.1 with the
+`friedrichwilken/pinakes@v1` setup action, re-resolves `pinakes.yaml`, diffs the result against the
+committed `manifest.json` and stops when nothing changed (unless the `force` input is set), measures
+recall/MRR before and after with `pinakes eval`, runs `pinakes duplicates`, and opens a pull request on
+branch `pinakes/curated-docs` with
 `manifest.json`, `residue.jsonl` and `duplicates.jsonl` and the rendered `report.md` as the PR body.
 `decisions.jsonl` is not touched by the workflow — new residue is left for a human (or the `curate` skill
 in the pinakes repository) to decide in a follow-up commit.
