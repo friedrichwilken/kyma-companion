@@ -68,7 +68,19 @@ DATABASE_PORT = int(config("DATABASE_PORT", default=443))
 DATABASE_USER = str(config("DATABASE_USER", ""))
 DATABASE_PASSWORD = str(config("DATABASE_PASSWORD", default=""))
 
-INDEX_TO_FILE = bool(config("INDEX_TO_FILE", default=False))
+INDEX_TO_FILE = config("INDEX_TO_FILE", default=False, cast=bool)
+
+# pinakes (https://github.com/friedrichwilken/pinakes) reproduces the curated corpus committed in
+# manifest.json into an artifact directory the indexer can read (see utils.manifest). PINAKES_BIN
+# is the path to the built binary (default: on PATH); PINAKES_CONFIG defaults to pinakes.yaml next
+# to DOCS_SOURCES_FILE_PATH, i.e. the config and manifest committed alongside docs_sources.json.
+PINAKES_BIN = str(config("PINAKES_BIN", default="pinakes"))
+PINAKES_CONFIG = str(
+    config(
+        "PINAKES_CONFIG",
+        default=os.path.join(os.path.dirname(DOCS_SOURCES_FILE_PATH), "pinakes.yaml"),
+    )
+)
 
 
 def get_embedding_model_config(name: str) -> ModelConfig:

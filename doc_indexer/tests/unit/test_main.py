@@ -1,3 +1,5 @@
+import json
+import subprocess
 from unittest.mock import Mock, patch
 
 import pytest
@@ -67,6 +69,24 @@ def test_run_indexer_uses_injected_embeddings_and_connection(mock_embeddings, mo
     mock_get_config.assert_not_called()
     mock_create_conn.assert_not_called()
     mock_indexer_cls.assert_called_once()
+
+
+def test_run_indexer_skips_model_and_connection_when_index_to_file():
+    """When INDEX_TO_FILE is set, run_indexer never needs SAP AI Core or HANA credentials."""
+    from main import run_indexer
+
+    with (
+        patch("main.INDEX_TO_FILE", True),
+        patch("main.get_embedding_model_config") as mock_get_config,
+        patch("main.create_hana_connection") as mock_create_conn,
+        patch("main.AdaptiveSplitMarkdownIndexer") as mock_indexer_cls,
+    ):
+        mock_indexer_cls.return_value.index = Mock()
+        run_indexer()
+
+    mock_get_config.assert_not_called()
+    mock_create_conn.assert_not_called()
+    mock_indexer_cls.assert_called_once_with("data", None, None, "kyma_docs")
 
 
 def test_run_drop_calls_drop_table_with_injected_connection(mock_hana_conn):
@@ -153,3 +173,94 @@ def test_run_list_tables_raises_when_connection_fails():
         run_list_tables()
 
     mock_list.assert_not_called()
+
+
+@pytest.fixture
+def manifest_file(tmp_path):
+    """Write a tiny manifest.json (two sources, three pages total) and return its path."""
+    manifest_path = tmp_path / "manifest.json"
+    manifest = {
+        "version": 1,
+        "generated_at": "2026-09-16T00:00:00Z",
+        "sources": {
+            "istio": {"pages": {"docs/user/README.md": {}, "docs/user/01-overview.md": {}}},
+            "api-gateway": {"pages": {"docs/user/README.md": {}}},
+        },
+    }
+    manifest_path.write_text(json.dumps(manifest))
+    return manifest_path
+
+
+def test_run_materialize_invokes_pinakes_with_expected_arguments(manifest_file, tmp_path):
+    """run_materialize shells out to `pinakes resolve --from-manifest ... --config ... --artifact ...`."""
+    from main import run_materialize
+
+    config_path = manifest_file.parent / "pinakes.yaml"
+    docs_path = str(tmp_path / "data")
+
+    with (
+        patch("main.PINAKES_BIN", "pinakes"),
+        patch("main.PINAKES_CONFIG", str(config_path)),
+        patch("main.subprocess.run") as mock_run,
+    ):
+        run_materialize(docs_path=docs_path)
+
+    mock_run.assert_called_once_with(
+        [
+            "pinakes",
+            "resolve",
+            "--from-manifest",
+            str(manifest_file),
+            "--config",
+            str(config_path),
+            "--artifact",
+            docs_path,
+        ],
+        check=True,
+    )
+
+
+def test_run_materialize_logs_manifest_page_count(manifest_file, tmp_path, caplog):
+    """run_materialize logs the total page count declared across all manifest sources."""
+    import logging
+
+    from main import run_materialize
+
+    config_path = manifest_file.parent / "pinakes.yaml"
+
+    with (
+        patch("main.PINAKES_CONFIG", str(config_path)),
+        patch("main.subprocess.run"),
+        caplog.at_level(logging.INFO),
+    ):
+        run_materialize(docs_path=str(tmp_path / "data"))
+
+    assert "3 page(s)" in caplog.text
+
+
+def test_run_materialize_raises_when_manifest_missing(tmp_path):
+    """run_materialize fails fast with a clear error when no manifest.json is committed."""
+    from main import run_materialize
+
+    with (
+        patch("main.PINAKES_CONFIG", str(tmp_path / "pinakes.yaml")),
+        patch("main.subprocess.run") as mock_run,
+        pytest.raises(FileNotFoundError, match="No pinakes manifest found"),
+    ):
+        run_materialize(docs_path=str(tmp_path / "data"))
+
+    mock_run.assert_not_called()
+
+
+def test_run_materialize_propagates_subprocess_failure(manifest_file, tmp_path):
+    """run_materialize does not swallow a failing pinakes invocation."""
+    from main import run_materialize
+
+    config_path = manifest_file.parent / "pinakes.yaml"
+
+    with (
+        patch("main.PINAKES_CONFIG", str(config_path)),
+        patch("main.subprocess.run", side_effect=subprocess.CalledProcessError(1, ["pinakes"])),
+        pytest.raises(subprocess.CalledProcessError),
+    ):
+        run_materialize(docs_path=str(tmp_path / "data"))
