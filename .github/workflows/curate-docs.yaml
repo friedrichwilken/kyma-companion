@@ -121,6 +121,28 @@ jobs:
           fi
           pinakes report "${args[@]}" > report.md
 
+      - name: Show the report on the run summary
+        if: steps.proceed.outputs.continue == 'true'
+        working-directory: doc_indexer
+        run: cat report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the curated corpus files as a run artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curated-corpus
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            doc_indexer/report.md
+            doc_indexer/manifest.json
+            doc_indexer/manifest.before.json
+            doc_indexer/residue.jsonl
+            doc_indexer/duplicates.jsonl
+            doc_indexer/decisions.jsonl
+            doc_indexer/eval.before.json
+            doc_indexer/eval.after.json
+
       - name: Open or update the curated corpus pull request
         if: steps.proceed.outputs.continue == 'true'
         uses: peter-evans/create-pull-request@v7
