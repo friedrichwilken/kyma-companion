@@ -160,7 +160,7 @@ class DocIndex:
                     self._page_list.append(page)
 
         if self._page_list:
-            corpus = [_tokenize(page.title * _TITLE_WEIGHT + " " + page.content) for page in self._page_list]
+            corpus = [_tokenize(page.title) * _TITLE_WEIGHT + _tokenize(page.content) for page in self._page_list]
             self._bm25 = BM25Okapi(corpus)
 
         self._loaded = True

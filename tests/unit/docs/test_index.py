@@ -2,6 +2,7 @@
 
 import json
 import os
+from pathlib import Path
 
 import pytest
 
@@ -320,3 +321,30 @@ def test_reload_with_new_file(docs_dir: str) -> None:
 
     index.load()
     assert index.page_count == before + 1
+
+
+# ---------------------------------------------------------------------------
+# Title weighting
+# ---------------------------------------------------------------------------
+
+
+def test_multi_word_title_outranks_body_mention(tmp_path: Path) -> None:
+    """A page whose multi-word title matches the query ranks above a page that only mentions the words in its body.
+
+    Regression test: repeating the title with string multiplication fused the
+    last and first words of adjacent copies ("Kyma ModulesKyma Modules"), so
+    multi-word titles received almost no weight and a body with two mentions
+    outranked an exact title match.
+    """
+    root = tmp_path / "kyma"
+    root.mkdir()
+    (root / "modules.md").write_text("# Kyma Modules\n\nShort page about something.\n", encoding="utf-8")
+    (root / "other.md").write_text("# Other Topic\n\nkyma modules kyma modules kyma modules\n", encoding="utf-8")
+    # Filler pages so that the query terms are not present in every document
+    # (BM25 IDF degenerates on a two-page corpus).
+    for i in range(3):
+        (root / f"filler-{i}.md").write_text(f"# Filler {i}\n\nUnrelated text about nothing.\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+    results = index.search("Kyma modules")
+    assert results[0].title == "Kyma Modules"
