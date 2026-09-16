@@ -17,6 +17,7 @@ class Scroller:
     output_dir: str
     source: DocumentsSource
     selection: Selection | None
+    saved_files: set[str]
 
     def __init__(
         self, dir_path: str, output_dir: str, source: DocumentsSource, selection: Selection | None = None
@@ -34,6 +35,7 @@ class Scroller:
         self.output_dir = output_dir
         self.source = source
         self.selection = selection
+        self.saved_files: set[str] = set()
 
     def _save_file(self, file_dir: str, file_name: str) -> None:
         """Saves the file to the output directory."""
@@ -43,6 +45,7 @@ class Scroller:
         os.makedirs(target_dir, exist_ok=True)
 
         shutil.copy(source_file_path, target_dir)
+        self.saved_files.add(os.path.join(file_dir, file_name))
         logger.info(f"Saved file {source_file_path} to {target_dir}")
 
     def _should_exclude_file(self, file_path: str) -> bool:

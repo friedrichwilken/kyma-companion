@@ -59,7 +59,9 @@ def run_resolver(repo_dir: str, config: ResolverConfig) -> Selection:
     return resolve_tutorials(repo_dir, config.path or "tutorials", config.match or "kyma")
 
 
-def copy_residue(repo_dir: str, output_dir: str, source_name: str, selection: Selection) -> int:
+def copy_residue(
+    repo_dir: str, output_dir: str, source_name: str, selection: Selection, saved: set[str] | None = None
+) -> int:
     """Copy the Markdown files a resolver did not select into the residue area.
 
     Args:
@@ -67,6 +69,8 @@ def copy_residue(repo_dir: str, output_dir: str, source_name: str, selection: Se
         output_dir: Root of the docs output directory.
         source_name: Name of the source, used as the sub-directory.
         selection: The resolver's selection with its orphans.
+        saved: Files the scroller saved anyway (explicit ``include_files``
+            extras); those are documentation, not residue.
 
     Returns:
         Number of files copied.
@@ -74,7 +78,7 @@ def copy_residue(repo_dir: str, output_dir: str, source_name: str, selection: Se
     copied = 0
     for rel in selection.orphans:
         src = os.path.join(repo_dir, rel)
-        if not os.path.isfile(src):
+        if not os.path.isfile(src) or (saved and rel in saved):
             continue
         dst = os.path.join(output_dir, RESIDUE_DIR_NAME, source_name, rel)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -210,7 +214,7 @@ class DocumentsFetcher:
             scroller = Scroller(repo_dir, module_output_dir, source, selection)
             scroller.scroll()
             if selection is not None:
-                copy_residue(repo_dir, self.output_dir, source.name, selection)
+                copy_residue(repo_dir, self.output_dir, source.name, selection, saved=scroller.saved_files)
             write_meta(module_output_dir, source, downloaded, selection)
         except Exception:
             logger.exception("Error while scrolling documents", extra={"source": source.name})

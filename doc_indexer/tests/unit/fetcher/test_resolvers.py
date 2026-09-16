@@ -139,6 +139,8 @@ def test_resolve_sap_help_toc_selects_matching_subtrees(tmp_path: Path) -> None:
     (docs / "10-concepts").mkdir(parents=True)
     for name in ("regions", "regions-kyma", "cf-env", "kyma-env", "kyma-modules", "other"):
         (docs / "10-concepts" / f"{name}.md").write_text(f"# {name}\n", encoding="utf-8")
+    # an unselected page that talks about Kyma is worth the curator's attention; one that does not is not
+    (docs / "10-concepts" / "other.md").write_text("# other\n\nAlso works with Kyma.\n", encoding="utf-8")
     (docs / "index.md").write_text(
         """# SAP BTP
 
@@ -163,8 +165,7 @@ def test_resolve_sap_help_toc_selects_matching_subtrees(tmp_path: Path) -> None:
         selection.pages["docs/10-concepts/kyma-modules.md"].section
         == "Basic Platform Concepts > Environments > Kyma Environment"
     )
-    assert "docs/10-concepts/cf-env.md" in selection.orphans
-    assert "docs/10-concepts/other.md" in selection.orphans
+    assert selection.orphans == ["docs/10-concepts/other.md"]
     # entries whose target file is missing are reported, not selected
     assert selection.unresolved == []
 

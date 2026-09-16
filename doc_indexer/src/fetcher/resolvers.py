@@ -322,6 +322,26 @@ def resolve_sidebar(repo_dir: str, sidebar_path: str = "docs/user/_sidebar.ts") 
 _TOC_LINE_RE = re.compile(r"^(?P<indent>\s*)-\s+\[(?P<title>[^\]]+)\]\((?P<link>[^)]+)\)")
 
 
+def _mentioning_orphans(
+    repo_dir: str, base_dir: str, toc_path: str, selection: Selection, pattern: re.Pattern[str]
+) -> list[str]:
+    """Return the unselected Markdown files under *base_dir* whose text matches *pattern*.
+
+    The table of contents already decided that pages outside the matching
+    subtrees are about other topics; only the ones that mention the match
+    term are worth a curator's look. The table of contents itself is skipped.
+    """
+    orphans: list[str] = []
+    for p in _markdown_files(os.path.join(repo_dir, base_dir)):
+        rel = os.path.normpath(os.path.join(base_dir, p))
+        if rel in selection.pages or rel == os.path.normpath(toc_path):
+            continue
+        with open(os.path.join(repo_dir, rel), encoding="utf-8", errors="replace") as fh:
+            if pattern.search(fh.read()):
+                orphans.append(rel)
+    return orphans
+
+
 def resolve_sap_help_toc(repo_dir: str, toc_path: str = "docs/index.md", title_match: str = r"(?i)kyma") -> Selection:
     """Select the subtrees of an SAP Help table of contents whose title matches.
 
@@ -336,8 +356,9 @@ def resolve_sap_help_toc(repo_dir: str, toc_path: str = "docs/index.md", title_m
             selected subtree.
 
     Returns:
-        The selected pages, plus every Markdown file under the table of
-        contents' directory that no selected entry links (orphans).
+        The selected pages, plus the Markdown files under the table of
+        contents' directory that no selected entry links but whose text
+        matches *title_match* (orphans worth reviewing).
     """
     pattern = re.compile(title_match)
     base_dir = os.path.dirname(toc_path)
@@ -373,12 +394,7 @@ def resolve_sap_help_toc(repo_dir: str, toc_path: str = "docs/index.md", title_m
                     )
                 )
         ancestors.append((indent, title))
-    scope = os.path.join(repo_dir, base_dir)
-    selection.orphans = [
-        os.path.normpath(os.path.join(base_dir, p))
-        for p in _markdown_files(scope)
-        if os.path.normpath(os.path.join(base_dir, p)) not in selection.pages
-    ]
+    selection.orphans = _mentioning_orphans(repo_dir, base_dir, toc_path, selection, pattern)
     logger.info(
         "SAP Help TOC resolved",
         extra={"toc": toc_path, "pages": len(selection.pages), "orphans": len(selection.orphans)},

@@ -105,10 +105,10 @@ class TestDocumentsFetcher:
         out = tmp_path / "out"
         selection = Selection(
             pages={"docs/user/kept.md": SelectedPage(path="docs/user/kept.md")},
-            orphans=["docs/user/orphan.md", "docs/user/missing.md"],
+            orphans=["docs/user/orphan.md", "docs/user/missing.md", "docs/user/kept.md"],
         )
 
-        copied = copy_residue(str(repo), str(out), "istio", selection)
+        copied = copy_residue(str(repo), str(out), "istio", selection, saved={"docs/user/kept.md"})
 
         assert copied == 1
         assert (out / RESIDUE_DIR_NAME / "istio" / "docs" / "user" / "orphan.md").is_file()
