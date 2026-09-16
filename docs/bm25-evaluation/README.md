@@ -226,5 +226,5 @@ not retrieved. Re-run the A2A evaluation on this branch to confirm the fix end t
 |------|-------------|
 | `README.md` | This document |
 | `doc_search_logs.json` | All 145 `doc_search` log entries (query + results, no sensitive data) |
-| `run-1-*.txt` through `run-10-*.txt` | Full A2A evaluation output for each of the 10 BM25 runs |
+| run logs | The full A2A output of the 10 BM25 runs (70,000 lines) lives on branch `docs/bm25-eval-logs` of the fork, not here |
 | `retrieval-eval-2026-09-16.md` | Retrieval eval (recall@k, MRR) before and after the index fixes |
