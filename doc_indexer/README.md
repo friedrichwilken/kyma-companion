@@ -41,8 +41,15 @@ enough to reproduce the exact same artifact directory anywhere, without re-resol
 
 ### 1. Materialize the artifact
 
+`pinakes` is not packaged for this repository; install release
+[v1.0.3](https://github.com/friedrichwilken/pinakes/releases/tag/v1.0.3) and put the `pinakes` binary
+on `PATH` (or point `PINAKES_BIN` at it). Download the release asset for your platform (e.g.
+`pinakes-1.0.3-aarch64-apple-darwin.tar.gz`), verify it against the release's `SHA256SUMS`, and
+extract it. In CI, `.github/workflows/curate-docs.yaml` installs the same version with pinakes's own
+composite setup action, `friedrichwilken/pinakes@v1` (see "Curating the corpus in CI" below).
+
 ```bash
-export PINAKES_BIN=/path/to/pinakes/target/release/pinakes   # built from friedrichwilken/pinakes
+export PINAKES_BIN=/path/to/pinakes                          # release 1.0.3; defaults to `pinakes` on PATH
 export DOCS_PATH=/tmp/kyma-docs-artifact                     # any empty directory
 
 poetry run python src/main.py materialize
@@ -155,6 +162,35 @@ export DOCS_PATH=/tmp/kyma-docs-artifact
 
 poetry run python src/main.py index
 ```
+
+### Curating the corpus in CI
+
+`.github/workflows/curate-docs.yaml` (`workflow_dispatch` only) is stage **a** run as a GitHub Action.
+It installs pinakes 1.0.3 with the `friedrichwilken/pinakes@v1` setup action (which downloads the
+release asset for the runner's platform and verifies it against the release's `SHA256SUMS`),
+re-resolves `pinakes.yaml`, diffs the result against the committed `manifest.json` and stops when
+nothing changed (unless the `force` input is set), measures recall/MRR before and after with
+`pinakes eval` against `evaluation/queries.jsonl`, runs `pinakes duplicates`, and opens a pull request
+on branch `pinakes/hana-builder-curated` with `manifest.json`, `residue.jsonl` and `duplicates.jsonl`
+and the rendered `report.md` as the PR body. The report is also shown on the run summary and uploaded,
+together with the before/after manifests and eval JSON, as the `curated-corpus` run artifact.
+
+`decisions.jsonl` is not touched by the workflow. New residue is left for a human (or the `curate`
+skill in the pinakes repository) to decide in a follow-up commit:
+
+```bash
+pinakes residue list --source <name>
+pinakes decide '<source>::<path>' include|exclude|unsure --reason "…" --by "<you>"
+pinakes resolve
+```
+
+Decisions are append-only and keyed to the page's `sha256`, so a later content change makes pinakes
+ask again (the report lists these as expired decisions). An eval regression beyond
+`eval.max_recall_drop` (0.05) is called out in the report but does not block the PR; the workflow does
+not run `eval --gate`, so a curator decides whether the drop is acceptable before merging.
+
+Once the PR is merged, step 1 above (`materialize`) reproduces the new manifest byte for byte, so the
+builder never needs the resolution logic itself.
 
 ## Testing
 

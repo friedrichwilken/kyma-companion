@@ -1,0 +1,157 @@
+name: curate-docs
+
+# Manually triggered curation of the documentation corpus in doc_indexer/pinakes.yaml with
+# pinakes (https://github.com/friedrichwilken/pinakes). It re-resolves every source, measures
+# the effect on evaluation/queries.jsonl before and after, and opens a human-reviewable pull
+# request with the new manifest, residue and duplicates for a curator (or the `curate` skill in
+# https://github.com/friedrichwilken/pinakes) to review.
+#
+# pinakes is installed from a pinned release with pinakes's own composite setup action
+# (friedrichwilken/pinakes@v1), which downloads the release binary for the runner's platform
+# and verifies it against the release's SHA256SUMS.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Open a pull request even when `pinakes diff` finds no changes.
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  curate:
+    name: curate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out kyma-companion
+        uses: actions/checkout@v4
+
+      - name: Set up pinakes
+        uses: friedrichwilken/pinakes@v1
+        with:
+          version: 1.0.3
+          github-token: ${{ github.token }}
+
+      - run: pinakes --version
+
+      - name: Set up Python (for the external resolver scripts)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Save the committed manifest, when there is one
+        id: baseline
+        working-directory: doc_indexer
+        run: |
+          if [ -f manifest.json ]; then
+            cp manifest.json manifest.before.json
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: pinakes resolve
+        working-directory: doc_indexer
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: pinakes resolve
+
+      - name: Diff against the committed manifest
+        id: diff
+        if: steps.baseline.outputs.present == 'true'
+        working-directory: doc_indexer
+        run: |
+          set +e
+          pinakes diff manifest.before.json manifest.json > diff.json
+          status=$?
+          set -e
+          case "$status" in
+            0) echo "nothing changed"; echo "changed=false" >> "$GITHUB_OUTPUT" ;;
+            3) echo "changed=true" >> "$GITHUB_OUTPUT" ;;
+            *) exit "$status" ;;
+          esac
+
+      # No committed manifest is the first-ever run of this workflow: always proceed so the
+      # opening pull request has something to review.
+      - name: Decide whether to continue
+        id: proceed
+        run: |
+          if [ "${{ steps.baseline.outputs.present }}" != "true" ]; then
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.diff.outputs.changed }}" == "true" ] || [ "${{ inputs.force }}" == "true" ]; then
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "continue=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: eval (after)
+        if: steps.proceed.outputs.continue == 'true'
+        working-directory: doc_indexer
+        run: pinakes eval --json eval.after.json
+
+      - name: Materialise the committed corpus for the "before" measurement
+        if: steps.proceed.outputs.continue == 'true' && steps.baseline.outputs.present == 'true'
+        working-directory: doc_indexer
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: pinakes resolve --from-manifest manifest.before.json --artifact artifact.before
+
+      - name: eval (before)
+        if: steps.proceed.outputs.continue == 'true' && steps.baseline.outputs.present == 'true'
+        working-directory: doc_indexer
+        run: pinakes eval --artifact artifact.before --json eval.before.json
+
+      - name: pinakes duplicates
+        if: steps.proceed.outputs.continue == 'true'
+        working-directory: doc_indexer
+        run: pinakes duplicates > duplicates.jsonl
+
+      - name: pinakes report
+        if: steps.proceed.outputs.continue == 'true'
+        working-directory: doc_indexer
+        run: |
+          args=(--new manifest.json --eval-after eval.after.json)
+          if [ "${{ steps.baseline.outputs.present }}" == "true" ]; then
+            args+=(--old manifest.before.json --eval-before eval.before.json)
+          fi
+          pinakes report "${args[@]}" > report.md
+
+      - name: Show the report on the run summary
+        if: steps.proceed.outputs.continue == 'true'
+        working-directory: doc_indexer
+        run: cat report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the curated corpus files as a run artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curated-corpus
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            doc_indexer/report.md
+            doc_indexer/manifest.json
+            doc_indexer/manifest.before.json
+            doc_indexer/residue.jsonl
+            doc_indexer/duplicates.jsonl
+            doc_indexer/decisions.jsonl
+            doc_indexer/eval.before.json
+            doc_indexer/eval.after.json
+
+      - name: Open or update the curated corpus pull request
+        if: steps.proceed.outputs.continue == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: pinakes/hana-builder-curated
+          commit-message: "docs: curated documentation corpus update"
+          title: "docs: curated documentation corpus update"
+          body-path: doc_indexer/report.md
+          add-paths: |
+            doc_indexer/manifest.json
+            doc_indexer/residue.jsonl
+            doc_indexer/duplicates.jsonl

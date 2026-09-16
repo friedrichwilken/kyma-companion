@@ -1,17 +1,18 @@
 # Curated documentation corpus for kyma-companion, compiled by pinakes
-# (https://github.com/friedrichwilken/pinakes), pinned at commit
-# a990185fa22ba4c93b8f9c1c191a92cdd7f50bbe.
+# (https://github.com/friedrichwilken/pinakes) v1.0.3, the release that
+# .github/workflows/curate-docs.yaml installs with the `friedrichwilken/pinakes@v1` setup action.
 #
 # This is the same 23 sources as doc_indexer/docs_sources.json, converted to pinakes's
 # resolver types:
 #
 # - Module repositories with a VitePress sidebar (`docs/user/_sidebar.ts`) use the built-in
-#   `vitepress` resolver. pinakes's `vitepress` resolver has no `include` key (unlike the old
-#   Python `sidebar` resolver, which always added the module's landing README even when the
-#   sidebar does not link it): the landing README, and every other file the old
-#   `include_files` list carried, is instead brought into the resolver's residue `scope` (so it
-#   shows up in `residue.jsonl` after `resolve`) and then selected with `pinakes decide … include`
-#   (see `doc_indexer/README.md`). The decisions are committed in `decisions.jsonl`.
+#   `vitepress` resolver. This config predates the per-resolver `include` glob list that pinakes
+#   1.0.1 added, so it still uses the original mechanism for pages the sidebar does not link
+#   (the module's landing README, and every other file the old Python `include_files` list
+#   carried): those files are brought into the resolver's residue `scope` (so they show up in
+#   `residue.jsonl` after `resolve`) and then selected with `pinakes decide … include` (see
+#   `doc_indexer/README.md`). The decisions are committed in `decisions.jsonl`, which pinakes
+#   1.0.3 still honours; `pinakes resolve` on 1.0.3 reproduces the committed manifest exactly.
 # - btp-cloud-platform (SAP Help table of contents) and the two sap-tutorials repositories use
 #   `external` resolvers that reimplement the old `sap_help_toc` / `tutorials` Python resolvers
 #   as dependency-free scripts in `doc_indexer/resolvers/`.
