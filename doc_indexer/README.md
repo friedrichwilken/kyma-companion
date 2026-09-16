@@ -101,7 +101,7 @@ resolver types:
 - Eight module repos also get a second `<name>-crds` source that renders `config/crd/bases/*.yaml` into
   reference pages with pinakes's built-in `openapi` renderer.
 
-Every resolver, including `vitepress`, accepts a per-source `include` glob list (pinakes 1.0.1,
+Every resolver, including `vitepress`, accepts a per-source `include` glob list (pinakes 1.0.3,
 SPEC.md §2.1): a module's landing README, and every other file the old Python `include_files` list
 carried, is selected directly with `include` in `pinakes.yaml` even though the sidebar does not link
 it, landing in the manifest with `selected_by: "include"` — without changing which source a page
@@ -121,12 +121,12 @@ pinakes report --old manifest.json > report.md   # sanity-check the report rende
 ```
 
 `pinakes` is not packaged for this repository; install release
-[v1.0.1](https://github.com/friedrichwilken/pinakes/releases/tag/v1.0.1) and put the `pinakes` binary
+[v1.0.3](https://github.com/friedrichwilken/pinakes/releases/tag/v1.0.3) and put the `pinakes` binary
 on `PATH`. In CI, `.github/workflows/curate-docs.yaml` does this with pinakes's own composite setup
-action, `friedrichwilken/pinakes@v1` (pinned to `version: 1.0.1`), which downloads the release asset
+action, `friedrichwilken/pinakes@v1` (pinned to `version: 1.0.3`), which downloads the release asset
 for the runner's platform and verifies it against the release's `SHA256SUMS`. Locally, download the
 same release asset for your platform (e.g.
-`pinakes-1.0.1-aarch64-apple-darwin.tar.gz`), verify it against the release's `SHA256SUMS`, and
+`pinakes-1.0.3-aarch64-apple-darwin.tar.gz`), verify it against the release's `SHA256SUMS`, and
 extract it.
 
 After a fresh `resolve`, some pages the vitepress resolver did not select land in `residue.jsonl`
@@ -139,7 +139,7 @@ pinakes resolve
 
 ### What the workflow does
 
-`.github/workflows/curate-docs.yaml` (`workflow_dispatch` only) installs pinakes 1.0.1 with the
+`.github/workflows/curate-docs.yaml` (`workflow_dispatch` only) installs pinakes 1.0.3 with the
 `friedrichwilken/pinakes@v1` setup action, re-resolves `pinakes.yaml`, diffs the result against the
 committed `manifest.json` and stops when nothing changed (unless the `force` input is set), measures
 recall/MRR before and after with `pinakes eval`, runs `pinakes duplicates`, and opens a pull request on

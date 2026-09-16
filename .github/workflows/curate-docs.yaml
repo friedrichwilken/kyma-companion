@@ -34,7 +34,7 @@ jobs:
       - name: Set up pinakes
         uses: friedrichwilken/pinakes@v1
         with:
-          version: 1.0.1
+          version: 1.0.3
           github-token: ${{ github.token }}
 
       - run: pinakes --version
