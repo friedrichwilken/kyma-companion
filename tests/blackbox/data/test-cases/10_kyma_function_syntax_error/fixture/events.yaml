@@ -1,0 +1,801 @@
+apiVersion: v1
+items:
+- action: Binding
+  apiVersion: v1
+  eventTime: '2026-09-16T22:16:03.211207Z'
+  firstTimestamp: null
+  involvedObject:
+    apiVersion: v1
+    kind: Pod
+    name: my-function-0-build-nzp6x-zpkc2
+    namespace: test-function-10
+    resourceVersion: '620836534'
+    uid: cf2da499-2297-4f05-97d5-da595c084734
+  kind: Event
+  lastTimestamp: null
+  message: Successfully assigned test-function-10/my-function-0-build-nzp6x-zpkc2
+    to ip-10-250-8-135.eu-west-1.compute.internal
+  metadata:
+    name: my-function-0-build-nzp6x-zpkc2.18d5ecf4d3527d8f
+    namespace: test-function-10
+  reason: Scheduled
+  reportingComponent: default-scheduler
+  reportingInstance: default-scheduler-kube-scheduler-d4bf4c856-wpms7
+  source: {}
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:03Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{executor}
+    kind: Pod
+    name: my-function-0-build-nzp6x-zpkc2
+    namespace: test-function-10
+    resourceVersion: '620836535'
+    uid: cf2da499-2297-4f05-97d5-da595c084734
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:03Z'
+  message: Container image "europe-docker.pkg.dev/kyma-project/prod/external/gcr.io/kaniko-project/executor:v1.23.2"
+    already present on machine
+  metadata:
+    name: my-function-0-build-nzp6x-zpkc2.18d5ecf4f9a6a953
+    namespace: test-function-10
+  reason: Pulled
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:03Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{executor}
+    kind: Pod
+    name: my-function-0-build-nzp6x-zpkc2
+    namespace: test-function-10
+    resourceVersion: '620836535'
+    uid: cf2da499-2297-4f05-97d5-da595c084734
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:03Z'
+  message: 'Created container: executor'
+  metadata:
+    name: my-function-0-build-nzp6x-zpkc2.18d5ecf4fc123bce
+    namespace: test-function-10
+  reason: Created
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:04Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{executor}
+    kind: Pod
+    name: my-function-0-build-nzp6x-zpkc2
+    namespace: test-function-10
+    resourceVersion: '620836535'
+    uid: cf2da499-2297-4f05-97d5-da595c084734
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:04Z'
+  message: Started container executor
+  metadata:
+    name: my-function-0-build-nzp6x-zpkc2.18d5ecf50266f85e
+    namespace: test-function-10
+  reason: Started
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:03Z'
+  involvedObject:
+    apiVersion: batch/v1
+    kind: Job
+    name: my-function-0-build-nzp6x
+    namespace: test-function-10
+    resourceVersion: '620836532'
+    uid: 545c39be-e908-48a4-b35a-c674ff721d2e
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:03Z'
+  message: 'Created pod: my-function-0-build-nzp6x-zpkc2'
+  metadata:
+    name: my-function-0-build-nzp6x.18d5ecf4d2e93939
+    namespace: test-function-10
+  reason: SuccessfulCreate
+  reportingComponent: job-controller
+  reportingInstance: ''
+  source:
+    component: job-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:17Z'
+  involvedObject:
+    apiVersion: batch/v1
+    kind: Job
+    name: my-function-0-build-nzp6x
+    namespace: test-function-10
+    resourceVersion: '620836696'
+    uid: 545c39be-e908-48a4-b35a-c674ff721d2e
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:17Z'
+  message: Job completed
+  metadata:
+    name: my-function-0-build-nzp6x.18d5ecf815116382
+    namespace: test-function-10
+  reason: Completed
+  reportingComponent: job-controller
+  reportingInstance: ''
+  source:
+    component: job-controller
+  type: Normal
+- action: Binding
+  apiVersion: v1
+  eventTime: '2026-09-16T22:16:18.450591Z'
+  firstTimestamp: null
+  involvedObject:
+    apiVersion: v1
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836714'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: null
+  message: Successfully assigned test-function-10/my-function-0-lcp5g-774484bbd5-7s7mv
+    to ip-10-250-8-135.eu-west-1.compute.internal
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf85fa90776
+    namespace: test-function-10
+  reason: Scheduled
+  reportingComponent: default-scheduler
+  reportingInstance: default-scheduler-kube-scheduler-d4bf4c856-wpms7
+  source: {}
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:19Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.initContainers{istio-validation}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:19Z'
+  message: Container image "europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless"
+    already present on machine
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf88c355e59
+    namespace: test-function-10
+  reason: Pulled
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:19Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.initContainers{istio-validation}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:19Z'
+  message: 'Created container: istio-validation'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf88dc50f84
+    namespace: test-function-10
+  reason: Created
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:19Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.initContainers{istio-validation}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:19Z'
+  message: Started container istio-validation
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf89290b52f
+    namespace: test-function-10
+  reason: Started
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:20Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{istio-proxy}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:20Z'
+  message: Container image "europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless"
+    already present on machine
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf8c74474a6
+    namespace: test-function-10
+  reason: Pulled
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:20Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{istio-proxy}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:20Z'
+  message: 'Created container: istio-proxy'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf8c96ce7ac
+    namespace: test-function-10
+  reason: Created
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:20Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{istio-proxy}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:20Z'
+  message: Started container istio-proxy
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf8d42cbf41
+    namespace: test-function-10
+  reason: Started
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:24Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{function}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:24Z'
+  message: Pulling image "localhost:32137/test-function-10-my-function-0:44fd6bcb68092a7a91ec70edee32b945ba20ffbc8081cf6149c943c53a071e58"
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf9d90a3fbe
+    namespace: test-function-10
+  reason: Pulling
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:25Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{function}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:25Z'
+  message: 'Successfully pulled image "localhost:32137/test-function-10-my-function-0:44fd6bcb68092a7a91ec70edee32b945ba20ffbc8081cf6149c943c53a071e58"
+    in 227ms (227ms including waiting). Image size: 41847860 bytes.'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf9e698e2cf
+    namespace: test-function-10
+  reason: Pulled
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:25Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{function}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:25Z'
+  message: 'Created container: function'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf9e89f01fb
+    namespace: test-function-10
+  reason: Created
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:25Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{function}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:25Z'
+  message: Started container function
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecf9f6ca5bd6
+    namespace: test-function-10
+  reason: Started
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Normal
+- apiVersion: v1
+  count: 2
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:28Z'
+  involvedObject:
+    apiVersion: v1
+    fieldPath: spec.containers{function}
+    kind: Pod
+    name: my-function-0-lcp5g-774484bbd5-7s7mv
+    namespace: test-function-10
+    resourceVersion: '620836715'
+    uid: 1ed7c8c3-65e9-4934-a550-56c7bdb80521
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:33Z'
+  message: 'Startup probe failed: HTTP probe failed with statuscode: 500'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5-7s7mv.18d5ecfac936f593
+    namespace: test-function-10
+  reason: Unhealthy
+  reportingComponent: kubelet
+  reportingInstance: ip-10-250-8-135.eu-west-1.compute.internal
+  source:
+    component: kubelet
+    host: ip-10-250-8-135.eu-west-1.compute.internal
+  type: Warning
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: apps/v1
+    kind: ReplicaSet
+    name: my-function-0-lcp5g-774484bbd5
+    namespace: test-function-10
+    resourceVersion: '620836711'
+    uid: 331bff7a-6bbf-4e49-bfc2-dad8adc31d02
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:18Z'
+  message: 'Created pod: my-function-0-lcp5g-774484bbd5-7s7mv'
+  metadata:
+    name: my-function-0-lcp5g-774484bbd5.18d5ecf85f3fe9f1
+    namespace: test-function-10
+  reason: SuccessfulCreate
+  reportingComponent: replicaset-controller
+  reportingInstance: ''
+  source:
+    component: replicaset-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-function-0-lcp5g
+    namespace: test-function-10
+    resourceVersion: '620836709'
+    uid: 3f99dbfa-f425-4b02-bef0-6df4f68c36ba
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:18Z'
+  message: Scaled up replica set my-function-0-lcp5g-774484bbd5 from 0 to 1
+  metadata:
+    name: my-function-0-lcp5g.18d5ecf85d90b059
+    namespace: test-function-10
+  reason: ScalingReplicaSet
+  reportingComponent: deployment-controller
+  reportingInstance: ''
+  source:
+    component: deployment-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:48Z'
+  involvedObject:
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: my-function-0-ls4xn
+    namespace: test-function-10
+    resourceVersion: '620836727'
+    uid: 8e1658f6-f8ae-4460-bbab-a250a905193a
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:48Z'
+  message: 'failed to get cpu utilization: unable to get metrics for resource cpu:
+    no metrics returned from resource metrics API'
+  metadata:
+    name: my-function-0-ls4xn.18d5ecff660c185e
+    namespace: test-function-10
+  reason: FailedGetResourceMetric
+  reportingComponent: horizontal-pod-autoscaler
+  reportingInstance: ''
+  source:
+    component: horizontal-pod-autoscaler
+  type: Warning
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:48Z'
+  involvedObject:
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: my-function-0-ls4xn
+    namespace: test-function-10
+    resourceVersion: '620836727'
+    uid: 8e1658f6-f8ae-4460-bbab-a250a905193a
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:48Z'
+  message: 'invalid metrics (1 invalid out of 1), first error is: failed to get cpu
+    resource metric value: failed to get cpu utilization: unable to get metrics for
+    resource cpu: no metrics returned from resource metrics API'
+  metadata:
+    name: my-function-0-ls4xn.18d5ecff665581bf
+    namespace: test-function-10
+  reason: FailedComputeMetricsReplicas
+  reportingComponent: horizontal-pod-autoscaler
+  reportingInstance: ''
+  source:
+    component: horizontal-pod-autoscaler
+  type: Warning
+- apiVersion: v1
+  count: 2
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:17:18Z'
+  involvedObject:
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: my-function-0-ls4xn
+    namespace: test-function-10
+    resourceVersion: '620837066'
+    uid: 8e1658f6-f8ae-4460-bbab-a250a905193a
+  kind: Event
+  lastTimestamp: '2026-09-16T22:17:48Z'
+  message: 'failed to get cpu utilization: did not receive metrics for targeted pods
+    (pods might be unready)'
+  metadata:
+    name: my-function-0-ls4xn.18d5ed06632992d1
+    namespace: test-function-10
+  reason: FailedGetResourceMetric
+  reportingComponent: horizontal-pod-autoscaler
+  reportingInstance: ''
+  source:
+    component: horizontal-pod-autoscaler
+  type: Warning
+- apiVersion: v1
+  count: 2
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:17:18Z'
+  involvedObject:
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: my-function-0-ls4xn
+    namespace: test-function-10
+    resourceVersion: '620837066'
+    uid: 8e1658f6-f8ae-4460-bbab-a250a905193a
+  kind: Event
+  lastTimestamp: '2026-09-16T22:17:48Z'
+  message: 'invalid metrics (1 invalid out of 1), first error is: failed to get cpu
+    resource metric value: failed to get cpu utilization: did not receive metrics
+    for targeted pods (pods might be unready)'
+  metadata:
+    name: my-function-0-ls4xn.18d5ed0663747f7a
+    namespace: test-function-10
+  reason: FailedComputeMetricsReplicas
+  reportingComponent: horizontal-pod-autoscaler
+  reportingInstance: ''
+  source:
+    component: horizontal-pod-autoscaler
+  type: Warning
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:03Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836531'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:03Z'
+  message: ConfigMap my-function-0-v22zn created
+  metadata:
+    name: my-function-0.18d5ecf4cc3da334
+    namespace: test-function-10
+  reason: ConfigMapCreated
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:03Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836533'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:03Z'
+  message: Job my-function-0-build-nzp6x created
+  metadata:
+    name: my-function-0.18d5ecf4d249d65b
+    namespace: test-function-10
+  reason: JobCreated
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 13
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:04Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836546'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:16Z'
+  message: Job my-function-0-build-nzp6x is still in progress
+  metadata:
+    name: my-function-0.18d5ecf508f1c9ef
+    namespace: test-function-10
+  reason: JobRunning
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:17Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836699'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:17Z'
+  message: Job my-function-0-build-nzp6x finished
+  metadata:
+    name: my-function-0.18d5ecf82027b952
+    namespace: test-function-10
+  reason: JobFinished
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836710'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:18Z'
+  message: Deployment my-function-0-lcp5g created
+  metadata:
+    name: my-function-0.18d5ecf85d4669a2
+    namespace: test-function-10
+  reason: DeploymentCreated
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836726'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:18Z'
+  message: Service my-function-0 created
+  metadata:
+    name: my-function-0.18d5ecf865c2464b
+    namespace: test-function-10
+  reason: ServiceCreated
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 1
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836728'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:18Z'
+  message: HorizontalPodAutoscaler my-function-0-ls4xn created
+  metadata:
+    name: my-function-0.18d5ecf86958dfca
+    namespace: test-function-10
+  reason: HorizontalPodAutoscalerCreated
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 6
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:18Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620836733'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:16:23Z'
+  message: Minimum replicas not available for deployment my-function-0-lcp5g
+  metadata:
+    name: my-function-0.18d5ecf86fbab902
+    namespace: test-function-10
+  reason: MinReplicasNotAvailable
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+- apiVersion: v1
+  count: 7
+  eventTime: null
+  firstTimestamp: '2026-09-16T22:16:38Z'
+  involvedObject:
+    apiVersion: serverless.kyma-project.io/v1alpha2
+    kind: Function
+    name: my-function-0
+    namespace: test-function-10
+    resourceVersion: '620839721'
+    uid: 072a2746-78cf-4f7e-994b-65192cf2d772
+  kind: Event
+  lastTimestamp: '2026-09-16T22:21:39Z'
+  message: Deployment my-function-0-lcp5g is ready
+  metadata:
+    name: my-function-0.18d5ecfd26a99770
+    namespace: test-function-10
+  reason: DeploymentReady
+  reportingComponent: function-controller
+  reportingInstance: ''
+  source:
+    component: function-controller
+  type: Normal
+kind: List
+metadata: {}

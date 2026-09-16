@@ -5,9 +5,6 @@ from pathlib import Path
 
 from decouple import config
 
-DEFAULT_RETRY_WAIT_TIME = 60
-DEFAULT_RETRY_MAX_WAIT_TIME = 240
-
 
 class Config:
     """
@@ -17,10 +14,11 @@ class Config:
     test_data_path: str  # Path to the test data directory e.g. "~kyma-companion/tests/blackbox/data"
     namespace_scoped_test_data_path: str
     companion_api_url: str
-    companion_token: str  # Authentication token when the companion is deployed in MPS cluster.
     test_cluster_url: str  # Gardener test cluster API server URL.
     test_cluster_ca_data: str  # Gardener test cluster CA data.
-    test_cluster_auth_token: str  # Gardener test cluster authentication token.
+    test_cluster_auth_token: str  # Gardener test cluster authentication token (bearer). Empty when cert auth is used.
+    test_cluster_client_cert: str  # Client certificate data (base64). Used instead of bearer token for KWOK clusters.
+    test_cluster_client_key: str  # Client key data (base64). Used instead of bearer token for KWOK clusters.
     redis_url: str  # Redis URL.
 
     model_name: str
@@ -41,10 +39,11 @@ class Config:
         self.namespace_scoped_test_data_path = f"{self.test_data_path}/test-cases"
 
         self.companion_api_url = config("COMPANION_API_URL", default="http://localhost:8000")
-        self.companion_token = config("COMPANION_TOKEN", default="not-needed")
         self.test_cluster_url = config("TEST_CLUSTER_URL")
         self.test_cluster_ca_data = config("TEST_CLUSTER_CA_DATA")
-        self.test_cluster_auth_token = config("TEST_CLUSTER_AUTH_TOKEN")
+        self.test_cluster_auth_token = config("TEST_CLUSTER_AUTH_TOKEN", default="")
+        self.test_cluster_client_cert = config("TEST_CLUSTER_CLIENT_CERT", default="")
+        self.test_cluster_client_key = config("TEST_CLUSTER_CLIENT_KEY", default="")
 
         self.model_name = config("MODEL_NAME", default="gpt-4.1-mini")
         self.streaming_response_timeout = config("STREAMING_RESPONSE_TIMEOUT", default=600, cast=int)  # seconds
@@ -97,7 +96,3 @@ class Config:
                 return model
 
         raise ValueError(f"Model {model_name} not found in the configuration.")
-
-    def get_models(self) -> list[dict]:
-        """Return all models."""
-        return self.models
