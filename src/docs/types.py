@@ -14,6 +14,10 @@ class DocPage:
         path: Repository-relative path to the Markdown file.
         module: Kyma module name (empty string if unknown or cross-cutting).
         content: Full Markdown text after preprocessing.
+        doc_type: Coarse kind of page from the source's navigation: ``concept``,
+            ``tutorial``, ``reference``, ``troubleshooting`` or ``release-notes``.
+            Empty when the source has no navigation metadata.
+        section: Navigation breadcrumb the page sits under, e.g. ``"Tutorials"``.
     """
 
     title: str
@@ -22,3 +26,5 @@ class DocPage:
     path: str
     module: str
     content: str
+    doc_type: str = ""
+    section: str = ""

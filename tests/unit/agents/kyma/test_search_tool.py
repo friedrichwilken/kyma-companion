@@ -30,6 +30,24 @@ def _make_tool(pages: list[DocPage]) -> DocSearchTool:
     return DocSearchTool(mock_index)
 
 
+class TestDocSearchToolFormatting:
+    """Formatting of navigation metadata."""
+
+    @pytest.mark.asyncio
+    async def test_arun_includes_doc_type_when_present(self) -> None:
+        page = _make_page(title="Connection Refused Errors", content="Fix it.")
+        page.doc_type = "troubleshooting"
+        tool = _make_tool([page])
+        result = await tool._arun("connection refused")
+        assert "Type: troubleshooting" in result
+
+    @pytest.mark.asyncio
+    async def test_arun_omits_type_line_when_doc_type_empty(self) -> None:
+        tool = _make_tool([_make_page(content="Body.")])
+        result = await tool._arun("query")
+        assert "Type:" not in result
+
+
 class TestDocSearchToolAlias:
     """Verify that SearchKymaDocTool is an alias for DocSearchTool."""
 

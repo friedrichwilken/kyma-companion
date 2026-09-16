@@ -471,3 +471,43 @@ def test_extract_title_falls_back_to_frontmatter() -> None:
 def test_extract_title_empty_without_h1_or_frontmatter() -> None:
     """No H1 and no frontmatter yields an empty title."""
     assert _extract_title("## Only a second-level heading\n\nBody.\n") == ""
+
+
+# ---------------------------------------------------------------------------
+# Navigation metadata from meta.json
+# ---------------------------------------------------------------------------
+
+
+def test_load_uses_navigation_title_and_doc_type(tmp_path: Path) -> None:
+    """meta.json page entries override the H1 title and supply doc_type and section."""
+    root = tmp_path / "istio"
+    (root / "docs" / "user").mkdir(parents=True)
+    (root / "docs" / "user" / "03-20.md").write_text("# Connection refused\n\nBody.\n", encoding="utf-8")
+    (root / "docs" / "user" / "plain.md").write_text("# Plain\n\nBody.\n", encoding="utf-8")
+    (root / "meta.json").write_text(
+        json.dumps(
+            {
+                "repo": "kyma-project/istio",
+                "module": "istio",
+                "pages": {
+                    "docs/user/03-20.md": {
+                        "title": "Connection Refused Errors",
+                        "doc_type": "troubleshooting",
+                        "section": "Troubleshooting",
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    index = DocIndex(str(tmp_path))
+    index.load()
+    page = index.read("kyma-project/istio::docs/user/03-20.md")
+    assert page is not None
+    assert page.title == "Connection Refused Errors"
+    assert page.doc_type == "troubleshooting"
+    assert page.section == "Troubleshooting"
+    plain = index.read("kyma-project/istio::docs/user/plain.md")
+    assert plain is not None
+    assert plain.title == "Plain"
+    assert plain.doc_type == ""

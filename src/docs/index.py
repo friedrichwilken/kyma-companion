@@ -164,9 +164,10 @@ class DocIndex:
     ``doc_indexer`` service::
 
         <docs_path>/
-          <module-dir>/       # one directory per repo, named by repo slug
+          <module-dir>/       # one directory per source, named by source
             <relative>.md
-            meta.json         # optional: repo, module, base_url metadata
+            meta.json         # optional: repo, module, base_url, and per-page
+                              # navigation metadata (title, doc_type, section)
 
     Usage::
 
@@ -215,6 +216,7 @@ class DocIndex:
             repo = str(meta.get("repo", module_dir_name))
             module = str(meta.get("module", ""))
             base_url = str(meta.get("base_url", ""))
+            page_meta: dict[str, Any] = meta.get("pages", {}) if isinstance(meta.get("pages"), dict) else {}
 
             for dirpath, _dirnames, filenames in os.walk(module_dir):
                 for filename in sorted(filenames):
@@ -223,7 +225,10 @@ class DocIndex:
                     full_path = os.path.join(dirpath, filename)
                     rel_to_module = os.path.relpath(full_path, module_dir)
                     raw = self._read_file(full_path)
-                    title = _extract_title(raw)
+                    nav: dict[str, Any] = page_meta.get(rel_to_module, {})
+                    # The navigation title (sidebar or table of contents) is canonical;
+                    # the H1 or frontmatter title is the fallback.
+                    title = str(nav.get("title") or _extract_title(raw))
                     content = _clean_content(raw)
                     url = _build_url(base_url, repo, rel_to_module)
                     page_id = f"{repo}::{rel_to_module}"
@@ -234,6 +239,8 @@ class DocIndex:
                         path=rel_to_module,
                         module=module,
                         content=content,
+                        doc_type=str(nav.get("doc_type", "")),
+                        section=str(nav.get("section", "")),
                     )
                     self._pages[page_id] = page
                     self._page_list.append(page)

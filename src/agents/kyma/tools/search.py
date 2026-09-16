@@ -48,6 +48,8 @@ def _format_page(page: DocPage) -> str:
         lines.append(f"Source: {page.url}")
     if page.module:
         lines.append(f"Module: {page.module}")
+    if page.doc_type:
+        lines.append(f"Type: {page.doc_type}")
     lines.append(f"ID: {page_id(page)}")
     lines.append("")
     lines.append(page.content)
