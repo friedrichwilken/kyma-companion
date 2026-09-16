@@ -284,7 +284,9 @@ class DocIndex:
 
         for module_dir_name in sorted(os.listdir(self._docs_path)):
             module_dir = os.path.join(self._docs_path, module_dir_name)
-            if not os.path.isdir(module_dir):
+            # Directories starting with an underscore hold build by-products
+            # such as the curator's residue, not documentation.
+            if not os.path.isdir(module_dir) or module_dir_name.startswith("_"):
                 continue
             meta = self._read_meta(module_dir)
             repo = str(meta.get("repo", module_dir_name))

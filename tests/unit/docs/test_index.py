@@ -633,3 +633,14 @@ def test_search_with_sections_reports_intro_as_empty_heading(tmp_path: Path) -> 
     assert results[0][0].title == "Flat Page"
     assert results[0][1] == ""
     assert index.search("subscription sink cluster-local")[0].title == "Flat Page"
+
+
+def test_load_skips_underscore_directories(tmp_path: Path) -> None:
+    """Build by-products such as _residue are not indexed."""
+    (tmp_path / "istio").mkdir()
+    (tmp_path / "istio" / "page.md").write_text("# Page\n", encoding="utf-8")
+    (tmp_path / "_residue" / "istio").mkdir(parents=True)
+    (tmp_path / "_residue" / "istio" / "orphan.md").write_text("# Orphan\n", encoding="utf-8")
+    index = DocIndex(str(tmp_path))
+    index.load()
+    assert index.page_count == 1

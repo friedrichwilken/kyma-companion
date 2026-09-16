@@ -94,6 +94,32 @@ def _matches_any_pattern(rel_path: str, patterns: list[str]) -> bool:
     return False
 
 
+RESIDUE_DIR_NAME = "_residue"
+
+
+def _module_dirs(docs_path: str) -> list[tuple[str, str]]:
+    """Return ``(module name, directory)`` pairs to scan for residue.
+
+    Fetched sources sit directly under *docs_path*. Files a resolver left
+    out are copied by the fetcher to ``_residue/<module>``; those directories
+    are scanned under the same module name, so their files fall through the
+    module's selection and become residue.
+    """
+    dirs: list[tuple[str, str]] = []
+    for name in sorted(os.listdir(docs_path)):
+        path = os.path.join(docs_path, name)
+        if not os.path.isdir(path) or name.startswith("_"):
+            continue
+        dirs.append((name, path))
+    residue_root = os.path.join(docs_path, RESIDUE_DIR_NAME)
+    if os.path.isdir(residue_root):
+        for name in sorted(os.listdir(residue_root)):
+            path = os.path.join(residue_root, name)
+            if os.path.isdir(path):
+                dirs.append((name, path))
+    return dirs
+
+
 def _selected_pages(module_path: str) -> set[str]:
     """Return the pages a resolver selected for this module, from its ``meta.json``.
 
@@ -166,14 +192,11 @@ def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
 
     candidates: list[CandidateDoc] = []
 
-    for module_dir in sorted(os.listdir(docs_path)):
-        module_path = os.path.join(docs_path, module_dir)
-        if not os.path.isdir(module_path):
-            continue
-
+    for module_dir, module_path in _module_dirs(docs_path):
         is_known = module_dir in sources_by_name
         include_patterns = sources_by_name.get(module_dir, [])
-        selected_pages = _selected_pages(module_path)
+        # The module's meta.json lives in its main directory, also for files scanned under _residue.
+        selected_pages = _selected_pages(os.path.join(docs_path, module_dir))
 
         for root, _dirs, files in os.walk(module_path):
             for filename in sorted(files):

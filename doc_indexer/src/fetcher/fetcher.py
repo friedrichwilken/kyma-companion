@@ -19,6 +19,10 @@ logger = get_logger(__name__)
 META_FILE_NAME = "meta.json"
 # Name of the build manifest written at the root of the output directory.
 MANIFEST_FILE_NAME = "manifest.json"
+# Directory under the output root that holds the files a resolver left out,
+# per source, so the curator can classify them. The application's DocIndex
+# skips directories starting with an underscore.
+RESIDUE_DIR_NAME = "_residue"
 
 
 def _empty_dir(path: str) -> None:
@@ -53,6 +57,31 @@ def run_resolver(repo_dir: str, config: ResolverConfig) -> Selection:
     if config.type == "sap_help_toc":
         return resolve_sap_help_toc(repo_dir, config.path or "docs/index.md", config.title_match or r"(?i)kyma")
     return resolve_tutorials(repo_dir, config.path or "tutorials", config.match or "kyma")
+
+
+def copy_residue(repo_dir: str, output_dir: str, source_name: str, selection: Selection) -> int:
+    """Copy the Markdown files a resolver did not select into the residue area.
+
+    Args:
+        repo_dir: Root of the downloaded repository.
+        output_dir: Root of the docs output directory.
+        source_name: Name of the source, used as the sub-directory.
+        selection: The resolver's selection with its orphans.
+
+    Returns:
+        Number of files copied.
+    """
+    copied = 0
+    for rel in selection.orphans:
+        src = os.path.join(repo_dir, rel)
+        if not os.path.isfile(src):
+            continue
+        dst = os.path.join(output_dir, RESIDUE_DIR_NAME, source_name, rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy(src, dst)
+        copied += 1
+    logger.info("Copied residue files", extra={"source": source_name, "count": copied})
+    return copied
 
 
 def write_meta(
@@ -180,6 +209,8 @@ class DocumentsFetcher:
             selection = run_resolver(repo_dir, source.resolver) if source.resolver else None
             scroller = Scroller(repo_dir, module_output_dir, source, selection)
             scroller.scroll()
+            if selection is not None:
+                copy_residue(repo_dir, self.output_dir, source.name, selection)
             write_meta(module_output_dir, source, downloaded, selection)
         except Exception:
             logger.exception("Error while scrolling documents", extra={"source": source.name})

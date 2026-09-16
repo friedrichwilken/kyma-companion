@@ -3,7 +3,16 @@ import os
 from unittest.mock import Mock, patch
 
 import pytest
-from fetcher.fetcher import MANIFEST_FILE_NAME, META_FILE_NAME, DocumentsFetcher, write_manifest, write_meta
+from fetcher.fetcher import (
+    MANIFEST_FILE_NAME,
+    META_FILE_NAME,
+    RESIDUE_DIR_NAME,
+    DocumentsFetcher,
+    copy_residue,
+    write_manifest,
+    write_meta,
+)
+from fetcher.resolvers import SelectedPage, Selection
 from fetcher.source import get_documents_sources
 
 from utils.utils import DownloadedRepo
@@ -87,6 +96,23 @@ class TestDocumentsFetcher:
         entries = write_manifest_mock.call_args.args[1]
         assert set(entries) == {s.name for s in fetcher.sources}
         fetcher.clean.assert_called_once()
+
+    def test_copy_residue(self, tmp_path):
+        repo = tmp_path / "repo"
+        (repo / "docs" / "user").mkdir(parents=True)
+        (repo / "docs" / "user" / "orphan.md").write_text("# Orphan\n", encoding="utf-8")
+        (repo / "docs" / "user" / "kept.md").write_text("# Kept\n", encoding="utf-8")
+        out = tmp_path / "out"
+        selection = Selection(
+            pages={"docs/user/kept.md": SelectedPage(path="docs/user/kept.md")},
+            orphans=["docs/user/orphan.md", "docs/user/missing.md"],
+        )
+
+        copied = copy_residue(str(repo), str(out), "istio", selection)
+
+        assert copied == 1
+        assert (out / RESIDUE_DIR_NAME / "istio" / "docs" / "user" / "orphan.md").is_file()
+        assert not (out / "istio").exists()
 
     def test_write_manifest(self, tmp_path):
         # given: one fetched source with two files

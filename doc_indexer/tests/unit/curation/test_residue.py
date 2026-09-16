@@ -216,3 +216,22 @@ def test_resolver_selected_pages_are_not_residue(tmp_path):
     residue = find_residue(str(tmp_path), sources)
 
     assert [(c.path, c.residue_reason) for c in residue] == [("docs/user/orphan.md", "not_selected_by_resolver")]
+
+
+def test_residue_dir_files_are_residue_of_their_module(tmp_path):
+    """Files the fetcher copied to _residue/<module> are reported under that module."""
+    import json as _json
+
+    module = tmp_path / "istio"
+    module.mkdir()
+    (module / "selected.md").write_text("# Selected\n", encoding="utf-8")
+    (module / "meta.json").write_text(_json.dumps({"pages": {"selected.md": {}}}), encoding="utf-8")
+    residue = tmp_path / "_residue" / "istio" / "docs" / "user"
+    residue.mkdir(parents=True)
+    (residue / "orphan.md").write_text("# Orphan\n", encoding="utf-8")
+
+    found = find_residue(str(tmp_path), [{"name": "istio", "include_files": []}])
+
+    assert [(c.repo, c.path, c.residue_reason) for c in found] == [
+        ("istio", "docs/user/orphan.md", "not_selected_by_resolver")
+    ]
