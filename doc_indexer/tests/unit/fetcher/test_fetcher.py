@@ -3,7 +3,7 @@ import os
 from unittest.mock import Mock, patch
 
 import pytest
-from fetcher.fetcher import META_FILE_NAME, DocumentsFetcher, write_meta
+from fetcher.fetcher import MANIFEST_FILE_NAME, META_FILE_NAME, DocumentsFetcher, write_manifest, write_meta
 from fetcher.source import get_documents_sources
 
 from utils.utils import DownloadedRepo
@@ -73,16 +73,41 @@ class TestDocumentsFetcher:
                 output_dir=given_output_dir,
                 tmp_dir=given_tmp_dir,
             )
-        fetcher.fetch_documents = Mock()
+        fetcher.fetch_documents = Mock(return_value={"repo": "o/r", "commit": "abc"})
         fetcher.clean = Mock()
 
         # when
-        fetcher.run()
+        with patch("fetcher.fetcher.write_manifest") as write_manifest_mock:
+            fetcher.run()
 
         # then
         assert len(fetcher.sources) > 0
         assert fetcher.fetch_documents.call_count == len(fetcher.sources)
+        write_manifest_mock.assert_called_once()
+        entries = write_manifest_mock.call_args.args[1]
+        assert set(entries) == {s.name for s in fetcher.sources}
         fetcher.clean.assert_called_once()
+
+    def test_write_manifest(self, tmp_path):
+        # given: one fetched source with two files
+        module = tmp_path / "istio"
+        (module / "docs").mkdir(parents=True)
+        (module / "docs" / "a.md").write_text("# A\n", encoding="utf-8")
+        (module / "docs" / "b.md").write_text("# B\n", encoding="utf-8")
+        (module / "meta.json").write_text("{}", encoding="utf-8")
+        entries = {"istio": {"repo": "kyma-project/istio", "commit": "abc123", "archived": False}}
+
+        # when
+        write_manifest(str(tmp_path), entries)
+
+        # then
+        with open(tmp_path / MANIFEST_FILE_NAME, encoding="utf-8") as fh:
+            manifest = json.load(fh)
+        assert "fetched_at" in manifest
+        istio = manifest["sources"]["istio"]
+        assert istio["commit"] == "abc123"
+        assert set(istio["files"]) == {"docs/a.md", "docs/b.md"}
+        assert all(len(digest) == 64 for digest in istio["files"].values())  # noqa: PLR2004
 
     def test_fetch_documents(self, docs_sources_file_path):
         # given
@@ -104,6 +129,7 @@ class TestDocumentsFetcher:
             patch("fetcher.fetcher.Scroller") as scroller_mock,
             patch("fetcher.fetcher.write_meta") as write_meta_mock,
             patch("fetcher.fetcher.run_resolver") as run_resolver_mock,
+            patch("fetcher.fetcher.repo_is_archived", return_value=False),
         ):
             fetcher.fetch_documents(fetcher.sources[0])
 
@@ -218,6 +244,7 @@ class TestDocumentsFetcher:
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
             patch("fetcher.fetcher.write_meta"),
+            patch("fetcher.fetcher.repo_is_archived", return_value=None),
         ):
             fetcher.fetch_documents(valid_source)
 

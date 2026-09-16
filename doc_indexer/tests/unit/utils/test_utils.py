@@ -1,11 +1,12 @@
 import io
+import json
 import os
 import tarfile
 from unittest.mock import patch
 
 import pytest
 
-from utils.utils import _parse_github_repo, download_repo
+from utils.utils import _parse_github_repo, download_repo, repo_is_archived
 
 pytestmark = pytest.mark.unit
 
@@ -131,3 +132,17 @@ def test_download_repo_creates_dest_dir(tmp_path):
         repo_path = download_repo(repo_url, dest).path
 
     assert os.path.isfile(os.path.join(repo_path, "README.md"))
+
+
+@pytest.mark.parametrize("archived", [True, False])
+def test_repo_is_archived_reads_api_flag(archived):
+    payload = json.dumps({"archived": archived}).encode()
+    with patch("utils.utils.urllib.request.urlopen", return_value=_FakeResponse(payload)):
+        assert repo_is_archived("https://github.com/kyma-project/warden.git") is archived
+
+
+def test_repo_is_archived_returns_none_when_api_unreachable():
+    import urllib.error
+
+    with patch("utils.utils.urllib.request.urlopen", side_effect=urllib.error.URLError("offline")):
+        assert repo_is_archived("https://github.com/kyma-project/warden.git") is None

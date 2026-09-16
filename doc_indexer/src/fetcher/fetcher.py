@@ -1,7 +1,9 @@
+import hashlib
 import json
 import os
 import re
 import shutil
+from datetime import UTC, datetime
 from typing import Any
 
 from fetcher.resolvers import Selection, resolve_sap_help_toc, resolve_sidebar, resolve_tutorials
@@ -9,12 +11,14 @@ from fetcher.scroller import Scroller
 from fetcher.source import DocumentsSource, ResolverConfig, SourceType, get_documents_sources
 
 from utils.logging import get_logger
-from utils.utils import DownloadedRepo, download_repo
+from utils.utils import DownloadedRepo, download_repo, repo_is_archived
 
 logger = get_logger(__name__)
 
 # Name of the per-source metadata file read by the application's DocIndex.
 META_FILE_NAME = "meta.json"
+# Name of the build manifest written at the root of the output directory.
+MANIFEST_FILE_NAME = "manifest.json"
 
 
 def _empty_dir(path: str) -> None:
@@ -85,6 +89,42 @@ def write_meta(
     logger.info("Wrote source metadata", extra={"path": meta_path, "commit": repo.commit})
 
 
+def _file_hashes(directory: str) -> dict[str, str]:
+    """Return ``{relative path: sha256}`` for every Markdown file under *directory*."""
+    hashes: dict[str, str] = {}
+    for dirpath, _dirnames, filenames in os.walk(directory):
+        for filename in sorted(filenames):
+            if not filename.endswith(".md"):
+                continue
+            full = os.path.join(dirpath, filename)
+            with open(full, "rb") as fh:
+                digest = hashlib.sha256(fh.read()).hexdigest()
+            hashes[os.path.relpath(full, directory).replace(os.sep, "/")] = digest
+    return hashes
+
+
+def write_manifest(output_dir: str, entries: dict[str, dict[str, Any]]) -> None:
+    """Write ``manifest.json`` at the root of the docs output.
+
+    The manifest records, per source, the commit that was fetched and the
+    hash of every Markdown file, so two builds can be diffed page by page
+    and a build can be traced back to exact upstream revisions.
+
+    Args:
+        output_dir: Root of the docs output directory.
+        entries: Manifest entry per source name, as returned by
+            :meth:`DocumentsFetcher.fetch_documents`.
+    """
+    manifest: dict[str, Any] = {"fetched_at": datetime.now(tz=UTC).isoformat(), "sources": {}}
+    for name, entry in entries.items():
+        manifest["sources"][name] = {**entry, "files": _file_hashes(os.path.join(output_dir, name))}
+    path = os.path.join(output_dir, MANIFEST_FILE_NAME)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(manifest, fh, indent=2)
+        fh.write("\n")
+    logger.info("Wrote build manifest", extra={"path": path, "sources": len(entries)})
+
+
 class DocumentsFetcher:
     """Class to fetch the documents from the specified sources"""
 
@@ -108,14 +148,22 @@ class DocumentsFetcher:
         # read the documents sources from the json file.
         self.sources = get_documents_sources(source_file)
 
-    def fetch_documents(self, source: DocumentsSource) -> None:
-        """Fetch the documents from the source."""
+    def fetch_documents(self, source: DocumentsSource) -> dict[str, Any]:
+        """Fetch the documents from the source.
+
+        Returns:
+            The manifest entry for the source: repository slug, commit,
+            archived state, resolver name and selection counts.
+        """
         logger.info("Fetching documents", extra={"source": source.name, "url": source.url})
 
         if not re.fullmatch(r"[A-Za-z0-9_-]+", source.name):
             raise ValueError(f"Invalid source name: {source.name}")
 
         if source.source_type == SourceType.GITHUB:
+            archived = repo_is_archived(source.url)
+            if archived:
+                logger.warning("Source repository is archived; its documentation is frozen", extra={"url": source.url})
             logger.debug("Downloading repository", extra={"url": source.url})
             # download and extract the repository tarball (no git required).
             downloaded = download_repo(source.url, self.tmp_dir)
@@ -141,11 +189,24 @@ class DocumentsFetcher:
             logger.debug(f"Deleting the temporary directory: {repo_dir}")
             shutil.rmtree(repo_dir, ignore_errors=False)
 
+        return {
+            "repo": downloaded.slug,
+            "source_url": source.url,
+            "commit": downloaded.commit,
+            "archived": archived,
+            "resolver": source.resolver.type if source.resolver else "",
+            "pages": len(selection.pages) if selection else None,
+            "orphans": len(selection.orphans) if selection else None,
+            "unresolved": len(selection.unresolved) if selection else None,
+        }
+
     def run(self) -> None:
-        """Fetch the documents from all the sources."""
+        """Fetch the documents from all the sources and write the build manifest."""
+        entries: dict[str, dict[str, Any]] = {}
         for source in self.sources:
-            self.fetch_documents(source)
+            entries[source.name] = self.fetch_documents(source)
         logger.info("Documents fetched successfully from all sources!")
+        write_manifest(self.output_dir, entries)
 
         # clean the temporary files.
         self.clean()

@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -97,6 +98,37 @@ def download_repo(repo_url: str, dest_dir: str, ref: str = "HEAD") -> Downloaded
 
     logger.info("Repository downloaded successfully", extra={"url": tar_url, "dest": repo_path, "commit": commit})
     return DownloadedRepo(path=repo_path, owner=owner, repo=repo, commit=commit)
+
+
+def repo_is_archived(repo_url: str, timeout: int = 15) -> bool | None:
+    """Ask the GitHub API whether a repository is archived.
+
+    Archived repositories keep serving their tarball, so nothing else in the
+    fetch would notice that their documentation is frozen. Uses the
+    ``GITHUB_TOKEN`` environment variable when present to avoid the anonymous
+    rate limit.
+
+    Args:
+        repo_url: GitHub repository URL.
+        timeout: Request timeout in seconds.
+
+    Returns:
+        ``True`` or ``False`` from the API, or ``None`` when the API could not
+        be reached, so that a network hiccup never blocks a fetch.
+    """
+    owner, repo = _parse_github_repo(repo_url)
+    headers = {"User-Agent": "kyma-companion-doc-indexer", "Accept": "application/vnd.github+json"}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(f"https://api.github.com/repos/{owner}/{repo}", headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310
+            payload = json.load(resp)
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        logger.warning("Could not check archived state", extra={"url": repo_url, "reason": str(exc)})
+        return None
+    return bool(payload.get("archived", False))
 
 
 def sanitize_table_name(name: str) -> str:
