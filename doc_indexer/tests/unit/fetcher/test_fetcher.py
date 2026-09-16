@@ -1,21 +1,8 @@
-import json
 import os
 from unittest.mock import Mock, patch
 
 import pytest
-from fetcher.fetcher import (
-    MANIFEST_FILE_NAME,
-    META_FILE_NAME,
-    RESIDUE_DIR_NAME,
-    DocumentsFetcher,
-    copy_residue,
-    write_manifest,
-    write_meta,
-)
-from fetcher.resolvers import SelectedPage, Selection
-from fetcher.source import get_documents_sources
-
-from utils.utils import DownloadedRepo
+from fetcher.fetcher import DocumentsFetcher
 
 pytestmark = pytest.mark.unit
 
@@ -82,58 +69,16 @@ class TestDocumentsFetcher:
                 output_dir=given_output_dir,
                 tmp_dir=given_tmp_dir,
             )
-        fetcher.fetch_documents = Mock(return_value={"repo": "o/r", "commit": "abc"})
+        fetcher.fetch_documents = Mock()
         fetcher.clean = Mock()
 
         # when
-        with patch("fetcher.fetcher.write_manifest") as write_manifest_mock:
-            fetcher.run()
+        fetcher.run()
 
         # then
         assert len(fetcher.sources) > 0
         assert fetcher.fetch_documents.call_count == len(fetcher.sources)
-        write_manifest_mock.assert_called_once()
-        entries = write_manifest_mock.call_args.args[1]
-        assert set(entries) == {s.name for s in fetcher.sources}
         fetcher.clean.assert_called_once()
-
-    def test_copy_residue(self, tmp_path):
-        repo = tmp_path / "repo"
-        (repo / "docs" / "user").mkdir(parents=True)
-        (repo / "docs" / "user" / "orphan.md").write_text("# Orphan\n", encoding="utf-8")
-        (repo / "docs" / "user" / "kept.md").write_text("# Kept\n", encoding="utf-8")
-        out = tmp_path / "out"
-        selection = Selection(
-            pages={"docs/user/kept.md": SelectedPage(path="docs/user/kept.md")},
-            orphans=["docs/user/orphan.md", "docs/user/missing.md", "docs/user/kept.md"],
-        )
-
-        copied = copy_residue(str(repo), str(out), "istio", selection, saved={"docs/user/kept.md"})
-
-        assert copied == 1
-        assert (out / RESIDUE_DIR_NAME / "istio" / "docs" / "user" / "orphan.md").is_file()
-        assert not (out / "istio").exists()
-
-    def test_write_manifest(self, tmp_path):
-        # given: one fetched source with two files
-        module = tmp_path / "istio"
-        (module / "docs").mkdir(parents=True)
-        (module / "docs" / "a.md").write_text("# A\n", encoding="utf-8")
-        (module / "docs" / "b.md").write_text("# B\n", encoding="utf-8")
-        (module / "meta.json").write_text("{}", encoding="utf-8")
-        entries = {"istio": {"repo": "kyma-project/istio", "commit": "abc123", "archived": False}}
-
-        # when
-        write_manifest(str(tmp_path), entries)
-
-        # then
-        with open(tmp_path / MANIFEST_FILE_NAME, encoding="utf-8") as fh:
-            manifest = json.load(fh)
-        assert "fetched_at" in manifest
-        istio = manifest["sources"]["istio"]
-        assert istio["commit"] == "abc123"
-        assert set(istio["files"]) == {"docs/a.md", "docs/b.md"}
-        assert all(len(digest) == 64 for digest in istio["files"].values())  # noqa: PLR2004
 
     def test_fetch_documents(self, docs_sources_file_path):
         # given
@@ -153,42 +98,15 @@ class TestDocumentsFetcher:
             patch("os.makedirs") as makedirs_mock,
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
-            patch("fetcher.fetcher.write_meta") as write_meta_mock,
-            patch("fetcher.fetcher.run_resolver") as run_resolver_mock,
-            patch("fetcher.fetcher.repo_is_archived", return_value=False),
         ):
             fetcher.fetch_documents(fetcher.sources[0])
 
         # then
         download_repo_mock.assert_called_once_with(fetcher.sources[0].url, given_tmp_dir)
-        module_output_dir = os.path.join(given_output_dir, fetcher.sources[0].name)
-        makedirs_mock.assert_called_once_with(module_output_dir, exist_ok=True)
+        makedirs_mock.assert_called_once_with(os.path.join(given_output_dir, fetcher.sources[0].name), exist_ok=True)
         assert scroller_mock.call_count == 1
         scroller_mock.return_value.scroll.assert_called_once()
-        expected_selection = run_resolver_mock.return_value if fetcher.sources[0].resolver else None
-        write_meta_mock.assert_called_once_with(
-            module_output_dir, fetcher.sources[0], download_repo_mock.return_value, expected_selection
-        )
         rmtree_mock.assert_called_once()
-
-    def test_write_meta(self, tmp_path, docs_sources_file_path):
-        # given
-        source = get_documents_sources(docs_sources_file_path)[0]
-        downloaded = DownloadedRepo(path=str(tmp_path), owner="kyma-project", repo="istio", commit="abc123")
-
-        # when
-        write_meta(str(tmp_path), source, downloaded)
-
-        # then
-        with open(os.path.join(tmp_path, META_FILE_NAME), encoding="utf-8") as fh:
-            meta = json.load(fh)
-        assert meta == {
-            "repo": "kyma-project/istio",
-            "module": source.name,
-            "base_url": "https://github.com/kyma-project/istio/blob/abc123",
-            "commit": "abc123",
-            "source_url": source.url,
-        }
 
     @pytest.mark.parametrize(
         "invalid_name",
@@ -262,15 +180,12 @@ class TestDocumentsFetcher:
         valid_source.name = valid_name
         valid_source.source_type = fetcher.sources[0].source_type
         valid_source.url = "https://example.com/repo.git"
-        valid_source.resolver = None
 
         with (
             patch("shutil.rmtree"),
             patch("os.makedirs"),
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
-            patch("fetcher.fetcher.write_meta"),
-            patch("fetcher.fetcher.repo_is_archived", return_value=None),
         ):
             fetcher.fetch_documents(valid_source)
 

@@ -1,4 +1,3 @@
-import json
 import os.path
 import random
 import shutil
@@ -55,20 +54,11 @@ def test_fetcher(new_tmp_dir):
     assert os.path.exists(given_output_dir)
 
     # should have saved the files in the output directory.
-    # all the saved files should be markdown files, plus one meta.json per source.
+    # all the saved files should be markdown files.
     file_count = 0
     for _, _, files in os.walk(given_output_dir):
         file_count += len(files)
         for file_name in files:
-            assert file_name.endswith(".md") or file_name == "meta.json"
+            assert file_name.endswith(".md")
     # should have saved at least one file.
     assert file_count > 0
-
-    # every source directory carries metadata pointing at the fetched commit.
-    for source in fetcher.sources:
-        with open(os.path.join(given_output_dir, source.name, "meta.json"), encoding="utf-8") as fh:
-            meta = json.load(fh)
-        assert meta["module"] == source.name
-        assert meta["repo"].count("/") == 1
-        assert meta["base_url"] == f"https://github.com/{meta['repo']}/blob/{meta['commit']}"
-        assert len(meta["commit"]) > 0

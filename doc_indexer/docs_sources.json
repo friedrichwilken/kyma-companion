@@ -3,131 +3,127 @@
     "name": "btp-cloud-platform",
     "source_type": "Github",
     "url": "https://github.com/SAP-docs/btp-cloud-platform.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sap_help_toc",
-      "path": "docs/index.md",
-      "title_match": "(?i)kyma"
-    }
+    "include_files": [
+      "docs/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "eventing-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/eventing-manager.git",
     "include_files": [
-      "README.md"
+      "README.md",
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "nats-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/nats-manager.git",
     "include_files": [
-      "README.md"
+      "README.md",
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "istio",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/istio.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
+  },
+  {
+    "name": "warden",
+    "source_type": "Github",
+    "url": "https://github.com/kyma-project/warden.git",
+    "include_files": [
+      "README.md",
+      "docs/user/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "cloud-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/cloud-manager.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "api-gateway",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/api-gateway.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "telemetry-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/telemetry-manager.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "btp-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/btp-manager.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "application-connector-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/application-connector-manager.git",
     "include_files": [
-      "README.md"
+      "README.md",
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "docker-registry",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/docker-registry.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "keda-manager",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/keda-manager.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ]
   },
   {
     "name": "serverless",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/serverless.git",
-    "include_files": [],
+    "include_files": [
+      "docs/user/*"
+    ],
     "exclude_files": [
       "docs/user/tutorials/01-60-set-external-registry.md"
-    ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    ]
   },
   {
     "name": "busola",
@@ -135,34 +131,52 @@
     "url": "https://github.com/kyma-project/busola.git",
     "include_files": [
       "docs/resource-validation/*",
-      "docs/custom-extensions/*"
+      "docs/custom-extensions/*",
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "btp-foundation",
     "source_type": "Github",
     "url": "https://github.com/sap-tutorials/btp-foundation.git",
-    "include_files": [],
-    "resolver": {
-      "type": "tutorials",
-      "path": "tutorials",
-      "match": "kyma"
-    }
+    "include_files": [
+      "tutorials/cp-kyma-microservice-trigger/cp-kyma-microservice-trigger.md",
+      "tutorials/cp-kyma-mocks/cp-kyma-mocks.md",
+      "tutorials/cp-kyma-download-cli/cp-kyma-download-cli.md",
+      "tutorials/cp-kyma-redis-function/cp-kyma-redis-function.md",
+      "tutorials/cp-kyma-getting-started/cp-kyma-getting-started.md",
+      "tutorials/btp-cli-setup-kyma-cluster/*",
+      "tutorials/cp-kyma-api-postgres-golang/*",
+      "tutorials/cp-kyma-create-function-cli/*",
+      "tutorials/cp-kyma-create-function-ui/*",
+      "tutorials/cp-kyma-enable-module/*",
+      "tutorials/cp-kyma-frontend-ui5-postgresql/*",
+      "tutorials/cp-kyma-gateway-api/*",
+      "tutorials/cp-kyma-mtls-requests-egress/*",
+      "tutorials/cp-kyma-postgres-seed/*",
+      "tutorials/cp-kyma-requests-egress/*",
+      "tutorials/private-link-aws-kyma/*",
+      "tutorials/private-link-azure-kyma/*",
+      "tutorials/private-link-kyma/*"
+    ]
   },
   {
     "name": "btp-dev-guidance",
     "source_type": "Github",
     "url": "https://github.com/sap-tutorials/btp-dev-guidance.git",
-    "include_files": [],
-    "resolver": {
-      "type": "tutorials",
-      "path": "tutorials",
-      "match": "kyma"
-    }
+    "include_files": [
+      "tutorials/prepare-btp-kyma/prepare-btp-kyma.md",
+      "tutorials/deploy-to-kyma/deploy-to-kyma.md",
+      "tutorials/user-role-assignment/user-role-assignment.md",
+      "tutorials/integrate-with-work-zone-kymaruntime/integrate-with-work-zone-kymaruntime.md",
+      "tutorials/set-up-cicd-kyma/set-up-cicd-kyma.md",
+      "tutorials/remote-service-deploy-to-kyma/*",
+      "tutorials/remote-service-deploy-with-mock-kyma/*",
+      "tutorials/remote-service-set-up-mock-kyma/*"
+    ]
   },
   {
     "name": "kyma-environment-broker",
@@ -177,34 +191,45 @@
     "source_type": "Github",
     "url": "https://github.com/kyma-project/cli.git",
     "include_files": [
-      "docs/user/gen-docs/*"
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "registry-proxy",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/registry-proxy.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "registry-cache",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/registry-cache.git",
     "include_files": [
-      "README.md"
+      "README.md",
+      "docs/user/*"
     ],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
+  },
+  {
+    "name": "auditlog-manager",
+    "source_type": "Github",
+    "url": "https://github.com/kyma-project/auditlog-manager.git",
+    "include_files": [
+      "docs/user/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "modulectl",
@@ -212,6 +237,9 @@
     "url": "https://github.com/kyma-project/modulectl.git",
     "include_files": [
       "docs/gen-docs/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
     ]
   },
   {
@@ -220,17 +248,21 @@
     "url": "https://github.com/kyma-project/lifecycle-manager.git",
     "include_files": [
       "docs/user/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
     ]
   },
   {
     "name": "community-modules",
     "source_type": "Github",
     "url": "https://github.com/kyma-project/community-modules.git",
-    "include_files": [],
-    "resolver": {
-      "type": "sidebar",
-      "path": "docs/user/_sidebar.ts"
-    }
+    "include_files": [
+      "docs/user/*"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
+    ]
   },
   {
     "name": "kyma",
@@ -245,6 +277,9 @@
       "docs/06-modules/*",
       "docs/README.md",
       "docs/glossary.md"
+    ],
+    "exclude_files": [
+      "*/_sidebar.md"
     ]
   }
 ]
