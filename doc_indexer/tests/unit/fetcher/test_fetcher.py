@@ -103,6 +103,7 @@ class TestDocumentsFetcher:
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
             patch("fetcher.fetcher.write_meta") as write_meta_mock,
+            patch("fetcher.fetcher.run_resolver") as run_resolver_mock,
         ):
             fetcher.fetch_documents(fetcher.sources[0])
 
@@ -112,7 +113,10 @@ class TestDocumentsFetcher:
         makedirs_mock.assert_called_once_with(module_output_dir, exist_ok=True)
         assert scroller_mock.call_count == 1
         scroller_mock.return_value.scroll.assert_called_once()
-        write_meta_mock.assert_called_once_with(module_output_dir, fetcher.sources[0], download_repo_mock.return_value)
+        expected_selection = run_resolver_mock.return_value if fetcher.sources[0].resolver else None
+        write_meta_mock.assert_called_once_with(
+            module_output_dir, fetcher.sources[0], download_repo_mock.return_value, expected_selection
+        )
         rmtree_mock.assert_called_once()
 
     def test_write_meta(self, tmp_path, docs_sources_file_path):
@@ -206,6 +210,7 @@ class TestDocumentsFetcher:
         valid_source.name = valid_name
         valid_source.source_type = fetcher.sources[0].source_type
         valid_source.url = "https://example.com/repo.git"
+        valid_source.resolver = None
 
         with (
             patch("shutil.rmtree"),

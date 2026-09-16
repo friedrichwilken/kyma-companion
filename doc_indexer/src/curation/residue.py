@@ -2,6 +2,7 @@
 
 import fnmatch
 import hashlib
+import json
 import os
 import re
 
@@ -93,6 +94,46 @@ def _matches_any_pattern(rel_path: str, patterns: list[str]) -> bool:
     return False
 
 
+def _selected_pages(module_path: str) -> set[str]:
+    """Return the pages a resolver selected for this module, from its ``meta.json``.
+
+    Args:
+        module_path: Directory of one fetched source.
+
+    Returns:
+        Repository-relative paths, or an empty set when the source was fetched
+        without a resolver.
+    """
+    meta_path = os.path.join(module_path, "meta.json")
+    if not os.path.isfile(meta_path):
+        return set()
+    try:
+        with open(meta_path, encoding="utf-8") as fh:
+            meta = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return set()
+    return set(meta.get("pages", {}))
+
+
+def _residue_reason(is_known: bool, rel_path: str, selected_pages: set[str], include_patterns: list[str]) -> str | None:
+    """Return why *rel_path* is residue, or ``None`` when it is covered.
+
+    Args:
+        is_known: Whether the module directory has an entry in the sources file.
+        rel_path: Path of the file relative to its module directory.
+        selected_pages: Pages a resolver selected for the module (empty without a resolver).
+        include_patterns: ``include_files`` glob patterns of the module.
+
+    Returns:
+        ``new_repo``, ``not_selected_by_resolver``, ``not_in_include_patterns`` or ``None``.
+    """
+    if not is_known:
+        return "new_repo"
+    if rel_path in selected_pages or _matches_any_pattern(rel_path, include_patterns):
+        return None
+    return "not_selected_by_resolver" if selected_pages else "not_in_include_patterns"
+
+
 def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
     """Walk *docs_path* and return all .md files that are residue.
 
@@ -100,7 +141,10 @@ def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
     - Its containing module directory has no entry in *sources*
       (``residue_reason='new_repo'``), or
     - It does not match any ``include_files`` pattern for its module
-      (``residue_reason='not_in_include_patterns'``).
+      (``residue_reason='not_in_include_patterns'``), or
+    - The module was fetched with a resolver (its ``meta.json`` lists the
+      selected ``pages``) and the file is not among them
+      (``residue_reason='not_selected_by_resolver'``).
 
     Args:
         docs_path: Root directory containing per-module sub-directories
@@ -129,6 +173,7 @@ def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
 
         is_known = module_dir in sources_by_name
         include_patterns = sources_by_name.get(module_dir, [])
+        selected_pages = _selected_pages(module_path)
 
         for root, _dirs, files in os.walk(module_path):
             for filename in sorted(files):
@@ -140,13 +185,9 @@ def find_residue(docs_path: str, sources: list[dict]) -> list[CandidateDoc]:
                 # Compute repo-relative path (relative to module directory)
                 rel_to_module = os.path.relpath(abs_path, module_path).replace("\\", "/")
 
-                if not is_known:
-                    residue_reason = "new_repo"
-                elif _matches_any_pattern(rel_to_module, include_patterns):
-                    # File is explicitly included -- not residue
+                residue_reason = _residue_reason(is_known, rel_to_module, selected_pages, include_patterns)
+                if residue_reason is None:
                     continue
-                else:
-                    residue_reason = "not_in_include_patterns"
 
                 try:
                     with open(abs_path, encoding="utf-8", errors="replace") as fh:

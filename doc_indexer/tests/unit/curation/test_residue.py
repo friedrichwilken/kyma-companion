@@ -197,3 +197,22 @@ class TestMultipleModules:
 
         module_b_result = next(r for r in results if r.repo == "module-b")
         assert module_b_result.residue_reason == "new_repo"
+
+
+def test_resolver_selected_pages_are_not_residue(tmp_path):
+    """Files listed under meta.json 'pages' are covered; the rest of the module is residue."""
+    import json as _json
+
+    module = tmp_path / "istio"
+    (module / "docs" / "user").mkdir(parents=True)
+    (module / "docs" / "user" / "selected.md").write_text("# Selected\n", encoding="utf-8")
+    (module / "docs" / "user" / "orphan.md").write_text("# Orphan\n", encoding="utf-8")
+    (module / "meta.json").write_text(
+        _json.dumps({"repo": "kyma-project/istio", "pages": {"docs/user/selected.md": {"title": "Selected"}}}),
+        encoding="utf-8",
+    )
+    sources = [{"name": "istio", "include_files": []}]
+
+    residue = find_residue(str(tmp_path), sources)
+
+    assert [(c.path, c.residue_reason) for c in residue] == [("docs/user/orphan.md", "not_selected_by_resolver")]

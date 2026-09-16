@@ -353,3 +353,43 @@ class TestScroller:
         # then
         assert len(output_files) == len(expected_files)
         assert output_files == expected_files
+
+
+class TestScrollerSelection:
+    """With a resolver selection, the selection decides and include_files adds extras."""
+
+    def _repo(self, new_tmp_dir: str) -> str:
+        repo = os.path.join(new_tmp_dir, "repo")
+        os.makedirs(os.path.join(repo, "docs", "user"))
+        for rel in ("README.md", "docs/user/selected.md", "docs/user/orphan.md", "docs/user/extra.md"):
+            with open(os.path.join(repo, rel), "w", encoding="utf-8") as fh:
+                fh.write(f"# {rel}\n")
+        return repo
+
+    def test_selection_and_extras(self, new_tmp_dir):
+        from fetcher.resolvers import SelectedPage, Selection
+
+        repo = self._repo(new_tmp_dir)
+        out = os.path.join(new_tmp_dir, "out")
+        source = DocumentsSource(
+            name="mod", source_type="Github", url="https://x/y.git", include_files=["README.md", "docs/user/extra.md"]
+        )
+        selection = Selection(pages={"docs/user/selected.md": SelectedPage(path="docs/user/selected.md")})
+
+        Scroller(repo, out, source, selection).scroll()
+
+        saved = sorted(os.path.relpath(os.path.join(d, f), out) for d, _, fs in os.walk(out) for f in fs)
+        assert saved == ["README.md", "docs/user/extra.md", "docs/user/selected.md"]
+
+    def test_selection_without_include_files(self, new_tmp_dir):
+        from fetcher.resolvers import SelectedPage, Selection
+
+        repo = self._repo(new_tmp_dir)
+        out = os.path.join(new_tmp_dir, "out")
+        source = DocumentsSource(name="mod", source_type="Github", url="https://x/y.git")
+        selection = Selection(pages={"docs/user/selected.md": SelectedPage(path="docs/user/selected.md")})
+
+        Scroller(repo, out, source, selection).scroll()
+
+        saved = [f for _, _, fs in os.walk(out) for f in fs]
+        assert saved == ["selected.md"]

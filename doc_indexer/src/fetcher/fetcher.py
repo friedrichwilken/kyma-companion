@@ -2,9 +2,11 @@ import json
 import os
 import re
 import shutil
+from typing import Any
 
+from fetcher.resolvers import Selection, resolve_sap_help_toc, resolve_sidebar, resolve_tutorials
 from fetcher.scroller import Scroller
-from fetcher.source import DocumentsSource, SourceType, get_documents_sources
+from fetcher.source import DocumentsSource, ResolverConfig, SourceType, get_documents_sources
 
 from utils.logging import get_logger
 from utils.utils import DownloadedRepo, download_repo
@@ -32,21 +34,50 @@ def _empty_dir(path: str) -> None:
             os.remove(entry.path)
 
 
-def write_meta(output_dir: str, source: DocumentsSource, repo: DownloadedRepo) -> None:
+def run_resolver(repo_dir: str, config: ResolverConfig) -> Selection:
+    """Run the configured resolver over a downloaded repository.
+
+    Args:
+        repo_dir: Root of the downloaded repository.
+        config: Which resolver to run and its options.
+
+    Returns:
+        The resolver's selection.
+    """
+    if config.type == "sidebar":
+        return resolve_sidebar(repo_dir, config.path or "docs/user/_sidebar.ts")
+    if config.type == "sap_help_toc":
+        return resolve_sap_help_toc(repo_dir, config.path or "docs/index.md", config.title_match or r"(?i)kyma")
+    return resolve_tutorials(repo_dir, config.path or "tutorials", config.match or "kyma")
+
+
+def write_meta(
+    output_dir: str, source: DocumentsSource, repo: DownloadedRepo, selection: Selection | None = None
+) -> None:
     """Write ``meta.json`` next to the fetched Markdown files of one source.
 
     The application's ``DocIndex`` reads this file to attach a repository
     slug, a module name and a base URL to every page of the source, so that
     search results carry a citable link pinned to the fetched commit and can
-    be filtered by module.
+    be filtered by module. With a resolver selection it also carries the
+    canonical title, doc type and section of every selected page, and the
+    files the resolver left out (orphans) for the curator to review.
     """
-    meta = {
+    meta: dict[str, Any] = {
         "repo": repo.slug,
         "module": source.name,
         "base_url": repo.blob_base_url,
         "commit": repo.commit,
         "source_url": source.url,
     }
+    if selection is not None:
+        meta["resolver"] = source.resolver.type if source.resolver else ""
+        meta["pages"] = {
+            path: {"title": page.title, "doc_type": page.doc_type, "section": page.section}
+            for path, page in sorted(selection.pages.items())
+        }
+        meta["orphans"] = sorted(selection.orphans)
+        meta["unresolved"] = sorted(selection.unresolved)
     meta_path = os.path.join(output_dir, META_FILE_NAME)
     with open(meta_path, "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=2)
@@ -96,11 +127,12 @@ class DocumentsFetcher:
         logger.debug(f"Creating a temporary directory: {module_output_dir}")
         os.makedirs(module_output_dir, exist_ok=True)
 
-        # extract markdown files
+        # select and extract markdown files
         try:
-            scroller = Scroller(repo_dir, module_output_dir, source)
+            selection = run_resolver(repo_dir, source.resolver) if source.resolver else None
+            scroller = Scroller(repo_dir, module_output_dir, source, selection)
             scroller.scroll()
-            write_meta(module_output_dir, source, downloaded)
+            write_meta(module_output_dir, source, downloaded, selection)
         except Exception:
             logger.exception("Error while scrolling documents", extra={"source": source.name})
             raise
