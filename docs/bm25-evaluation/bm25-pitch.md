@@ -7,6 +7,9 @@ One page, one question. Every number below is reproducible from this directory; 
 That is evaluation scenario test-question-23. The only thing the answer has to contain is that
 Istio comes preinstalled. The vector search passes it. BM25 failed it in ten runs out of ten,
 three attempts each, while scoring within a point of the vector search on everything else.
+To be clear about where the bug sat: in the new BM25 index on this branch, not on main. The
+vector search on main passes the scenario. What follows is not "main is broken", it is "this is
+what finding and fixing a retrieval failure looks like when the ranking can be read".
 
 It looked like a flaky test. The logs said otherwise. The agent sent the same search, "How to
 use Istio in Kyma", 33 times, and got the same five pages back 33 times:
@@ -83,6 +86,10 @@ with a title, a section, a type and a source URL pinned to a commit. The evidenc
 exclusions list are the backup slides.
 
 ## 5. The honest close
+
+There is a bug-on-main story too, and it is a different one: content silently lost in
+chunking (preamble, tiny sections, oversized sections), found by reading main's indexer and
+fixed in upstream PR 1400. The corpus facts in section 4 are also facts about main today.
 
 The same 41 questions can score the vector search too: the evaluation takes an HTTP endpoint as
 a backend, so HANA can be measured with the same judge on the same corpus before anyone argues
