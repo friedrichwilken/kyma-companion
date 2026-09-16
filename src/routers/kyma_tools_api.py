@@ -151,6 +151,7 @@ async def search_kyma_documentation(
         return SearchKymaDocResponse(
             results=results,
             query=request.query,
+            documents=documents,
         )
     except Exception as e:
         logger.exception("Error during documentation search.")

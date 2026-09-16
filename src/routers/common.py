@@ -212,6 +212,9 @@ class SearchKymaDocResponse(BaseModel):
 
     results: list[str] = Field(..., description="List of retrieved documents")
     query: str = Field(..., description="Original search query")
+    documents: list[SearchKymaDocResult] = Field(
+        default_factory=list, description="Retrieved documents with title, URL and module"
+    )
 
 
 class KymaAgentRequest(BaseModel):
