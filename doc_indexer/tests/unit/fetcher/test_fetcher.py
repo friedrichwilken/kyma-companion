@@ -1,8 +1,12 @@
+import json
 import os
 from unittest.mock import Mock, patch
 
 import pytest
-from fetcher.fetcher import DocumentsFetcher
+from fetcher.fetcher import META_FILE_NAME, DocumentsFetcher, write_meta
+from fetcher.source import get_documents_sources
+
+from utils.utils import DownloadedRepo
 
 pytestmark = pytest.mark.unit
 
@@ -98,15 +102,37 @@ class TestDocumentsFetcher:
             patch("os.makedirs") as makedirs_mock,
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
+            patch("fetcher.fetcher.write_meta") as write_meta_mock,
         ):
             fetcher.fetch_documents(fetcher.sources[0])
 
         # then
         download_repo_mock.assert_called_once_with(fetcher.sources[0].url, given_tmp_dir)
-        makedirs_mock.assert_called_once_with(os.path.join(given_output_dir, fetcher.sources[0].name), exist_ok=True)
+        module_output_dir = os.path.join(given_output_dir, fetcher.sources[0].name)
+        makedirs_mock.assert_called_once_with(module_output_dir, exist_ok=True)
         assert scroller_mock.call_count == 1
         scroller_mock.return_value.scroll.assert_called_once()
+        write_meta_mock.assert_called_once_with(module_output_dir, fetcher.sources[0], download_repo_mock.return_value)
         rmtree_mock.assert_called_once()
+
+    def test_write_meta(self, tmp_path, docs_sources_file_path):
+        # given
+        source = get_documents_sources(docs_sources_file_path)[0]
+        downloaded = DownloadedRepo(path=str(tmp_path), owner="kyma-project", repo="istio", commit="abc123")
+
+        # when
+        write_meta(str(tmp_path), source, downloaded)
+
+        # then
+        with open(os.path.join(tmp_path, META_FILE_NAME), encoding="utf-8") as fh:
+            meta = json.load(fh)
+        assert meta == {
+            "repo": "kyma-project/istio",
+            "module": source.name,
+            "base_url": "https://github.com/kyma-project/istio/blob/abc123",
+            "commit": "abc123",
+            "source_url": source.url,
+        }
 
     @pytest.mark.parametrize(
         "invalid_name",
@@ -186,6 +212,7 @@ class TestDocumentsFetcher:
             patch("os.makedirs"),
             patch("fetcher.fetcher.download_repo") as download_repo_mock,
             patch("fetcher.fetcher.Scroller") as scroller_mock,
+            patch("fetcher.fetcher.write_meta"),
         ):
             fetcher.fetch_documents(valid_source)
 

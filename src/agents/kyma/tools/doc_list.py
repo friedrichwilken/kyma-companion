@@ -11,7 +11,7 @@ class DocListArgs(BaseModel):
 
     module: str = Field(
         default="",
-        description='Kyma module name to filter by, e.g. "Eventing". Leave empty to list all modules.',
+        description='Documentation source to filter by, e.g. "eventing-manager" or "istio". Leave empty to list all.',
     )
 
 

@@ -5,6 +5,7 @@ import tarfile
 import tempfile
 import urllib.error
 import urllib.request
+from typing import NamedTuple
 from urllib.parse import urlparse
 
 from utils.logging import get_logger
@@ -29,13 +30,35 @@ def _parse_github_repo(repo_url: str) -> tuple[str, str]:
     return parts[0], parts[1]
 
 
-def download_repo(repo_url: str, dest_dir: str, ref: str = "HEAD") -> str:
-    """Download a GitHub repository tarball and extract it, returning the path.
+class DownloadedRepo(NamedTuple):
+    """Where a downloaded repository was extracted to, and which commit it is."""
+
+    path: str
+    owner: str
+    repo: str
+    commit: str
+
+    @property
+    def slug(self) -> str:
+        """GitHub ``owner/repo`` slug."""
+        return f"{self.owner}/{self.repo}"
+
+    @property
+    def blob_base_url(self) -> str:
+        """Base URL under which a repository-relative path resolves to the file at this commit."""
+        return f"https://github.com/{self.owner}/{self.repo}/blob/{self.commit}"
+
+
+def download_repo(repo_url: str, dest_dir: str, ref: str = "HEAD") -> DownloadedRepo:
+    """Download a GitHub repository tarball and extract it.
 
     Replaces `git clone`: fetches the codeload tarball for the given ref over
     anonymous HTTPS and extracts it so that repository files sit directly under
-    the returned path (the tarball's top-level `<repo>-<ref>/` wrapper is
-    stripped), matching the layout the Scroller expects.
+    the returned path (the tarball's top-level `<repo>-<sha>/` wrapper is
+    stripped), matching the layout the Scroller expects. The resolved commit
+    (from the archive's pax "comment" header, falling back to the wrapper
+    directory's suffix) is returned alongside the path so that callers can
+    record exactly which revision was fetched.
     """
     owner, repo = _parse_github_repo(repo_url)
     repo_path = os.path.join(dest_dir, repo)
@@ -62,15 +85,18 @@ def download_repo(repo_url: str, dest_dir: str, ref: str = "HEAD") -> str:
 
         with tarfile.open(tar_path, "r:gz") as tf:
             tf.extractall(staging, filter="data")  # filter="data" blocks path traversal (py3.12+)
+            # GitHub archives carry the resolved commit in a pax global header.
+            pax_commit = tf.pax_headers.get("comment", "")
 
         # The archive extracts to a single top-level dir named "<repo>-<ref-or-sha>".
         extracted = [e for e in os.listdir(staging) if os.path.isdir(os.path.join(staging, e))]
         if len(extracted) != 1:
             raise RuntimeError(f"unexpected tarball layout for {tar_url}: {extracted}")
+        commit = pax_commit or extracted[0].removeprefix(f"{repo}-")
         shutil.move(os.path.join(staging, extracted[0]), repo_path)
 
-    logger.info("Repository downloaded successfully", extra={"url": tar_url, "dest": repo_path})
-    return repo_path
+    logger.info("Repository downloaded successfully", extra={"url": tar_url, "dest": repo_path, "commit": commit})
+    return DownloadedRepo(path=repo_path, owner=owner, repo=repo, commit=commit)
 
 
 def sanitize_table_name(name: str) -> str:
