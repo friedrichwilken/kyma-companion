@@ -1,0 +1,125 @@
+# Configuring Keda Module
+
+By default, the Keda module comes with the default configuration. You can change the configuration using the Keda CustomResourceDefinition (CRD). See how to configure the **logging.level** attribute, enable the Istio sidecar injection, change resource consumption, define custom annotations, override the minimum TLS version, or enable the KEDA HTTP Add-on.
+
+## Prerequisites
+
+[You have added the Keda module](https://kyma-project.io/02-get-started/01-quick-install.html).
+
+## Procedure
+
+1. Go to Kyma dashboard.
+2. Choose **Modify Modules**, and in the **View** tab, choose `keda`.
+3. Go to **Edit**, and provide your configuration changes. You can use the **Form** or **YAML** tab.
+
+- To define the level of detail of your logs, set the **logging.level** attribute to one of the following values:
+   - `debug` - is the most detailed option. Useful for a developer during debugging.
+   - `info` - provides standard log level indicating operations within the Keda module. For example, it can show whether the workload scaling operation was successful or not.
+   - `error` - shows error logs only. This means only log messages corresponding to errors and misconfigurations are visible in logs.
+   - `warn` - shows warning logs only. This means only log messages corresponding to warnings and potential issues are visible in logs.
+- To define the log output format, set the **logging.format** attribute to one of the following values:
+    - `json` - outputs logs in JSON format, which is structured and machine-readable.
+    - `console` - outputs logs in plain text format, which is human-readable.
+
+   ```yaml
+   spec:
+    logging:
+      operator:
+        level: "info"
+        format: "json"
+      metricServer:
+        level: "info"
+        format: "json"
+      admissionWebhook:
+        level: "info"
+        format: "json"
+   ```
+For more information about logging configuration, see [Keda logging configuration](06-70-configuring-logging.md).
+- To enable the Istio sidecar injection for **operator** and **metricServer**, set the value of **enabledSidecarInjection** to `true`. For example:
+
+  ```yaml
+  spec:
+    istio:
+      metricServer:
+        enabledSidecarInjection: true
+      operator:
+        enabledSidecarInjection: true
+  ```
+
+- To change the resource consumption, enter your preferred values for **operator**, **metricServer** and **admissionWebhook**. For example:
+
+   ```yaml
+   spec:
+     resources:
+       operator:
+         limits:
+           cpu: "1"
+           memory: "200Mi"
+         requests:
+           cpu: "150m"
+           memory: "150Mi"
+       metricServer:
+         limits:
+           cpu: "1"
+           memory: "1000Mi"
+         requests:
+           cpu: "150m"
+           memory: "500Mi"
+       admissionWebhook:
+         limits:
+           cpu: "1"
+           memory: "1000Mi"
+         requests:
+           cpu: "50m"
+           memory: "800Mi"
+   
+   ```
+
+- To define custom annotations for KEDA workloads, enter your preferred values for **operator**, **metricServer** and **admissionWebhook**. For example:
+
+   ```yaml
+   spec:
+     podAnnotations:
+      operator:
+        metrics.dynatrace.com/scrape: 'true'
+        metrics.dynatrace.com/path: '/metrics'
+      metricServer:
+        metrics.dynatrace.com/scrape: 'true'
+        metrics.dynatrace.com/path: '/metrics'
+      admissionWebhook:
+        metrics.dynatrace.com/scrape: 'true'
+        metrics.dynatrace.com/path: '/metrics'
+   
+   ```
+
+- To override the minimum TLS version used by KEDA (default is `TLS12`), set the `KEDA_HTTP_MIN_TLS_VERSION` environment variable. For example:
+
+   ```yaml
+   spec:
+     env:
+       - name: KEDA_HTTP_MIN_TLS_VERSION
+         value: TLS13
+   ```
+
+- To enable the KEDA HTTP Add-on, which extends KEDA with the ability to scale HTTP workloads to and from zero based on incoming request rate, annotate the Keda CR:
+
+   ```bash
+   kubectl annotate keda -n kyma-system default \
+     keda.kyma-project.io/addon-enabled=true
+   ```
+
+- Optionally, to enable Istio sidecar injection on the HTTP Add-on Deployments, set the following annotation:
+
+   ```bash
+   kubectl annotate keda -n kyma-system default \
+     keda.kyma-project.io/addon-istio-injection=true
+   ```
+
+- Optionally, to install the HTTP Add-on in a different namespace than the default `kyma-system`, set the following annotation:
+
+   ```bash
+   kubectl annotate keda -n kyma-system default \
+     keda.kyma-project.io/addon-namespace=my-new-namespace --overwrite
+   ```
+
+For more information about the KEDA resources, see [KEDA HTTP Add-on](07-10-http-add-on.md).

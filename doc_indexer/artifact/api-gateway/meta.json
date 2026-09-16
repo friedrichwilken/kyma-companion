@@ -1,0 +1,292 @@
+{
+  "base_url": "https://github.com/kyma-project/api-gateway/blob/b1bb813b06bc7b135aa6242572906d7dac9e0dd3",
+  "commit": "b1bb813b06bc7b135aa6242572906d7dac9e0dd3",
+  "module": "api-gateway",
+  "pages": {
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "API Gateway Module"
+    },
+    "docs/user/apirule-migration/01-81-retrieve-v1beta1-spec.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Retrieve v1beta1 spec"
+    },
+    "docs/user/apirule-migration/01-82-migrate-allow-noop-no_auth-v1beta1-to-v2.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Migrate noop, no_auth, allow Handlers"
+    },
+    "docs/user/apirule-migration/01-83-migrate-jwt-v1beta1-to-v2.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Migrate jwt Handlers"
+    },
+    "docs/user/apirule-migration/01-84-migrate-oauth2-v1beta1-to-v2.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Migrate Ory-based Handlers"
+    },
+    "docs/user/apirule-migration/01-85-apirule-migration-faq.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "FAQ"
+    },
+    "docs/user/apirule-migration/01-90-migrate-multiple-apirules-targeting-same-workload.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Migrate Multiple APIRules Targeting the Same Workload"
+    },
+    "docs/user/apirule-migration/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "APIRule Migration"
+    },
+    "docs/user/custom-resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Custom Resources"
+    },
+    "docs/user/custom-resources/apigateway/04-00-apigateway-custom-resource.md": {
+      "doc_type": "concept",
+      "section": "Custom Resources",
+      "title": "APIGateway Custom Resource"
+    },
+    "docs/user/custom-resources/apirule/04-10-apirule-custom-resource.md": {
+      "doc_type": "concept",
+      "section": "Custom Resources",
+      "title": "APIRule Custom Resource"
+    },
+    "docs/user/custom-resources/apirule/04-70-changes-in-apirule-v2.md": {
+      "doc_type": "reference",
+      "section": "APIRule Migration",
+      "title": "Changes in APIRule v2"
+    },
+    "docs/user/custom-resources/externalgateway/externalgateway-custom-resource.md": {
+      "doc_type": "concept",
+      "section": "Custom Resources",
+      "title": "ExternalGateway Custom Resource"
+    },
+    "docs/user/custom-resources/ratelimit/04-10-ratelimit-custom-resource.md": {
+      "doc_type": "concept",
+      "section": "Custom Resources",
+      "title": "RateLimit Custom Resource"
+    },
+    "docs/user/expose-workloads/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Exposing and Securing Workloads"
+    },
+    "docs/user/expose-workloads/expose-multiple-workloads.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "Exposing Multiple Workloads"
+    },
+    "docs/user/expose-workloads/extAuth/README.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "External Authorization"
+    },
+    "docs/user/expose-workloads/extAuth/expose-workload-extauth-authorization-code.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads > External Authorization",
+      "title": "Secure a Workload with extAuth (Authorization Code Flow)"
+    },
+    "docs/user/expose-workloads/extAuth/expose-workload-extauth-client-credentials.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads > External Authorization",
+      "title": "Secure a Workload with extAuth (Client Credentials Flow)"
+    },
+    "docs/user/expose-workloads/ip-based-access-with-xff.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "Configuring IP-Based Access with XFF"
+    },
+    "docs/user/expose-workloads/jwt/README.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "JWT Validation"
+    },
+    "docs/user/expose-workloads/jwt/expose-workload-jwt.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads > JWT Validation",
+      "title": "Secure a Workload with JWT"
+    },
+    "docs/user/expose-workloads/noAuth/README.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "noAuth Configuration"
+    },
+    "docs/user/expose-workloads/noAuth/expose-workload-noauth-gardener.md": {
+      "doc_type": "reference",
+      "section": "Exposing and Securing Workloads > noAuth Configuration",
+      "title": "Expose a Workload with noAuth"
+    },
+    "docs/user/expose-workloads/noAuth/expose-workload-noauth-k3d.md": {
+      "doc_type": "reference",
+      "section": "Exposing and Securing Workloads > noAuth Configuration",
+      "title": "(k3d) Expose a Workload with noAuth"
+    },
+    "docs/user/expose-workloads/short-host-name.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "Using a Short Host"
+    },
+    "docs/user/expose-workloads/significance-of-rule-path-and-method-order.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "Ordering Rules in APIRule v2"
+    },
+    "docs/user/expose-workloads/wildcard-host-name.md": {
+      "doc_type": "concept",
+      "section": "Exposing and Securing Workloads",
+      "title": "Using a Wildcard Host"
+    },
+    "docs/user/istio-gateways/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Istio Gateways"
+    },
+    "docs/user/istio-gateways/configure-mtls-Gardener-certs.md": {
+      "doc_type": "concept",
+      "section": "Istio Gateways > Configure an mTLS Gateway",
+      "title": "Configure mTLS Authentication in SAP BTP, Kyma Runtime"
+    },
+    "docs/user/istio-gateways/configure-mtls-k3d.md": {
+      "doc_type": "concept",
+      "section": "Istio Gateways > Configure an mTLS Gateway",
+      "title": "Configure mTLS Authentication on k3d"
+    },
+    "docs/user/istio-gateways/kyma-gateway.md": {
+      "doc_type": "concept",
+      "section": "Istio Gateways",
+      "title": "Kyma Gateway"
+    },
+    "docs/user/istio-gateways/mtls-context.md": {
+      "doc_type": "concept",
+      "section": "Istio Gateways",
+      "title": "Configure an mTLS Gateway"
+    },
+    "docs/user/istio-gateways/set-up-tls-gateway.md": {
+      "doc_type": "concept",
+      "section": "Istio Gateways",
+      "title": "Configure a TLS Gateway"
+    },
+    "docs/user/networkpolicies.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Network Policies"
+    },
+    "docs/user/ratelimit/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Rate Limiting"
+    },
+    "docs/user/ratelimit/configure-local-rate-limit.md": {
+      "doc_type": "concept",
+      "section": "Rate Limiting",
+      "title": "Configure Local Rate Limiting"
+    },
+    "docs/user/technical-reference/05-00-api-gateway-operator-parameters.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Kyma API Gateway Operator Parameters"
+    },
+    "docs/user/technical-reference/05-10-api-gateway-request-flow.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "API Gateway Request Flow"
+    },
+    "docs/user/technical-reference/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Technical Reference"
+    },
+    "docs/user/troubleshooting-guides/03-01-401-unauthorized-403-forbidden.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "401 Unauthorized or 403 Forbidden"
+    },
+    "docs/user/troubleshooting-guides/03-10-dns-mgt-connection-refused.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Connection Refused or Timeout"
+    },
+    "docs/user/troubleshooting-guides/03-11-dns-mgt-could-not-resolve-host.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Could not Resolve Host"
+    },
+    "docs/user/troubleshooting-guides/03-30-gateway-not-reachable.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Kyma Gateway Not Reachable"
+    },
+    "docs/user/troubleshooting-guides/03-40-api-rule-troubleshooting.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Issues When Creating APIRule"
+    },
+    "docs/user/troubleshooting-guides/03-50-certificates-gardener.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Issues with Gardener Certificates"
+    },
+    "docs/user/troubleshooting-guides/03-60-apirule-conversion-webhook-cert-issue.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "APIRule Conversion Webhook Failed"
+    },
+    "docs/user/troubleshooting-guides/03-70-apirule-v1beta1-management-issues.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "APIRule v1beta1 Management Issues"
+    },
+    "docs/user/troubleshooting-guides/03-80-blocked-in-cluster-communication.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Blocked In-Cluster Communication"
+    },
+    "docs/user/troubleshooting-guides/03-81-missing-rules-apirule-v2.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Missing Rules in APIRule `v2`"
+    },
+    "docs/user/troubleshooting-guides/03-82-changed-status-schema-apirule-v2.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Changed Status Schema in APIRule `v2`"
+    },
+    "docs/user/troubleshooting-guides/03-83-apirules-are-missing-from-kyma-dashboard.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "APIRules Missing from Kyma Dashboard"
+    },
+    "docs/user/troubleshooting-guides/03-85-unintentional-api-gateway-removal.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Reverting API Gateway Module Deletion"
+    },
+    "docs/user/troubleshooting-guides/03-90-external-gateway-troubleshooting.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "ExternalGateway Troubleshooting"
+    },
+    "docs/user/troubleshooting-guides/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting Guides"
+    }
+  },
+  "repo": "kyma-project/api-gateway",
+  "residue": [
+    "docs/user/security/01-62-set-up-idp.md",
+    "docs/user/troubleshooting-guides/03-71-apirule-v1beta1-reconciliation-disabled.md"
+  ],
+  "unrendered": [],
+  "unresolved": [
+    "docs/user/technical-reference/05-20-networkpolicies.md",
+    "docs/user/troubleshooting-guides/03-70-apirule-v1beta1-no-longer-reconciled.md"
+  ]
+}

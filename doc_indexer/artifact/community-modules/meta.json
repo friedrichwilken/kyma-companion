@@ -1,0 +1,21 @@
+{
+  "base_url": "https://github.com/kyma-project/community-modules/blob/d95460745cc29297b5b5f4f138a6354248529f4d",
+  "commit": "d95460745cc29297b5b5f4f138a6354248529f4d",
+  "module": "community-modules",
+  "pages": {
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Community Modules"
+    },
+    "docs/user/update-modules.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Update Community Modules"
+    }
+  },
+  "repo": "kyma-project/community-modules",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

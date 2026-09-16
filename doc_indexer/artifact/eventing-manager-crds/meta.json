@@ -1,0 +1,21 @@
+{
+  "base_url": "https://github.com/kyma-project/eventing-manager/blob/2c8aaf6d35375df777764b87ddae555ec44abbd4",
+  "commit": "2c8aaf6d35375df777764b87ddae555ec44abbd4",
+  "module": "eventing-manager-crds",
+  "pages": {
+    "reference/eventing.kyma-project.io/subscription-v1alpha2.md": {
+      "doc_type": "reference",
+      "section": "eventing.kyma-project.io",
+      "title": "Subscription (eventing.kyma-project.io/v1alpha2)"
+    },
+    "reference/operator.kyma-project.io/eventing-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "Eventing (operator.kyma-project.io/v1alpha1)"
+    }
+  },
+  "repo": "kyma-project/eventing-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

@@ -1,0 +1,1490 @@
+{
+  "base_url": "https://github.com/SAP-docs/btp-cloud-platform/blob/4e400647e176c8f0540993e114ed8fb8f940d214",
+  "commit": "4e400647e176c8f0540993e114ed8fb8f940d214",
+  "module": "btp-cloud-platform",
+  "pages": {
+    "docs/10-concepts/availability-zones-in-the-kyma-environment-a649bd9.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Availability Zones in the Kyma Environment"
+    },
+    "docs/10-concepts/cannot-find-kyma-resource-in-kyma-dashboard-107fcb6.md": {
+      "doc_type": "troubleshooting",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment > Kyma Dashboard > Troubleshooting for Kyma Dashboard",
+      "title": "Cannot Find Kyma Resource in Kyma Dashboard"
+    },
+    "docs/10-concepts/joule-in-kyma-dashboard-10c7fb8.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Joule in Kyma Dashboard"
+    },
+    "docs/10-concepts/kyma-cli-292454b.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma CLI"
+    },
+    "docs/10-concepts/kyma-dashboard-482ae2f.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma Dashboard"
+    },
+    "docs/10-concepts/kyma-dashboard-command-palette-7542ffb.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment > Kyma Dashboard",
+      "title": "Kyma Dashboard Command Palette"
+    },
+    "docs/10-concepts/kyma-environment-468c2f3.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments",
+      "title": "Kyma Environment"
+    },
+    "docs/10-concepts/kyma-functionalities-4b83be9.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma Functionalities"
+    },
+    "docs/10-concepts/kyma-module-releases-95a4101.md": {
+      "doc_type": "reference",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma Module Releases"
+    },
+    "docs/10-concepts/kyma-modules-0dda141.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma Modules"
+    },
+    "docs/10-concepts/kyma-runtime-basic-concepts-4a0dd09.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Kyma Runtime: Basic Concepts"
+    },
+    "docs/10-concepts/practical-examples-of-joule-problem-solving-capabilities-e169e8b.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment > Joule in Kyma Dashboard",
+      "title": "Practical Examples of Joule Problem-Solving Capabilities"
+    },
+    "docs/10-concepts/regions-for-the-kyma-environment-557ec3a.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Regions",
+      "title": "Regions for the Kyma Environment"
+    },
+    "docs/10-concepts/service-plans-and-metering-for-kyma-runtime-c33bb11.md": {
+      "doc_type": "concept",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment",
+      "title": "Service Plans and Metering for Kyma Runtime"
+    },
+    "docs/10-concepts/troubleshooting-for-kyma-dashboard-32d548c.md": {
+      "doc_type": "troubleshooting",
+      "section": "Basic Platform Concepts > Environments > Kyma Environment > Kyma Dashboard",
+      "title": "Troubleshooting for Kyma Dashboard"
+    },
+    "docs/20-getting-started/about-the-trial-kyma-instance-c4fff0f.md": {
+      "doc_type": "concept",
+      "section": "Getting Started > Getting Started in the Kyma Environment > Getting Started with a Trial Kyma Instance",
+      "title": "About the Trial Kyma Instance"
+    },
+    "docs/20-getting-started/getting-started-in-the-kyma-environment-d1abd18.md": {
+      "doc_type": "tutorial",
+      "section": "Getting Started",
+      "title": "Getting Started in the Kyma Environment"
+    },
+    "docs/20-getting-started/getting-started-with-a-trial-kyma-instance-ccb83c7.md": {
+      "doc_type": "tutorial",
+      "section": "Getting Started > Getting Started in the Kyma Environment",
+      "title": "Getting Started with a Trial Kyma Instance"
+    },
+    "docs/20-getting-started/getting-started-with-an-enterprise-account-in-the-kyma-environment-1903e9c.md": {
+      "doc_type": "tutorial",
+      "section": "Getting Started > Getting Started in the Kyma Environment",
+      "title": "Getting Started with an Enterprise Account in the Kyma Environment"
+    },
+    "docs/30-development/401-unauthorized-or-403-forbidden-c6b49c9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "401 Unauthorized or 403 Forbidden"
+    },
+    "docs/30-development/access-a-kyma-instance-using-kubectl-3e25944.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Access a Kyma Instance Using kubectl"
+    },
+    "docs/30-development/accessing-the-nats-server-using-cli-8eefbd5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > NATS Module",
+      "title": "Accessing the NATS Server Using CLI"
+    },
+    "docs/30-development/api-gateway-module-f323ab1.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "API Gateway Module"
+    },
+    "docs/30-development/apirule-v2-contains-a-changed-status-schema-de724af.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "APIRule v2 Contains a Changed Status Schema"
+    },
+    "docs/30-development/apirule-v2-doesn-t-contain-rules-bc6c348.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "APIRule v2 Doesn't Contain Rules"
+    },
+    "docs/30-development/apirule-v2alpha1-doesn-t-contain-rules-88fd826.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "APIRule v2alpha1 Doesn't Contain Rules"
+    },
+    "docs/30-development/apirules-are-missing-from-kyma-dashboard-6917514.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "APIRules Are Missing from Kyma Dashboard"
+    },
+    "docs/30-development/application-connector-module-4dadebe.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Application Connector Module"
+    },
+    "docs/30-development/authorizing-cloud-manager-in-the-remote-cloud-provider-e7ef5a3.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Cloud Manager Module > VPC Peering",
+      "title": "Authorizing Cloud Manager in the Remote Cloud Provider"
+    },
+    "docs/30-development/automatic-data-enrichment-6a13459.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Automatic Data Enrichment"
+    },
+    "docs/30-development/available-technology-a621e4a.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Available Technology"
+    },
+    "docs/30-development/blocked-in-cluster-communication-5d9c6f1.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "Blocked In-Cluster Communication"
+    },
+    "docs/30-development/certificate-management-issuer-not-created-ea750b9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "Certificate Management: Issuer Not Created"
+    },
+    "docs/30-development/changes-introduced-in-apirule-v2-aa34a4a.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Changes Introduced in APIRule v2"
+    },
+    "docs/30-development/choose-an-eventing-backend-08dfcdc.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Choose an Eventing Backend"
+    },
+    "docs/30-development/cloud-manager-module-617a1a9.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Cloud Manager Module"
+    },
+    "docs/30-development/cloud-manager-resources-2389f6f.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Cloud Manager Module",
+      "title": "Cloud Manager Resources"
+    },
+    "docs/30-development/collect-istio-metrics-aa786e0.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Metrics",
+      "title": "Collect Istio Metrics"
+    },
+    "docs/30-development/collect-prometheus-metrics-0afa66a.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Metrics",
+      "title": "Collect Prometheus Metrics"
+    },
+    "docs/30-development/collect-runtime-metrics-2c9fb6e.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Metrics",
+      "title": "Collect Runtime Metrics"
+    },
+    "docs/30-development/collecting-logs-7a5b627.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Collecting Logs"
+    },
+    "docs/30-development/collecting-metrics-44ac6c5.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Collecting Metrics"
+    },
+    "docs/30-development/collecting-traces-f98cda5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Collecting Traces"
+    },
+    "docs/30-development/configure-a-tls-gateway-87a874c.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Istio Gateways",
+      "title": "Configure a TLS Gateway"
+    },
+    "docs/30-development/configure-an-mtls-gateway-e7c6c6a.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Istio Gateways",
+      "title": "Configure an mTLS Gateway"
+    },
+    "docs/30-development/configure-application-logs-412866b.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Logs",
+      "title": "Configure Application Logs"
+    },
+    "docs/30-development/configure-istio-access-logs-808c167.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Logs",
+      "title": "Configure Istio Access Logs"
+    },
+    "docs/30-development/configure-istio-certificate-authority-ca-with-custom-certificates-00b052c.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Configure Istio Certificate Authority \\(CA\\) with Custom Certificates"
+    },
+    "docs/30-development/configure-istio-tracing-3f504d8.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Collecting Traces",
+      "title": "Configure Istio Tracing"
+    },
+    "docs/30-development/configure-observability-for-the-istio-service-mesh-d3f20b6.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Configure Observability for the Istio Service Mesh"
+    },
+    "docs/30-development/configure-sap-event-mesh-for-kyma-eventing-407d126.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Configure SAP Event Mesh for Kyma Eventing"
+    },
+    "docs/30-development/configuring-keda-module-3cc1f25.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Keda Module",
+      "title": "Configuring Keda Module"
+    },
+    "docs/30-development/configuring-logging-123c965.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Configuring Logging"
+    },
+    "docs/30-development/configuring-logging-7f358d7.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Keda Module",
+      "title": "Configuring Logging"
+    },
+    "docs/30-development/configuring-registry-cache-eba1132.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Configuring Registry Cache"
+    },
+    "docs/30-development/configuring-serverless-b40a119.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Configuring Serverless"
+    },
+    "docs/30-development/connection-refused-errors-5b284d0.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Connection Refused Errors"
+    },
+    "docs/30-development/connection-refused-or-timeout-ae9ae92.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "Connection Refused or Timeout"
+    },
+    "docs/30-development/creating-service-instances-and-service-bindings-17bd304.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Creating Service Instances and Service Bindings"
+    },
+    "docs/30-development/creating-service-instances-or-bindings-fails-after-deleting-the-service-manager-binding-e7117e1.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Troubleshooting for the SAP BTP Operator Module",
+      "title": "Creating Service Instances or Bindings Fails After Deleting the Service Manager Binding"
+    },
+    "docs/30-development/customizing-the-default-credentials-and-access-15f22d5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Customizing the Default Credentials and Access"
+    },
+    "docs/30-development/default-configuration-and-limitations-of-the-api-gateway-module-42243b6.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Default Configuration and Limitations of the API Gateway Module"
+    },
+    "docs/30-development/default-istio-configuration-2269fc2.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Default Istio Configuration"
+    },
+    "docs/30-development/deleting-service-bindings-and-service-instances-5deca69.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Deleting Service Bindings and Service Instances"
+    },
+    "docs/30-development/deploy-workloads-in-the-kyma-environment-to-extend-sap-systems-fe4ba5b.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Deploy Workloads in the Kyma Environment to Extend SAP Systems"
+    },
+    "docs/30-development/develop-resilient-applications-in-the-kyma-runtime-7c9496c.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Develop Resilient Applications in the Kyma Runtime"
+    },
+    "docs/30-development/development-in-the-kyma-environment-606ec61.md": {
+      "doc_type": "concept",
+      "section": "Development",
+      "title": "Development in the Kyma Environment"
+    },
+    "docs/30-development/dns-proxying-b4bb316.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "DNS Proxying"
+    },
+    "docs/30-development/enable-and-disable-network-policies-for-the-application-connector-module-88a95d9.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Application Connector Module",
+      "title": "Enable and Disable Network Policies for the Application Connector Module"
+    },
+    "docs/30-development/enabling-istio-sidecar-proxy-injection-b3c6f1d.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Enabling Istio Sidecar Proxy Injection"
+    },
+    "docs/30-development/event-naming-and-cleanup-97f5d77.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Event Naming and Cleanup"
+    },
+    "docs/30-development/eventing-module-07b2d1d.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Eventing Module"
+    },
+    "docs/30-development/expose-a-workload-with-noauth-8b48971.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads > noAuth Configuration",
+      "title": "Expose a Workload with noAuth"
+    },
+    "docs/30-development/expose-and-secure-a-workload-with-a-jwt-using-sap-cloud-identity-services-4464329.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Expose and Secure a Workload with a JWT Using SAP Cloud Identity Services"
+    },
+    "docs/30-development/expose-and-secure-a-workload-with-a-jwt-using-sap-cloud-identity-services-44bb2d3.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads > JWT Validation",
+      "title": "Expose and Secure a Workload with a JWT Using SAP Cloud Identity Services"
+    },
+    "docs/30-development/expose-and-secure-a-workload-with-oauth2-proxy-external-authorizer-authorization-code-flo-a829516.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads > External Authorization",
+      "title": "Expose and Secure a Workload with OAuth2 Proxy External Authorizer \\(Authorization Code Flow\\)"
+    },
+    "docs/30-development/expose-and-secure-a-workload-with-oauth2-proxy-external-authorizer-client-credentials-flo-4dea5d5.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads > External Authorization",
+      "title": "Expose and Secure a Workload with OAuth2 Proxy External Authorizer \\(Client Credentials Flow\\)"
+    },
+    "docs/30-development/expose-and-secure-workloads-19e332b.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Expose and Secure Workloads"
+    },
+    "docs/30-development/expose-workloads-using-gateway-api-0c0ec74.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Expose Workloads Using Gateway API"
+    },
+    "docs/30-development/expose-workloads-using-oauth2-proxy-f2e9bf2.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Expose Workloads Using oauth2-proxy"
+    },
+    "docs/30-development/expose-workloads-with-istio-virtualservice-5484296.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Expose Workloads with Istio VirtualService"
+    },
+    "docs/30-development/expose-workloads-with-istio-virtualservice-f059c23.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Expose Workloads with Istio VirtualService"
+    },
+    "docs/30-development/exposing-multiple-workloads-on-the-same-host-ac66329.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Exposing Multiple Workloads on the Same Host"
+    },
+    "docs/30-development/external-authorization-7f21c6a.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "External Authorization"
+    },
+    "docs/30-development/externalgateway-troubleshooting-8f30377.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "ExternalGateway Troubleshooting"
+    },
+    "docs/30-development/faq-01186fa.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "FAQ"
+    },
+    "docs/30-development/filter-logs-58445a0.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Filter Logs"
+    },
+    "docs/30-development/filter-metrics-6bd4bfd.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Filter Metrics"
+    },
+    "docs/30-development/filter-traces-6a03a1b.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Filter Traces"
+    },
+    "docs/30-development/filter-with-ottl-5f3107d.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data > Transform and Filter with OTTL",
+      "title": "Filter with OTTL"
+    },
+    "docs/30-development/filtering-and-processing-data-c86a5c6.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Filtering and Processing Data"
+    },
+    "docs/30-development/formatting-service-binding-secrets-4733eb5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Formatting Service Binding Secrets"
+    },
+    "docs/30-development/from-code-to-function-28d3d70.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "From Code to Function"
+    },
+    "docs/30-development/function-fails-to-start-with-customized-opentelemetry-dependencies-dbda6ba.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module > Troubleshooting for the Serverless Module",
+      "title": "Function Fails to Start With Customized OpenTelemetry Dependencies"
+    },
+    "docs/30-development/function-runtime-deprecation-schedule-0f9bb43.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Function Runtime Deprecation Schedule"
+    },
+    "docs/30-development/general-diagnostics-event-not-delivered-98ee233.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module > Troubleshooting for the Eventing Module",
+      "title": "General Diagnostics: Event Not Delivered"
+    },
+    "docs/30-development/general-diagnostics-nats-module-readiness-and-connectivity-8cdf63e.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > NATS Module > Troubleshooting for the NATS Module",
+      "title": "General Diagnostics: NATS Module Readiness and Connectivity"
+    },
+    "docs/30-development/git-source-certificate-signed-by-unknown-authority-425cdc9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module > Troubleshooting for the Serverless Module",
+      "title": "Git Source Certificate Signed by Unknown Authority"
+    },
+    "docs/30-development/http-add-on-returns-503-errors-during-cold-start-c1834fd.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Keda Module > Troubleshooting for the Keda Module",
+      "title": "HTTP Add-on Returns 503 Errors During Cold Start"
+    },
+    "docs/30-development/incompatible-sidecar-version-after-the-istio-module-s-update-31a52b9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Incompatible Sidecar Version After the Istio Module’s Update"
+    },
+    "docs/30-development/increase-verbosity-of-the-istio-ingress-logs-2ac8621.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Increase Verbosity of the Istio Ingress Logs"
+    },
+    "docs/30-development/init-containers-can-t-access-the-network-08507ba.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Init Containers Can’t Access the Network"
+    },
+    "docs/30-development/instance-level-mapping-d9e9c7f.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Working with Multiple Subaccounts",
+      "title": "Instance-Level Mapping"
+    },
+    "docs/30-development/integrate-with-sap-cloud-logging-eac5771.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Integrate With Your OTLP Backend",
+      "title": "Integrate With SAP Cloud Logging"
+    },
+    "docs/30-development/integrate-with-your-otlp-backend-e726417.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Integrate With Your OTLP Backend"
+    },
+    "docs/30-development/issues-when-creating-apirule-crs-f70ddbf.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "Issues when Creating APIRule CRs"
+    },
+    "docs/30-development/istio-gateways-8297fa1.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Istio Gateways"
+    },
+    "docs/30-development/istio-integration-d31499b.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Telemetry Architecture",
+      "title": "Istio Integration"
+    },
+    "docs/30-development/istio-module-26ffe00.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Istio Module"
+    },
+    "docs/30-development/istio-service-mesh-ca84edb.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Istio Service Mesh"
+    },
+    "docs/30-development/istio-sidecar-proxy-injection-issues-023c2e2.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Istio Sidecar Proxy Injection Issues"
+    },
+    "docs/30-development/istio-trust-domain-77eb15c.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Istio Trust Domain"
+    },
+    "docs/30-development/istio-version-db46fab.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Istio Version"
+    },
+    "docs/30-development/jwt-validation-50ea52b.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "JWT Validation"
+    },
+    "docs/30-development/keda-http-add-on-45cb806.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Keda Module",
+      "title": "KEDA HTTP Add-on"
+    },
+    "docs/30-development/keda-module-2f69be2.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Keda Module"
+    },
+    "docs/30-development/kyma-gateway-f515bd7.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Istio Gateways",
+      "title": "Kyma Gateway"
+    },
+    "docs/30-development/kyma-gateway-not-reachable-493acd0.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Troubleshooting for the API Gateway Module",
+      "title": "Kyma Gateway Not Reachable"
+    },
+    "docs/30-development/kyma-modules-db6b63f.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Kyma Modules"
+    },
+    "docs/30-development/logs-architecture-9124dfd.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Telemetry Architecture",
+      "title": "Logs Architecture"
+    },
+    "docs/30-development/manage-network-policies-7ab48f8.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Manage Network Policies"
+    },
+    "docs/30-development/manage-network-policies-ce322f8.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Manage Network Policies"
+    },
+    "docs/30-development/manage-subscriber-workload-with-max-in-flight-9f68be8.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Manage Subscriber Workload with Max-In-Flight"
+    },
+    "docs/30-development/managing-registry-cache-configuration-0771999.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Managing Registry Cache Configuration"
+    },
+    "docs/30-development/metrics-architecture-59d31e9.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Telemetry Architecture",
+      "title": "Metrics Architecture"
+    },
+    "docs/30-development/migrate-apirule-from-version-v1beta1-to-version-v2-f8df238.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Migrate APIRule from Version v1beta1 to Version v2"
+    },
+    "docs/30-development/migrate-apirule-v1beta1-of-type-jwt-to-version-v2-bcaec91.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Migrate APIRule v1beta1 of Type jwt to Version v2"
+    },
+    "docs/30-development/migrate-apirule-v1beta1-of-type-noop-allow-or-no-auth-to-version-v2-2b19ef5.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Migrate APIRule v1beta1 of Type noop, allow, or no\\_auth to Version v2"
+    },
+    "docs/30-development/migrate-apirule-v1beta1-of-type-oauth2-introspection-to-version-v2-394d18a.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Migrate APIRule v1beta1 of Type oauth2\\_introspection to Version v2"
+    },
+    "docs/30-development/migrate-multiple-apirules-targeting-the-same-workload-from-v1beta1-to-v2-b897dd3.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Migrate Multiple APIRules Targeting the Same Workload from v1beta1 to v2"
+    },
+    "docs/30-development/migrate-telemetry-pipelines-to-v1beta1-6ffa6c2.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Telemetry Pipeline API",
+      "title": "Migrate Telemetry Pipelines to v1beta1"
+    },
+    "docs/30-development/migrate-your-logpipeline-from-http-to-otlp-550a696.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Integrate With Your OTLP Backend",
+      "title": "Migrate Your LogPipeline From HTTP to OTLP"
+    },
+    "docs/30-development/migrating-service-instances-and-service-bindings-from-a-custom-sap-btp-service-operator-dbc019d.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Migrating Service Instances and Service Bindings from a Custom SAP BTP Service Operator"
+    },
+    "docs/30-development/monitor-pipeline-health-b56ed5c.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Monitor Pipeline Health"
+    },
+    "docs/30-development/mutual-tls-authentication-b274679.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Istio Gateways",
+      "title": "Mutual TLS Authentication"
+    },
+    "docs/30-development/namespace-level-mapping-63ad410.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Working with Multiple Subaccounts",
+      "title": "Namespace-Level Mapping"
+    },
+    "docs/30-development/nats-backend-storage-is-full-bb47681.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module > Troubleshooting for the Eventing Module",
+      "title": "NATS Backend Storage Is Full"
+    },
+    "docs/30-development/nats-module-2c504f5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "NATS Module"
+    },
+    "docs/30-development/network-connectivity-basic-diagnostics-2415e55.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Network Connectivity - Basic Diagnostics"
+    },
+    "docs/30-development/nfs-4783e94.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Cloud Manager Module",
+      "title": "NFS"
+    },
+    "docs/30-development/noauth-configuration-c4fddf6.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "noAuth Configuration"
+    },
+    "docs/30-development/optimizing-sidecars-8f4471d.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Optimizing Sidecars"
+    },
+    "docs/30-development/ordering-rules-in-apirule-v2-12b93c0.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Ordering Rules in APIRule v2"
+    },
+    "docs/30-development/passing-parameters-2cfd47c.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Passing Parameters"
+    },
+    "docs/30-development/pods-created-by-jobs-can-t-finish-f4265c6.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Pods Created by Jobs Can’t Finish"
+    },
+    "docs/30-development/preconfigured-credentials-and-access-ab106d7.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Preconfigured Credentials and Access"
+    },
+    "docs/30-development/providing-credentials-for-a-private-upstream-registry-57758d2.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Providing Credentials for a Private Upstream Registry"
+    },
+    "docs/30-development/published-events-are-pending-in-the-stream-a490b23.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > NATS Module > Troubleshooting for the NATS Module",
+      "title": "Published Events Are Pending in the Stream"
+    },
+    "docs/30-development/redis-6127744.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Cloud Manager Module",
+      "title": "Redis"
+    },
+    "docs/30-development/registry-cache-does-not-cache-images-from-a-private-registry-9aeafcf.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module > Troubleshooting for the Registry Cache Module",
+      "title": "Registry Cache Does Not Cache Images from a Private Registry"
+    },
+    "docs/30-development/registry-cache-module-cdca828.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Registry Cache Module"
+    },
+    "docs/30-development/regular-and-native-sidecar-containers-b1e4cd0.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Regular and Native Sidecar Containers"
+    },
+    "docs/30-development/resource-cr-missing-from-the-cluster-d113947.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Troubleshooting for the SAP BTP Operator Module",
+      "title": "Resource CR Missing from the Cluster"
+    },
+    "docs/30-development/restart-of-workloads-in-the-istio-service-mesh-b62ce80.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Istio Service Mesh",
+      "title": "Restart of Workloads in the Istio Service Mesh"
+    },
+    "docs/30-development/restrict-ip-based-access-8eccd49.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Restrict IP-Based Access"
+    },
+    "docs/30-development/retrieve-the-complete-spec-of-an-apirule-in-version-v1beta1-fefeb7f.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Migrate APIRule from Version v1beta1 to Version v2",
+      "title": "Retrieve the Complete spec of an APIRule in Version v1beta1"
+    },
+    "docs/30-development/reverting-the-istio-module-s-deletion-bf80b70.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "Reverting the Istio Module's Deletion"
+    },
+    "docs/30-development/rotating-credentials-d5848fd.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Rotating Credentials"
+    },
+    "docs/30-development/rotating-service-bindings-37ac30a.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Rotating Service Bindings"
+    },
+    "docs/30-development/sap-btp-operator-module-50347ea.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "SAP BTP Operator Module"
+    },
+    "docs/30-development/sap-hana-database-connection-issues-387b56a.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "SAP HANA Database Connection Issues"
+    },
+    "docs/30-development/serverless-buildless-mode-dc25fff.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Serverless Buildless Mode"
+    },
+    "docs/30-development/serverless-limitations-7007c61.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Serverless Limitations"
+    },
+    "docs/30-development/serverless-module-eb84ff5.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Serverless Module"
+    },
+    "docs/30-development/serverless-periodically-restarting-5b655d5.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module > Troubleshooting for the Serverless Module",
+      "title": "Serverless Periodically Restarting"
+    },
+    "docs/30-development/service-instance-not-updated-when-watched-parameters-secret-is-modified-2e4426b.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Troubleshooting for the SAP BTP Operator Module",
+      "title": "Service Instance Not Updated When Watched Parameters Secret Is Modified"
+    },
+    "docs/30-development/set-up-the-otlp-input-61567b7.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Set Up the OTLP Input"
+    },
+    "docs/30-development/short-host-name-dec7a0b.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Short Host Name"
+    },
+    "docs/30-development/subscribe-to-multiple-event-types-2c26713.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Subscribe to Multiple Event Types"
+    },
+    "docs/30-development/subscriber-receives-irrelevant-events-d4f3166.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module > Troubleshooting for the Eventing Module",
+      "title": "Subscriber Receives Irrelevant Events"
+    },
+    "docs/30-development/telemetry-architecture-04d79d5.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Telemetry Architecture"
+    },
+    "docs/30-development/telemetry-module-87ec550.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules",
+      "title": "Telemetry Module"
+    },
+    "docs/30-development/telemetry-pipeline-api-1617ebe.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Telemetry Pipeline API"
+    },
+    "docs/30-development/traces-architecture-5f650d7.md": {
+      "doc_type": "reference",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Telemetry Architecture",
+      "title": "Traces Architecture"
+    },
+    "docs/30-development/transform-and-filter-with-ottl-4c64598.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Transform and Filter with OTTL"
+    },
+    "docs/30-development/transform-with-ottl-f7bed2c.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data > Transform and Filter with OTTL",
+      "title": "Transform with OTTL"
+    },
+    "docs/30-development/transformation-to-otlp-logs-d013ab9.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module > Filtering and Processing Data",
+      "title": "Transformation to OTLP Logs"
+    },
+    "docs/30-development/troubleshooting-for-the-api-gateway-module-fd9415c.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module",
+      "title": "Troubleshooting for the API Gateway Module"
+    },
+    "docs/30-development/troubleshooting-for-the-eventing-module-3936cbd.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Eventing Module",
+      "title": "Troubleshooting for the Eventing Module"
+    },
+    "docs/30-development/troubleshooting-for-the-istio-module-6efcd13.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module",
+      "title": "Troubleshooting for the Istio Module"
+    },
+    "docs/30-development/troubleshooting-for-the-keda-module-7e798c9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Keda Module",
+      "title": "Troubleshooting for the Keda Module"
+    },
+    "docs/30-development/troubleshooting-for-the-nats-module-1c8c09e.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > NATS Module",
+      "title": "Troubleshooting for the NATS Module"
+    },
+    "docs/30-development/troubleshooting-for-the-registry-cache-module-cf4b990.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Troubleshooting for the Registry Cache Module"
+    },
+    "docs/30-development/troubleshooting-for-the-sap-btp-operator-module-6cbbaf9.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Troubleshooting for the SAP BTP Operator Module"
+    },
+    "docs/30-development/troubleshooting-for-the-serverless-module-f88cfeb.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Serverless Module",
+      "title": "Troubleshooting for the Serverless Module"
+    },
+    "docs/30-development/troubleshooting-for-the-telemetry-module-b86d7cb.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Telemetry Module",
+      "title": "Troubleshooting for the Telemetry Module"
+    },
+    "docs/30-development/updating-service-instances-dbf7960.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Updating Service Instances"
+    },
+    "docs/30-development/using-sap-btp-services-in-the-kyma-environment-ea4dd81.md": {
+      "doc_type": "tutorial",
+      "section": "Development > Development in the Kyma Environment",
+      "title": "Using SAP BTP Services in the Kyma Environment"
+    },
+    "docs/30-development/validation-of-registry-cache-configuration-b829b07.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Registry Cache Module",
+      "title": "Validation of Registry Cache Configuration"
+    },
+    "docs/30-development/vpc-peering-255e45e.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Cloud Manager Module",
+      "title": "VPC Peering"
+    },
+    "docs/30-development/wildcard-host-f1f7150.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > API Gateway Module > Expose and Secure Workloads",
+      "title": "Wildcard Host"
+    },
+    "docs/30-development/working-with-multiple-subaccounts-862dd6a.md": {
+      "doc_type": "concept",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module",
+      "title": "Working with Multiple Subaccounts"
+    },
+    "docs/30-development/you-cannot-delete-leftover-service-instances-and-bindings-dbe2fff.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > SAP BTP Operator Module > Troubleshooting for the SAP BTP Operator Module",
+      "title": "You Cannot Delete Leftover Service Instances and Bindings"
+    },
+    "docs/30-development/you-get-403-forbidden-if-host-header-contains-port-332987d.md": {
+      "doc_type": "troubleshooting",
+      "section": "Development > Development in the Kyma Environment > Kyma Modules > Istio Module > Troubleshooting for the Istio Module",
+      "title": "You Get 403 Forbidden if Host Header Contains Port"
+    },
+    "docs/40-extensions/accessibility-features-in-sap-s-4hana-cloud-extensibility-service-ee6842f.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Accessibility Features in SAP S/4HANA Cloud Extensibility Service"
+    },
+    "docs/40-extensions/accessibility-features-in-sap-successfactors-extensibility-service-f5ac692.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Accessibility Features in SAP SuccessFactors Extensibility Service"
+    },
+    "docs/40-extensions/api-access-configuration-json-file-543fbd6.md": {
+      "doc_type": "reference",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP SuccessFactors HXM Suite OData API",
+      "title": "API Access Configuration JSON File"
+    },
+    "docs/40-extensions/auditing-and-logging-information-b250a8d.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Auditing and Logging Information"
+    },
+    "docs/40-extensions/auditing-and-logging-information-d73ae90.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Auditing and Logging Information"
+    },
+    "docs/40-extensions/cannot-create-an-sap-s-4hana-cloud-extensibility-service-instance-of-the-messaging-plan-b8855ef.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Troubleshooting for SAP S/4HANA Cloud Extensibility Service",
+      "title": "Cannot create an SAP S/4HANA Cloud Extensibility Service Instance of the Messaging Plan"
+    },
+    "docs/40-extensions/communication-arrangement-json-file-examples-80a7613.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP S/4HANA Cloud APIs",
+      "title": "Communication Arrangement JSON File - Examples"
+    },
+    "docs/40-extensions/communication-arrangement-json-yaml-file-properties-553a4c6.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP S/4HANA Cloud APIs",
+      "title": "Communication Arrangement JSON/YAML File - Properties"
+    },
+    "docs/40-extensions/communication-arrangement-yaml-file-examples-1ab9bf6.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP S/4HANA Cloud APIs",
+      "title": "Communication Arrangement YAML File - Examples"
+    },
+    "docs/40-extensions/configure-event-topics-in-sap-s-4hana-cloud-f5bbc57.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Set Up the Connectivity Between Event Mesh and the SAP S/4HANA Cloud Tenant",
+      "title": "Configure Event Topics in SAP S/4HANA Cloud"
+    },
+    "docs/40-extensions/configure-sap-successfactors-as-a-trusted-identity-provider-in-sap-btp-80a3fd1.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Single Sign-On Between a Subaccount in SAP BTP and SAP SuccessFactors",
+      "title": "Configure SAP SuccessFactors as a Trusted Identity Provider in SAP BTP"
+    },
+    "docs/40-extensions/configure-the-entitlements-for-sap-event-mesh-b7e88ab.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events",
+      "title": "Configure the Entitlements for SAP Event Mesh"
+    },
+    "docs/40-extensions/configure-the-entitlements-for-the-sap-s-4hana-cloud-extensibility-service-65ad330.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Configure the Entitlements for the SAP S/4HANA Cloud Extensibility Service"
+    },
+    "docs/40-extensions/configure-the-entitlements-for-the-sap-successfactors-extensibility-service-b01e625.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Configure the Entitlements for the SAP SuccessFactors Extensibility Service"
+    },
+    "docs/40-extensions/configure-the-subaccount-as-a-trusted-service-provider-in-sap-successfactors-9efe2a1.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Single Sign-On Between a Subaccount in SAP BTP and SAP SuccessFactors",
+      "title": "Configure the Subaccount as a Trusted Service Provider in SAP SuccessFactors"
+    },
+    "docs/40-extensions/configuring-backup-974f741.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Configuring Backup"
+    },
+    "docs/40-extensions/configuring-backup-eec3818.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Configuring Backup"
+    },
+    "docs/40-extensions/create-a-service-instance-to-consume-the-sap-s-4hana-cloud-apis-a735641.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Create a Service Instance to Consume the SAP S/4HANA Cloud APIs"
+    },
+    "docs/40-extensions/create-a-service-instance-to-consume-the-sap-successfactors-hxm-suite-odata-api-46c5ea1.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Create a Service Instance to Consume the SAP SuccessFactors HXM Suite OData API"
+    },
+    "docs/40-extensions/create-an-sap-event-mesh-service-instance-in-the-cloud-foundry-environment-c2d4d87.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Enable the SAP Event Mesh Service for Your Subaccount in SAP BTP",
+      "title": "Create an SAP Event Mesh Service Instance in the Cloud Foundry Environment"
+    },
+    "docs/40-extensions/create-an-sap-event-mesh-service-instance-in-the-kyma-environment-3de02d2.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Enable the SAP Event Mesh Service for Your Subaccount in SAP BTP",
+      "title": "Create an SAP Event Mesh Service Instance in the Kyma Environment"
+    },
+    "docs/40-extensions/create-an-sap-s-4hana-cloud-extensibility-service-instance-in-the-cloud-foundry-environme-d866cf6.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP S/4HANA Cloud APIs",
+      "title": "Create an SAP S/4HANA Cloud Extensibility Service Instance in the Cloud Foundry Environment"
+    },
+    "docs/40-extensions/create-an-sap-s-4hana-cloud-extensibility-service-instance-in-the-kyma-environment-32bd423.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP S/4HANA Cloud APIs",
+      "title": "Create an SAP S/4HANA Cloud Extensibility Service Instance in the Kyma Environment"
+    },
+    "docs/40-extensions/create-an-sap-s-4hana-cloud-extensibility-service-instance-in-the-kyma-environment-55d876e.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Set Up the Connectivity Between Event Mesh and the SAP S/4HANA Cloud Tenant",
+      "title": "Create an SAP S/4HANA Cloud Extensibility Service Instance in the Kyma Environment"
+    },
+    "docs/40-extensions/create-an-sap-s-4hana-extensibility-service-instance-in-the-cloud-foundry-environment-531a909.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Set Up the Connectivity Between Event Mesh and the SAP S/4HANA Cloud Tenant",
+      "title": "Create an SAP S/4HANA Extensibility Service Instance in the Cloud Foundry Environment"
+    },
+    "docs/40-extensions/create-an-sap-successfactors-extensibility-service-instance-in-the-cloud-foundry-environm-8b774e4.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP SuccessFactors HXM Suite OData API",
+      "title": "Create an SAP SuccessFactors Extensibility Service Instance in the Cloud Foundry Environment"
+    },
+    "docs/40-extensions/create-an-sap-successfactors-extensibility-service-instance-in-the-kyma-environment-f371f81.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Create a Service Instance to Consume the SAP SuccessFactors HXM Suite OData API",
+      "title": "Create an SAP SuccessFactors Extensibility Service Instance in the Kyma Environment"
+    },
+    "docs/40-extensions/create-queues-and-subscribe-to-them-e54e609.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Enable the SAP Event Mesh Service for Your Subaccount in SAP BTP",
+      "title": "Create Queues and Subscribe to Them"
+    },
+    "docs/40-extensions/define-sap-event-mesh-service-descriptor-json-yaml-file-5722fc4.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Enable the SAP Event Mesh Service for Your Subaccount in SAP BTP",
+      "title": "Define SAP Event Mesh Service Descriptor JSON/YAML File"
+    },
+    "docs/40-extensions/define-sap-s-4hana-cloud-extensibility-service-descriptor-json-yaml-file-2d50d91.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events > Set Up the Connectivity Between Event Mesh and the SAP S/4HANA Cloud Tenant",
+      "title": "Define SAP S/4HANA Cloud Extensibility Service Descriptor JSON/YAML File"
+    },
+    "docs/40-extensions/enable-the-consumption-of-sap-s-4hana-cloud-events-d476ff0.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Enable the Consumption of SAP S/4HANA Cloud Events"
+    },
+    "docs/40-extensions/enable-the-sap-event-mesh-service-for-your-subaccount-in-sap-btp-fddd263.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events",
+      "title": "Enable the SAP Event Mesh Service for Your Subaccount in SAP BTP"
+    },
+    "docs/40-extensions/extending-sap-customer-experience-products-in-the-kyma-environment-83df31a.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions",
+      "title": "Extending SAP Customer Experience Products in the Kyma Environment"
+    },
+    "docs/40-extensions/extending-sap-marketing-cloud-in-the-cloud-foundry-and-kyma-environment-18bb3d9.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions",
+      "title": "Extending SAP Marketing Cloud in the Cloud Foundry and Kyma Environment"
+    },
+    "docs/40-extensions/extending-sap-s-4hana-cloud-in-the-cloud-foundry-and-kyma-environment-40b9e6c.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions",
+      "title": "Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment"
+    },
+    "docs/40-extensions/extending-sap-successfactors-in-the-cloud-foundry-and-kyma-environment-9e33934.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions",
+      "title": "Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment"
+    },
+    "docs/40-extensions/my-sap-s-4hana-cloud-extensibility-service-instance-failed-to-create-and-it-didn-t-say-wh-69889e4.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Troubleshooting for SAP S/4HANA Cloud Extensibility Service",
+      "title": "My SAP S/4HANA Cloud Extensibility Service Instance Failed to Create and It Didn't Say Why"
+    },
+    "docs/40-extensions/my-sap-successfactors-extensibility-service-instance-failed-to-create-and-it-didn-t-say-w-812de03.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Troubleshooting for SAP SuccessFactors Extensibility Service",
+      "title": "My SAP SuccessFactors Extensibility Service Instance Failed to Create and It Didn't Say Why"
+    },
+    "docs/40-extensions/my-sap-successfactors-odata-destination-does-not-work-cf26911.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Troubleshooting for SAP SuccessFactors Extensibility Service",
+      "title": "My SAP SuccessFactors OData Destination Does Not Work"
+    },
+    "docs/40-extensions/restore-configuration-settings-after-an-instance-refresh-4c1bf98.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Restore Configuration Settings After an Instance Refresh"
+    },
+    "docs/40-extensions/set-up-the-connectivity-between-event-mesh-and-the-sap-s-4hana-cloud-tenant-13c0366.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment > Enable the Consumption of SAP S/4HANA Cloud Events",
+      "title": "Set Up the Connectivity Between Event Mesh and the SAP S/4HANA Cloud Tenant"
+    },
+    "docs/40-extensions/setting-up-system-landscape-for-kyma-9154051.md": {
+      "doc_type": "tutorial",
+      "section": "Extensions and Integrations > Integrating SAP Solutions > Automating Integrations Using Formations",
+      "title": "Setting Up System Landscape for Kyma"
+    },
+    "docs/40-extensions/single-sign-on-between-a-subaccount-in-sap-btp-and-sap-successfactors-64da613.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Single Sign-On Between a Subaccount in SAP BTP and SAP SuccessFactors"
+    },
+    "docs/40-extensions/single-sign-on-configuration-json-file-5ec1e97.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment > Single Sign-On Between a Subaccount in SAP BTP and SAP SuccessFactors",
+      "title": "Single Sign-On Configuration JSON File"
+    },
+    "docs/40-extensions/supported-service-plans-for-sap-s-4hana-cloud-925c00a.md": {
+      "doc_type": "concept",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Supported Service Plans for SAP S/4HANA Cloud"
+    },
+    "docs/40-extensions/troubleshooting-for-sap-s-4hana-cloud-extensibility-service-3725f59.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP S/4HANA Cloud in the Cloud Foundry and Kyma Environment",
+      "title": "Troubleshooting for SAP S/4HANA Cloud Extensibility Service"
+    },
+    "docs/40-extensions/troubleshooting-for-sap-successfactors-extensibility-service-46f358f.md": {
+      "doc_type": "troubleshooting",
+      "section": "Extensions and Integrations > Extending SAP Solutions > Extending SAP SuccessFactors in the Cloud Foundry and Kyma Environment",
+      "title": "Troubleshooting for SAP SuccessFactors Extensibility Service"
+    },
+    "docs/50-administration-and-ops/access-kyma-application-logs-25180f4.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Access Kyma Application Logs"
+    },
+    "docs/50-administration-and-ops/accessing-your-audit-log-data-3f0002b.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Provisioning and Updating Parameters in the Kyma Environment",
+      "title": "Accessing Your Audit Log Data"
+    },
+    "docs/50-administration-and-ops/adapting-your-workloads-to-kyma-landscape-requirements-6bbd26b.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Adapting Your Workloads to Kyma Landscape Requirements"
+    },
+    "docs/50-administration-and-ops/adding-and-deleting-a-kyma-module-1b548e9.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Adding and Deleting a Kyma Module"
+    },
+    "docs/50-administration-and-ops/administration-and-operations-in-the-kyma-environment-b8e1686.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations",
+      "title": "Administration and Operations in the Kyma Environment"
+    },
+    "docs/50-administration-and-ops/admission-policies-2e02ddb.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Admission Policies"
+    },
+    "docs/50-administration-and-ops/assigning-kyma-instances-to-iaas-provider-accounts-ead08cd.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Available Plans in the Kyma Environment",
+      "title": "Assigning Kyma Instances to IaaS Provider Accounts"
+    },
+    "docs/50-administration-and-ops/assigning-workloads-to-worker-node-pools-1bf21c1.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Assigning Workloads to Worker Node Pools"
+    },
+    "docs/50-administration-and-ops/available-plans-in-the-kyma-environment-befe01d.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Available Plans in the Kyma Environment"
+    },
+    "docs/50-administration-and-ops/change-storage-size-in-kyma-027f5e2.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Change Storage Size in Kyma"
+    },
+    "docs/50-administration-and-ops/creating-kyma-instances-09dd313.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Creating Kyma Instances"
+    },
+    "docs/50-administration-and-ops/creating-on-demand-volume-snapshots-889bce3.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Kyma Environment Backup",
+      "title": "Creating On-Demand Volume Snapshots"
+    },
+    "docs/50-administration-and-ops/custom-openid-connect-configuration-97fc95d.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Provisioning and Updating Parameters in the Kyma Environment",
+      "title": "Custom OpenID Connect Configuration"
+    },
+    "docs/50-administration-and-ops/ingress-and-egress-ip-addresses-4d6a98c.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Ingress and Egress IP Addresses"
+    },
+    "docs/50-administration-and-ops/kyma-environment-backup-ab959cf.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Kyma Environment Backup"
+    },
+    "docs/50-administration-and-ops/kyma-modules-sizing-3a92490.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Kyma Modules' Sizing"
+    },
+    "docs/50-administration-and-ops/kyma-runtime-with-dual-stack-support-c9811ea.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Kyma Runtime with Dual-Stack Support"
+    },
+    "docs/50-administration-and-ops/managing-kyma-runtime-using-the-provisioning-service-api-f4afb1a.md": {
+      "doc_type": "tutorial",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Managing Kyma Runtime Using the Provisioning Service API"
+    },
+    "docs/50-administration-and-ops/provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md": {
+      "doc_type": "reference",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Provisioning and Updating Parameters in the Kyma Environment"
+    },
+    "docs/50-administration-and-ops/setting-your-module-to-the-unmanaged-and-managed-state-c071680.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Setting Your Module to the Unmanaged and Managed State"
+    },
+    "docs/50-administration-and-ops/taints-configuration-db28c29.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Provisioning and Updating Parameters in the Kyma Environment",
+      "title": "Taints Configuration"
+    },
+    "docs/50-administration-and-ops/tracking-kubeconfig-and-cluster-associations-in-kyma-f026eda.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment",
+      "title": "Tracking Kubeconfig and Cluster Associations in Kyma"
+    },
+    "docs/50-administration-and-ops/updating-kyma-environment-plans-64fa95a.md": {
+      "doc_type": "concept",
+      "section": "Administration and Operations > Administration and Operations in the Kyma Environment > Available Plans in the Kyma Environment",
+      "title": "Updating Kyma Environment Plans"
+    },
+    "docs/60-security/assign-roles-in-the-kyma-environment-148ae38.md": {
+      "doc_type": "tutorial",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment > Authorization in the Kyma Environment",
+      "title": "Assign Roles in the Kyma Environment"
+    },
+    "docs/60-security/auditing-and-logging-information-in-kyma-935e241.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment",
+      "title": "Auditing and Logging Information in Kyma"
+    },
+    "docs/60-security/authentication-in-the-kyma-environment-85200d8.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment",
+      "title": "Authentication in the Kyma Environment"
+    },
+    "docs/60-security/authorization-in-the-kyma-environment-bb31080.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment",
+      "title": "Authorization in the Kyma Environment"
+    },
+    "docs/60-security/clusterrole-aggregation-in-kyma-33883dd.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment > Authorization in the Kyma Environment",
+      "title": "ClusterRole Aggregation in Kyma"
+    },
+    "docs/60-security/configuring-a-custom-identity-provider-for-kyma-67bcc6e.md": {
+      "doc_type": "tutorial",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment > Authentication in the Kyma Environment",
+      "title": "Configuring a Custom Identity Provider for Kyma"
+    },
+    "docs/60-security/distributed-denial-of-service-protection-in-kyma-5e13d59.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Kyma Security Concepts",
+      "title": "Distributed Denial-of-Service Protection in Kyma"
+    },
+    "docs/60-security/function-security-43590d2.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Development in the Kyma Environment",
+      "title": "Function Security"
+    },
+    "docs/60-security/kubernetes-pod-security-recommendations-f8cb6e5.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Development in the Kyma Environment",
+      "title": "Kubernetes Pod Security Recommendations"
+    },
+    "docs/60-security/kyma-security-concepts-dbf4503.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment",
+      "title": "Kyma Security Concepts"
+    },
+    "docs/60-security/overwrite-kyma-administrators-df7f9d7.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment > Authorization in the Kyma Environment",
+      "title": "Overwrite Kyma Administrators"
+    },
+    "docs/60-security/payment-card-industry-data-security-standard-in-the-kyma-environment-1ece56b.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Kyma Security Concepts",
+      "title": "Payment Card Industry Data Security Standard in the Kyma Environment"
+    },
+    "docs/60-security/rbac-manifest-templates-for-kyma-f892faf.md": {
+      "doc_type": "reference",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment > Authorization in the Kyma Environment",
+      "title": "RBAC Manifest Templates for Kyma"
+    },
+    "docs/60-security/sap-s-access-to-your-kyma-environment-2a0a510.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Kyma Security Concepts",
+      "title": "SAP's Access to Your Kyma Environment"
+    },
+    "docs/60-security/secure-administration-and-operations-in-the-kyma-environment-a22ef28.md": {
+      "doc_type": "tutorial",
+      "section": "Security > Security in the Kyma Environment",
+      "title": "Secure Administration and Operations in the Kyma Environment"
+    },
+    "docs/60-security/secure-development-in-the-kyma-environment-ff51a32.md": {
+      "doc_type": "tutorial",
+      "section": "Security > Security in the Kyma Environment",
+      "title": "Secure Development in the Kyma Environment"
+    },
+    "docs/60-security/security-in-the-kyma-environment-ee08fdf.md": {
+      "doc_type": "concept",
+      "section": "Security",
+      "title": "Security in the Kyma Environment"
+    },
+    "docs/60-security/security-vulnerability-management-in-the-kyma-environment-b1b0a64.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Kyma Security Concepts",
+      "title": "Security Vulnerability Management in the Kyma Environment"
+    },
+    "docs/60-security/verify-image-signatures-in-the-kyma-environment-4c78f58.md": {
+      "doc_type": "concept",
+      "section": "Security > Security in the Kyma Environment > Secure Administration and Operations in the Kyma Environment",
+      "title": "Verify Image Signatures in the Kyma Environment"
+    },
+    "docs/70-getting-support/comparison-between-the-operating-models-of-kyma-and-cloud-foundry-runtimes-3978f94.md": {
+      "doc_type": "concept",
+      "section": "Getting Support > Operating Model",
+      "title": "Comparison between the Operating Models of Kyma and Cloud Foundry Runtimes"
+    },
+    "docs/70-getting-support/operating-model-in-the-kyma-environment-862b96b.md": {
+      "doc_type": "concept",
+      "section": "Getting Support > Operating Model",
+      "title": "Operating Model in the Kyma Environment"
+    }
+  },
+  "repo": "SAP-docs/btp-cloud-platform",
+  "residue": [
+    "docs/10-concepts/account-model-8ed4a70.md",
+    "docs/10-concepts/basic-platform-concepts-73beb06.md",
+    "docs/10-concepts/bringing-your-corporate-identity-provider-for-platform-users-8980b91.md",
+    "docs/10-concepts/continuous-integration-and-delivery-ci-cd-fe74df5.md",
+    "docs/10-concepts/enterprise-accounts-171511c.md",
+    "docs/10-concepts/entitlements-and-quotas-00aa2c2.md",
+    "docs/10-concepts/platform-users-4401316.md",
+    "docs/10-concepts/programming-languages-730d82d.md",
+    "docs/10-concepts/regions-350356d.md",
+    "docs/10-concepts/regions-and-api-endpoints-available-for-the-cloud-foundry-environment-f344a57.md",
+    "docs/10-concepts/resilience-high-availability-and-disaster-recovery-e3ac4f7.md",
+    "docs/10-concepts/role-collections-and-roles-in-global-accounts-directories-and-subaccounts-0039cf0.md",
+    "docs/10-concepts/tools-abcae5b.md",
+    "docs/10-concepts/trial-accounts-and-free-tier-046f127.md",
+    "docs/10-concepts/user-and-member-management-cc1c676.md",
+    "docs/10-concepts/using-free-service-plans-524e108.md",
+    "docs/20-getting-started/getting-a-global-account-d61c281.md",
+    "docs/20-getting-started/getting-started-144e173.md",
+    "docs/30-development/automatic-creation-of-destination-configurations-be0acbf.md",
+    "docs/30-development/deploying-content-480a5a7.md",
+    "docs/30-development/developing-html5-applications-in-the-cloud-foundry-environment-11d77aa.md",
+    "docs/30-development/developing-sap-hana-in-the-cloud-foundry-environment-14224d7.md",
+    "docs/30-development/development-c2fec62.md",
+    "docs/30-development/development-in-the-cloud-foundry-environment-40a8f8f.md",
+    "docs/30-development/html5-application-repository-f8520f5.md",
+    "docs/30-development/logout-2296b4d.md",
+    "docs/40-extensions/adding-registering-and-deregistering-systems-2ffdaff.md",
+    "docs/40-extensions/automating-integrations-using-formations-68b04fa.md",
+    "docs/40-extensions/extending-sap-solutions-346864d.md",
+    "docs/40-extensions/extensibility-and-integration-concepts-3ce5e05.md",
+    "docs/40-extensions/extensions-and-integrations-08b1eff.md",
+    "docs/40-extensions/integrating-sap-solutions-3414bbc.md",
+    "docs/40-extensions/maintaining-unified-customer-landscape-a8b1e26.md",
+    "docs/40-extensions/register-an-sap-customer-experience-system-1582d72.md",
+    "docs/40-extensions/setting-up-system-landscape-for-sap-build-6424311.md",
+    "docs/40-extensions/setting-up-system-landscape-for-sap-business-application-studio-272ca23.md",
+    "docs/50-administration-and-ops/account-administration-5d62ec8.md",
+    "docs/50-administration-and-ops/add-members-to-your-subaccount-1e1b7b6.md",
+    "docs/50-administration-and-ops/administration-and-operations-e183664.md",
+    "docs/50-administration-and-ops/configuration-for-using-the-resource-consumption-apis-in-the-sap-business-accelerator-h-4bfe9c7.md",
+    "docs/50-administration-and-ops/configure-entitlements-and-quotas-for-subaccounts-5ba357b.md",
+    "docs/50-administration-and-ops/connect-to-the-mcp-server-for-sap-btp-administration-26262f3.md",
+    "docs/50-administration-and-ops/establish-trust-and-federation-of-custom-identity-providers-for-platform-users-c368984.md",
+    "docs/50-administration-and-ops/getting-an-access-token-for-sap-cloud-management-service-apis-3670474.md",
+    "docs/50-administration-and-ops/managing-entitlements-and-quotas-using-the-cockpit-c824874.md",
+    "docs/50-administration-and-ops/working-with-environments-using-the-btp-cli-48db155.md",
+    "docs/60-security/security-e129aa2.md",
+    "docs/60-security/what-is-the-sap-authorization-and-trust-management-service-649961f.md",
+    "docs/70-getting-support/getting-support-5dd7398.md",
+    "docs/70-getting-support/operating-model-9aafc94.md",
+    "docs/70-getting-support/platform-updates-and-notifications-99070c7.md",
+    "docs/70-getting-support/support-components-08d1103.md",
+    "docs/glossary-e67a143.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

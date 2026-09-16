@@ -1,0 +1,110 @@
+{
+  "base_url": "https://github.com/kyma-project/busola/blob/b544ab6d3b1afdf99443741a5d420aef867b0691",
+  "commit": "b544ab6d3b1afdf99443741a5d420aef867b0691",
+  "module": "busola",
+  "pages": {
+    "docs/custom-extensions/busola-web-components.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Custom Busola Web Components"
+    },
+    "docs/resource-validation/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Resource validation"
+    },
+    "docs/user/01-20-command-palette.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Command Palette"
+    },
+    "docs/user/01-30-extensibility.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Extensibility"
+    },
+    "docs/user/01-40-deploy-access-kubernetes.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Deploying and Accessing Busola in a Kubernetes Cluster"
+    },
+    "docs/user/01-41-deploy-access-k3d.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Deploying and Accessing Busola in k3d"
+    },
+    "docs/user/01-42-configuring-busola-deployment.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Configuring Busola Deployment"
+    },
+    "docs/user/01-43-generate-token.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Generating a Token for Busola Instances"
+    },
+    "docs/user/01-50-terminal.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Terminal"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Dashboard"
+    },
+    "docs/user/technical-reference/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Technical Reference"
+    },
+    "docs/user/technical-reference/configuration.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Configuration"
+    },
+    "docs/user/technical-reference/feature-flags.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Feature Flags"
+    },
+    "docs/user/troubleshooting-guides/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting Guides"
+    },
+    "docs/user/troubleshooting-guides/cannot-connect-to-cluster.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Cannot Connect to Cluster"
+    },
+    "docs/user/troubleshooting-guides/cannot-find-resource.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Cannot Find Resource"
+    },
+    "docs/user/troubleshooting-guides/connectivity-issues-k3d.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Connectivity Issues K3d"
+    },
+    "docs/user/troubleshooting-guides/ssl-issue.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "SSL Issue"
+    },
+    "docs/user/tutorials/01-51-terminal-tutorial-curl.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Checking Services with curl in the Terminal"
+    }
+  },
+  "repo": "kyma-project/busola",
+  "residue": [
+    "docs/custom-extensions/assets/DynamicPage.png",
+    "docs/custom-extensions/assets/MonacoEditor.png",
+    "docs/resource-validation/assets/customize-policy-preferences.png"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

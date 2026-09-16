@@ -1,0 +1,31 @@
+{
+  "base_url": "https://github.com/kyma-project/modulectl/blob/d0ad99045a88818f5eaa5ce702e1fe09e66dfd2d",
+  "commit": "d0ad99045a88818f5eaa5ce702e1fe09e66dfd2d",
+  "module": "modulectl",
+  "pages": {
+    "docs/gen-docs/modulectl.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "modulectl"
+    },
+    "docs/gen-docs/modulectl_create.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "modulectl create"
+    },
+    "docs/gen-docs/modulectl_scaffold.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "modulectl scaffold"
+    },
+    "docs/gen-docs/modulectl_version.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "modulectl version"
+    }
+  },
+  "repo": "kyma-project/modulectl",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

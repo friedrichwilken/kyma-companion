@@ -1,0 +1,51 @@
+{
+  "base_url": "https://github.com/kyma-project/registry-cache/blob/c3d7e12dde191450c467b65ae1f6846acb9ba14f",
+  "commit": "c3d7e12dde191450c467b65ae1f6846acb9ba14f",
+  "module": "registry-cache",
+  "pages": {
+    "README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Registry Cache"
+    },
+    "docs/user/01-10-configure-registry-cache.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Configure Registry Cache"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Registry Cache Module"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/resources/RegistryCache.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "RegistryCache"
+    },
+    "docs/user/resources/RegistryCacheConfig.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "RegistryCacheConfig"
+    },
+    "docs/user/troubleshooting/01-10-incorrect-credentials.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting",
+      "title": "Registry Cache Does Not Cache Images from Private Registry"
+    },
+    "docs/user/troubleshooting/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting"
+    }
+  },
+  "repo": "kyma-project/registry-cache",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

@@ -17,3 +17,5 @@ on `feat/docs-stack` and `feat/curated-docs`.
 | 8 | 92.77% | run-8-2026-09-15T23-32-47Z.txt |
 | 9 | 94.46% | run-9-2026-09-15T23-56-22Z.txt |
 | 10 | 93.07% | run-10-2026-09-16T00-20-29Z.txt |
+
+Also here: `doc_search_logs.json`, the 145 `doc_search` log entries (query and top-5 results) from the same runs.

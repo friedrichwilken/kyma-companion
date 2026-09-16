@@ -1,0 +1,88 @@
+{
+  "base_url": "https://github.com/kyma-project/eventing-manager/blob/2c8aaf6d35375df777764b87ddae555ec44abbd4",
+  "commit": "2c8aaf6d35375df777764b87ddae555ec44abbd4",
+  "module": "eventing-manager",
+  "pages": {
+    "README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Eventing Manager"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Eventing Module"
+    },
+    "docs/user/evnt-event-names.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Event Naming and Cleanup"
+    },
+    "docs/user/evnt-eventing-metrics.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Eventing Metrics"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/resources/eventing-cr.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Eventing CR"
+    },
+    "docs/user/resources/subscription-cr.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Subscription CR"
+    },
+    "docs/user/troubleshooting/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting for the Eventing Module"
+    },
+    "docs/user/troubleshooting/evnt-01-eventing-troubleshooting.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting for the Eventing Module",
+      "title": "General Diagnostics: Event Not Delivered"
+    },
+    "docs/user/troubleshooting/evnt-02-subscriber-irrelevant-events.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting for the Eventing Module",
+      "title": "Subscriber Receives Irrelevant Events"
+    },
+    "docs/user/troubleshooting/evnt-03-free-jetstream-storage.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting for the Eventing Module",
+      "title": "NATS Backend Storage Is Full"
+    },
+    "docs/user/tutorials/evnt-01-choose-backend.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Choose an Eventing Backend"
+    },
+    "docs/user/tutorials/evnt-01-configure-event-mesh.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Configure SAP Event Mesh for Kyma Eventing"
+    },
+    "docs/user/tutorials/evnt-02-subs-with-multiple-filters.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Subscribe to Multiple Event Types"
+    },
+    "docs/user/tutorials/evnt-04-change-max-in-flight-in-sub.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Manage Subscriber Workload with Max-In-Flight"
+    }
+  },
+  "repo": "kyma-project/eventing-manager",
+  "residue": [
+    "docs/user/tutorials/README.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

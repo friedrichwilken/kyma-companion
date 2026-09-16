@@ -1,0 +1,463 @@
+<!--{"metadata":{"publish":true}}-->
+
+# Additional Worker Node Pools
+
+To create an SAP BTP, Kyma runtime with additional worker node pools, specify the **additionalWorkerNodePools** provisioning parameter.
+To use the additional worker node pool feature, you must provide the following values: **name**, **machineType**, **haZones**, **autoScalerMin**, and **autoScalerMax**. Optionally, you can also configure [**labels**](#labels), [**annotations**](#annotations), [**taints**](#taints) and [**gvisor**](04-70-gvisor-container-runtime.md) for each pool.
+
+See the example:
+
+```bash
+   export VERSION=1.15.0
+   curl --request PUT "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+   --header 'X-Broker-API-Version: 2.14' \
+   --header 'Content-Type: application/json' \
+   --header "$AUTHORIZATION_HEADER" \
+   --header 'Content-Type: application/json' \
+   --data-raw "{
+       \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+       \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+       \"context\": {
+           \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+       },
+       \"parameters\": {
+           \"name\": \"$NAME\",
+           \"region\": \"$REGION\",
+           \"additionalWorkerNodePools\": [
+               {
+                   \"name\": \"worker-1\",
+                   \"machineType\": \"Standard_D2s_v5\",
+                   \"haZones\": true,
+                   \"autoScalerMin\": 3,
+                   \"autoScalerMax\": 20
+               },
+               {
+                   \"name\": \"worker-2\",
+                   \"machineType\": \"Standard_D4s_v5\",
+                   \"haZones\": false,
+                   \"autoScalerMin\": 1,
+                   \"autoScalerMax\": 1
+               }
+           ]
+       }
+   }"
+```
+
+If you do not provide the **additionalWorkerNodePools** list in the provisioning request, no additional worker node pools are created.
+
+If you do not provide the **additionalWorkerNodePools** list in the update request, the saved additional worker node pools stay unchanged.
+However, if you provide an empty list in the update request, all additional worker node pools are removed.
+If you rename your existing additional worker node pool, it is deleted, and a new one is created.
+
+The **haZones** property specifies whether high availability zones are supported. This setting is permanent and cannot be changed later. 
+
+With high availability enabled, resources are distributed across three zones to enhance fault tolerance.
+In this scenario, you must set **autoScalerMin** to at least `3`.
+
+If high availability is disabled, all resources are placed in a single, randomly selected zone. In this case, you can set **autoScalerMin** to `0` and **autoScalerMax** to `1`, which helps reduce costs. 
+However, it is not recommended for production environments. Setting the **autoScalerMin** value to 0 results in an automatic removal of the additional worker nodes depending on the current workload in the cluster.
+If there are no user workloads deployed onto the nodes associated with the given additional worker node pool, the nodes are removed automatically. The process should take around 30 minutes.
+
+See the following JSON example without the **additionalWorkerNodePools** list:
+
+```json
+{
+  "service_id" : "47c9dcbf-ff30-448e-ab36-d3bad66ba281",
+  "plan_id" : "4deee563-e5ec-4731-b9b1-53b42d855f0c",
+  "context" : {
+    "globalaccount_id" : {GLOBAL_ACCOUNT_ID}
+  },
+  "parameters" : {
+    "region": {REGION},
+    "name" : {CLUSTER_NAME}
+  }
+}
+```
+
+See the following JSON example, where the **additionalWorkerNodePools** is an empty list:
+
+```json
+{
+   "service_id" : "47c9dcbf-ff30-448e-ab36-d3bad66ba281",
+   "plan_id" : "4deee563-e5ec-4731-b9b1-53b42d855f0c",
+   "context" : {
+      "globalaccount_id" : {GLOBAL_ACCOUNT_ID}
+   },
+   "parameters" : {
+      "region": {REGION},
+      "name" : {CLUSTER_NAME},
+      "additionalWorkerNodePools": []
+   }
+}
+```
+
+To update additional worker node pools, provide a list of objects with values for the mandatory properties. Without these values, a validation error occurs.
+The update operation overwrites the additional worker node pools with the list provided in the JSON file. See the following scenario:
+
+1. An existing instance has the following additional worker node pools:
+
+    ```json
+    {
+      "additionalWorkerNodePools": [
+        {
+          "name": "worker-1",
+          "machineType": "Standard_D2s_v5",
+          "haZones": true,
+          "autoScalerMin": 3,
+          "autoScalerMax": 20
+        },
+        {
+          "name": "worker-2",
+          "machineType": "Standard_D4s_v5",
+          "haZones": false,
+          "autoScalerMin": 0,
+          "autoScalerMax": 1
+        }
+      ]
+    }
+    ```
+
+2. A user sends an update request (HTTP PUT) with the following JSON file in the payload:
+
+    ```json
+    {
+      "service_id": "47c9dcbf-ff30-448e-ab36-d3bad66ba281",
+      "plan_id": "4deee563-e5ec-4731-b9b1-53b42d855f0c",
+      "context": {
+        "globalaccount_id" : {GLOBAL_ACCOUNT_ID}
+      },
+      "parameters": {
+        "name" : {CLUSTER_NAME},
+        "additionalWorkerNodePools": [
+          {
+            "name": "worker-3",
+            "machineType": "Standard_D8s_v5",
+            "haZones": true,
+            "autoScalerMin": 10,
+            "autoScalerMax": 30
+          }
+        ]
+      }
+    }
+    ```
+
+3. The additional worker node pools are updated to include the values of the **additionalWorkerNodePools** list from the JSON file provided in the following update request:
+
+    ```json
+    {
+      "additionalWorkerNodePools": [
+        {
+          "name": "worker-3",
+          "machineType": "Standard_D8s_v5",
+          "haZones": true,
+          "autoScalerMin": 10,
+          "autoScalerMax": 30
+        }
+      ]
+    }
+    ```
+
+## Labels
+
+Each additional worker node pool supports an optional **labels** map. Labels are key-value pairs attached to worker nodes that you can use to identify, filter, and organize them.
+
+Each label entry has the following properties:
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| **{key}** | Yes | A valid Kubernetes label key of up to 63 characters, including alphanumeric characters, `-`, `_`, or `.`. Must start and end with an alphanumeric character. An optional DNS subdomain prefix of up to 253 characters must be separated by `/`. For example, `app.kubernetes.io/name`. |
+| **{value}** | No | A valid Kubernetes label value of up to 63 characters, including alphanumeric characters, `-`, `_`, or `.`. Must start and end with an alphanumeric character. Can be empty. |
+
+For the full format specification, see the [Kubernetes label syntax documentation](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set).
+
+### Provisioning with Labels
+
+To provision a cluster with labels in an additional worker node pool, run the following command:
+
+```bash
+curl --request PUT "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"name\": \"$NAME\",
+      \"region\": \"$REGION\",
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"labels\": {
+            \"env\": \"prod\",
+            \"team\": \"platform\"
+          }
+        }
+      ]
+    }
+  }"
+```
+
+### Updating Labels
+
+Label updates follow these rules:
+
+- If you omit the **labels** field for a worker node pool in the update request, the existing labels for that pool are removed.
+- If you set **labels** to an empty object (`{}`), the existing labels for that pool are also removed.
+- To update labels, provide the full desired set of labels — the update overwrites the existing labels for that pool.
+
+> ### Note:
+> You can't preserve existing labels without providing them explicitly in the update request.
+
+To remove all labels from a worker node pool, set **labels** to an empty object.
+
+```bash
+curl --request PATCH "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"labels\": {}
+        }
+      ]
+    }
+  }"
+```
+
+## Annotations
+
+Each additional worker node pool supports an optional **annotations** map. Annotations are key-value pairs used to attach arbitrary non-identifying metadata to worker nodes, such as tooling configuration or operational notes.
+
+Each annotation entry has the following properties:
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| **{key}** | Yes | A valid Kubernetes annotation key of up to 63 characters, including alphanumeric characters, `-`, `_`, or `.`. Must start and end with an alphanumeric character. An optional DNS subdomain prefix of up to 253 characters must be separated by `/`. For example, `app.kubernetes.io/component`. |
+| **{value}** | No | Any string. Annotation values are unrestricted. |
+
+For the full key format specification, see the [Kubernetes annotations syntax documentation](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/#syntax-and-character-set).
+
+### Provisioning with Annotations
+
+To provision a cluster with annotations in an additional worker node pool, run the following command:
+
+```bash
+curl --request PUT "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"name\": \"$NAME\",
+      \"region\": \"$REGION\",
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"annotations\": {
+            \"owner\": \"team-platform\",
+            \"cost-center\": \"12345\"
+          }
+        }
+      ]
+    }
+  }"
+```
+
+### Updating Annotations
+
+Annotation updates follow these rules:
+
+- If you omit the **annotations** field for a worker node pool in the update request, the existing annotations for that pool are removed.
+- If you set **annotations** to an empty object (`{}`), the existing annotations for that pool are also removed.
+- To update annotations, provide the full desired set of annotations — the update overwrites the existing annotations for that pool.
+
+> ### Note:
+> You can't preserve existing annotations without providing them explicitly in the update request.
+
+To remove all annotations from a worker node pool, set **annotations** to an empty object.
+
+```bash
+curl --request PATCH "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"annotations\": {}
+        }
+      ]
+    }
+  }"
+```
+
+## Taints
+
+Each additional worker node pool supports an optional **taints** list. With taints, you can control which workloads are scheduled to nodes in a given worker pool.
+
+Each taint object has the following properties:
+
+| Property | Required | Allowed values |
+|----------|----------|----------------|
+| **key** | Yes | A valid Kubernetes taint key of up to 63 characters, including alphanumeric characters, `-`, `_`, or `.`. Must start and end with an alphanumeric character. An optional DNS subdomain prefix of up to 253 characters must be separated by `/`. |
+| **value** | No | A valid Kubernetes taint value of up to 63 characters, including alphanumeric characters, `-`, `_`, or `.`. Must start and end with an alphanumeric character. |
+| **effect** | Yes | `NoSchedule`, `PreferNoSchedule`, `NoExecute` |
+
+
+The combination of **key** and **effect** must be unique within a single worker node pool. Using the same **key** with different **effect** values is allowed.
+
+### Provisioning with Taints
+
+To provision a cluster with taints in an additional worker node pool, run the following command:
+
+```bash
+curl --request PUT "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"name\": \"$NAME\",
+      \"region\": \"$REGION\",
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"taints\": [
+            {
+              \"key\": \"dedicated\",
+              \"value\": \"gpu\",
+              \"effect\": \"NoSchedule\"
+            },
+            {
+              \"key\": \"dedicated\",
+              \"value\": \"gpu\",
+              \"effect\": \"NoExecute\"
+            }
+          ]
+        }
+      ]
+    }
+  }"
+```
+
+### Updating Taints
+
+Taint updates follow these rules:
+
+- If you omit the **taints** field for a worker node pool in the update request, the existing taints for that pool are removed.
+- If you set **taints** to an empty list (`[]`), the existing taints for that pool are also removed.
+- To update taints, provide the full desired list of taints — the update overwrites the existing taints for that pool.
+
+> ### Note: 
+> You can't preserve existing taints without providing them explicitly in the update request.
+
+To update taints in an existing worker node pool, run the following command:
+
+```bash
+curl --request PATCH "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"taints\": [
+            {
+              \"key\": \"dedicated\",
+              \"value\": \"gpu\",
+              \"effect\": \"NoSchedule\"
+            }
+          ]
+        }
+      ]
+    }
+  }"
+```
+
+To remove all taints from a worker node pool, set **taints** to an empty list.
+
+```bash
+curl --request PATCH "https://$BROKER_URL/oauth/v2/service_instances/$INSTANCE_ID?accepts_incomplete=true" \
+  --header 'X-Broker-API-Version: 2.14' \
+  --header 'Content-Type: application/json' \
+  --header "$AUTHORIZATION_HEADER" \
+  --data-raw "{
+    \"service_id\": \"47c9dcbf-ff30-448e-ab36-d3bad66ba281\",
+    \"plan_id\": \"4deee563-e5ec-4731-b9b1-53b42d855f0c\",
+    \"context\": {
+      \"globalaccount_id\": \"$GLOBAL_ACCOUNT_ID\"
+    },
+    \"parameters\": {
+      \"additionalWorkerNodePools\": [
+        {
+          \"name\": \"worker-1\",
+          \"machineType\": \"Standard_D2s_v5\",
+          \"haZones\": true,
+          \"autoScalerMin\": 3,
+          \"autoScalerMax\": 20,
+          \"taints\": []
+        }
+      ]
+    }
+  }"
+```

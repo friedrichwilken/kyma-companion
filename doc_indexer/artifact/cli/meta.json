@@ -1,0 +1,253 @@
+{
+  "base_url": "https://github.com/kyma-project/cli/blob/ad83cf1a629e00971f64dd96cabd5a4fcad73cfe",
+  "commit": "ad83cf1a629e00971f64dd96cabd5a4fcad73cfe",
+  "module": "cli",
+  "pages": {
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma CLI"
+    },
+    "docs/user/gen-docs/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Commands"
+    },
+    "docs/user/gen-docs/kyma.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma"
+    },
+    "docs/user/gen-docs/kyma_alpha.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha"
+    },
+    "docs/user/gen-docs/kyma_alpha_authorize.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha authorize"
+    },
+    "docs/user/gen-docs/kyma_alpha_authorize_group.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha authorize group"
+    },
+    "docs/user/gen-docs/kyma_alpha_authorize_repository.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha authorize repository"
+    },
+    "docs/user/gen-docs/kyma_alpha_authorize_serviceaccount.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha authorize serviceaccount"
+    },
+    "docs/user/gen-docs/kyma_alpha_authorize_user.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha authorize user"
+    },
+    "docs/user/gen-docs/kyma_alpha_dashboard.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha dashboard"
+    },
+    "docs/user/gen-docs/kyma_alpha_dashboard_start.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha dashboard start"
+    },
+    "docs/user/gen-docs/kyma_alpha_dashboard_stop.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha dashboard stop"
+    },
+    "docs/user/gen-docs/kyma_alpha_diagnose.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha diagnose"
+    },
+    "docs/user/gen-docs/kyma_alpha_diagnose_cluster.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha diagnose cluster"
+    },
+    "docs/user/gen-docs/kyma_alpha_diagnose_istio.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha diagnose istio"
+    },
+    "docs/user/gen-docs/kyma_alpha_diagnose_logs.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha diagnose logs"
+    },
+    "docs/user/gen-docs/kyma_alpha_hana.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha hana"
+    },
+    "docs/user/gen-docs/kyma_alpha_hana_map.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha hana map"
+    },
+    "docs/user/gen-docs/kyma_alpha_kubeconfig.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha kubeconfig"
+    },
+    "docs/user/gen-docs/kyma_alpha_kubeconfig_generate.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha kubeconfig generate"
+    },
+    "docs/user/gen-docs/kyma_alpha_module.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha module"
+    },
+    "docs/user/gen-docs/kyma_alpha_module_catalog.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha module catalog"
+    },
+    "docs/user/gen-docs/kyma_alpha_module_list.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha module list"
+    },
+    "docs/user/gen-docs/kyma_alpha_module_pull.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha module pull"
+    },
+    "docs/user/gen-docs/kyma_alpha_provision.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha provision"
+    },
+    "docs/user/gen-docs/kyma_alpha_reference-instance.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma alpha reference-instance"
+    },
+    "docs/user/gen-docs/kyma_app.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma app"
+    },
+    "docs/user/gen-docs/kyma_app_push.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma app push"
+    },
+    "docs/user/gen-docs/kyma_completion.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma completion"
+    },
+    "docs/user/gen-docs/kyma_completion_bash.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma completion bash"
+    },
+    "docs/user/gen-docs/kyma_completion_fish.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma completion fish"
+    },
+    "docs/user/gen-docs/kyma_completion_powershell.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma completion powershell"
+    },
+    "docs/user/gen-docs/kyma_completion_zsh.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma completion zsh"
+    },
+    "docs/user/gen-docs/kyma_help.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma help"
+    },
+    "docs/user/gen-docs/kyma_module.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module"
+    },
+    "docs/user/gen-docs/kyma_module_add.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module add"
+    },
+    "docs/user/gen-docs/kyma_module_catalog.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module catalog"
+    },
+    "docs/user/gen-docs/kyma_module_delete.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module delete"
+    },
+    "docs/user/gen-docs/kyma_module_list.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module list"
+    },
+    "docs/user/gen-docs/kyma_module_manage.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module manage"
+    },
+    "docs/user/gen-docs/kyma_module_pull.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module pull"
+    },
+    "docs/user/gen-docs/kyma_module_unmanage.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma module unmanage"
+    },
+    "docs/user/gen-docs/kyma_version.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "kyma version"
+    },
+    "docs/user/tutorials/01-10-add-delete-modules.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Adding and Deleting a Kyma Module Using Kyma CLI"
+    },
+    "docs/user/tutorials/01-11-manage-unmanage-modules.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Setting Your Module to the Managed and Unmanaged State in Kyma CLI"
+    },
+    "docs/user/tutorials/01-20-app-push-command-usage.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Running an Application Using the `app push` Command"
+    },
+    "docs/user/tutorials/01-40-fast-prototyping-app-push.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Fast Prototyping on SAP BTP Kyma: App Push"
+    },
+    "docs/user/tutorials/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Tutorials"
+    }
+  },
+  "repo": "kyma-project/cli",
+  "residue": [
+    "docs/user/tutorials/01-30-image-import.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

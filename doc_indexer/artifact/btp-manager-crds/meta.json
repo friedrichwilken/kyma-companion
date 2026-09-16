@@ -1,0 +1,16 @@
+{
+  "base_url": "https://github.com/kyma-project/btp-manager/blob/711932847ae44b81bf8a32005f4483626aa89397",
+  "commit": "711932847ae44b81bf8a32005f4483626aa89397",
+  "module": "btp-manager-crds",
+  "pages": {
+    "reference/operator.kyma-project.io/btpoperator-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "BtpOperator (operator.kyma-project.io/v1alpha1)"
+    }
+  },
+  "repo": "kyma-project/btp-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

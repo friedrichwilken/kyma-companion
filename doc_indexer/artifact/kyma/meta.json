@@ -1,0 +1,106 @@
+{
+  "base_url": "https://github.com/kyma-project/kyma/blob/4e06725183f103b9abbe4fe00821bfe0cb3d5827",
+  "commit": "4e06725183f103b9abbe4fe00821bfe0cb3d5827",
+  "module": "kyma",
+  "pages": {
+    "README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": ""
+    },
+    "docs/01-overview/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Components"
+    },
+    "docs/01-overview/ui/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "What Are the UIs Available in Kyma?"
+    },
+    "docs/02-get-started/01-quick-install.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Quick Install"
+    },
+    "docs/02-get-started/08-uninstall-upgrade-kyma-module.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Uninstall and Upgrade Kyma with a Module"
+    },
+    "docs/02-get-started/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Get Started"
+    },
+    "docs/03-tutorials/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Dive In Deeper!"
+    },
+    "docs/04-operation-guides/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Keep the Vessel Afloat!"
+    },
+    "docs/04-operation-guides/operations/10-backup-kyma.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Back Up Kyma"
+    },
+    "docs/04-operation-guides/operations/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Operations"
+    },
+    "docs/04-operation-guides/troubleshooting/01-k3d-fails-on-linux.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Provisioning k3d Fails on a Linux Machine {docsify-ignore-all}"
+    },
+    "docs/04-operation-guides/troubleshooting/01-kube-troubleshoot-kubectl-port-forward.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Error for kubectl Port Forwarding"
+    },
+    "docs/04-operation-guides/troubleshooting/01-kyma-domain-unresolvable.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Domain Is Not Resolvable"
+    },
+    "docs/04-operation-guides/troubleshooting/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Troubleshooting"
+    },
+    "docs/04-operation-guides/troubleshooting/security/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Troubleshooting - Security"
+    },
+    "docs/04-operation-guides/troubleshooting/security/sec-01-certificates-gardener.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Issues with Certificates on Gardener"
+    },
+    "docs/06-modules/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Modules"
+    },
+    "docs/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "What Is Kyma"
+    },
+    "docs/glossary.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Glossary"
+    }
+  },
+  "repo": "kyma-project/kyma",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

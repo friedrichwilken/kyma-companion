@@ -1,0 +1,16 @@
+{
+  "base_url": "https://github.com/kyma-project/istio/blob/4427d7ba863973c2cea9da74ed8675c5c74aee77",
+  "commit": "4427d7ba863973c2cea9da74ed8675c5c74aee77",
+  "module": "istio-crds",
+  "pages": {
+    "reference/operator.kyma-project.io/istio-v1alpha2.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "Istio (operator.kyma-project.io/v1alpha2)"
+    }
+  },
+  "repo": "kyma-project/istio",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

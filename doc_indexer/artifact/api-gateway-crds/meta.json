@@ -1,0 +1,46 @@
+{
+  "base_url": "https://github.com/kyma-project/api-gateway/blob/b1bb813b06bc7b135aa6242572906d7dac9e0dd3",
+  "commit": "b1bb813b06bc7b135aa6242572906d7dac9e0dd3",
+  "module": "api-gateway-crds",
+  "pages": {
+    "reference/gateway.kyma-project.io/apirule-v1beta1.md": {
+      "doc_type": "reference",
+      "section": "gateway.kyma-project.io",
+      "title": "APIRule (gateway.kyma-project.io/v1beta1)"
+    },
+    "reference/gateway.kyma-project.io/apirule-v2.md": {
+      "doc_type": "reference",
+      "section": "gateway.kyma-project.io",
+      "title": "APIRule (gateway.kyma-project.io/v2)"
+    },
+    "reference/gateway.kyma-project.io/apirule-v2alpha1.md": {
+      "doc_type": "reference",
+      "section": "gateway.kyma-project.io",
+      "title": "APIRule (gateway.kyma-project.io/v2alpha1)"
+    },
+    "reference/gateway.kyma-project.io/externalgateway-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "gateway.kyma-project.io",
+      "title": "ExternalGateway (gateway.kyma-project.io/v1alpha1)"
+    },
+    "reference/gateway.kyma-project.io/ratelimit-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "gateway.kyma-project.io",
+      "title": "RateLimit (gateway.kyma-project.io/v1alpha1)"
+    },
+    "reference/oathkeeper.ory.sh/rule-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "oathkeeper.ory.sh",
+      "title": "Rule (oathkeeper.ory.sh/v1alpha1)"
+    },
+    "reference/operator.kyma-project.io/apigateway-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "APIGateway (operator.kyma-project.io/v1alpha1)"
+    }
+  },
+  "repo": "kyma-project/api-gateway",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

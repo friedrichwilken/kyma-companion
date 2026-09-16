@@ -1,0 +1,308 @@
+<!-- loio394d18a93f46456bb42444a195ea107c -->
+
+# Migrate `APIRule` *v1beta1* of Type *oauth2\_introspection* to Version *v2*
+
+Learn how to migrate an `APIRule` created in version *v1beta1* using the *oauth2\_introspection* handler to version *v2*. In `APIRule` *v2*, the *extAuth* handler replaces all Ory Oathkeeper-based handlers used in the *v1beta1* version. The instructions focus on *oauth2\_introspection* because it is the most popular Ory Oathkeeper-based handler.
+
+
+
+<a name="loio394d18a93f46456bb42444a195ea107c__prereq_migrate_oauth2"/>
+
+## Prerequisites
+
+-   You have read [Changes Introduced in APIRule v2](changes-introduced-in-apirule-v2-aa34a4a.md), which details the updates implemented in the new version of `APIRule`. If any of these changes affect your setup, you must consider them when migrating to `APIRule` *v2* and make the necessary adjustments.
+-   You have the Istio and API Gateway modules added.
+-   You have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl) and [`curl`](https://curl.se/).
+-   You have a deployed workload exposed by an `APIRule` in version *v1beta1*. The `APIRule` uses the *oauth2\_introspection* handler.
+
+    > ### Note:  
+    > The workload exposed by the `APIRule` in version *v2* must be a part of the Istio service mesh. See [Enable Istio Sidecar Proxy Injection](https://kyma-project.io/#/istio/user/tutorials/01-40-enable-sidecar-injection?id=enable-istio-sidecar-proxy-injection).
+
+
+
+
+<a name="loio394d18a93f46456bb42444a195ea107c__context_migrate_oauth2"/>
+
+## Context
+
+`APIRule` in version *v1beta1* is removed, and the API server no longer responds to requests for `APIRule`s in this version. To maintain support for your `APIRule`s, migrate to version *v2*.
+
+
+
+## Procedure
+
+1.  Retrieve a configuration of the `APIRule` in version *v1beta1* and save it for further modifications.
+
+    For instructions, see [Retrieve the Complete spec of an APIRule in Version v1beta1](retrieve-the-complete-spec-of-an-apirule-in-version-v1beta1-fefeb7f.md). See a sample of the retrieved `spec` in the YAML format. The following configuration uses the *oauth2\_introspection* handler to expose the HTTPBin service's `/anything` and `/.*` endpoints:
+
+    ```
+    host: httpbin.local.kyma.dev
+    service:
+      name: httpbin
+      namespace: test
+      port: 8000
+    gateway: kyma-gateway.kyma-system
+    rules:
+      - path: /anything
+        methods:
+          - POST
+        accessStrategies:
+          - handler: oauth2_introspection
+            config:
+              introspection_request_headers:
+                Authorization: Basic {ENCODED_CREDENTIALS}
+              introspection_url: https://{IAS_TENANT}.accounts.ondemand.com/oauth2/introspect
+              required_scope:
+                - write
+      - path: /.*
+        methods:
+          - GET
+        accessStrategies:
+          - handler: oauth2_introspection
+            config:
+              introspection_request_headers:
+                Authorization: Basic {ENCODED_CREDENTIALS}
+              introspection_url: https://{IAS_TENANT}.accounts.ondemand.com/oauth2/introspect
+              required_scope:
+                - read
+    ```
+
+    > ### Caution:  
+    > If multiple `APIRule`s target the same workload, you must perform an additional migration step to avoid traffic disruption. This step involves creating an additional, temporary `AuthorizationPolicy` before applying the first migrated `APIRule` *v2*. For detailed instructions, refer to [Migrate Multiple APIRules Targeting the Same Workload from v1beta1 to v2](migrate-multiple-apirules-targeting-the-same-workload-from-v1beta1-to-v2-b897dd3.md) before proceeding.
+
+2.  Deploy a service that acts as an external authorizer for Istio.
+
+    The following instructions use [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) with an OAuth2.0-compliant authorization server supporting OIDC discovery.
+
+    1.  Replace the placeholders and create the `values.yaml` file with the OAuth2 Proxy configuration.
+
+        ```
+        cat <<EOF > values.yaml
+        config:
+          clientID: {CLIENT_ID}
+          clientSecret: {CLIENT_SECRET}
+          cookieName: ""
+          cookieSecret: {COOKIE_SECRET}
+        
+        extraArgs:
+          auth-logging: true
+          cookie-domain: "{DOMAIN_TO_EXPOSE_WORKLOADS}"
+          cookie-samesite: lax
+          cookie-secure: false
+          force-json-errors: true
+          login-url: static://401
+          oidc-issuer-url: {OIDC_ISSUER_URL}
+          pass-access-token: true
+          pass-authorization-header: true
+          pass-host-header: true
+          pass-user-headers: true
+          provider: oidc
+          request-logging: true
+          reverse-proxy: true
+          scope: "{TOKEN_SCOPES}"
+          set-authorization-header: true
+          set-xauthrequest: true
+          skip-jwt-bearer-tokens: true
+          skip-oidc-discovery: false
+          skip-provider-button: true
+          standard-logging: true
+          upstream: static://200
+          whitelist-domain: "*.{DOMAIN_TO_EXPOSE_WORKLOADS}:*"
+        EOF
+        ```
+
+        The example shows the configuration of OAuth2 Proxy with the following parameters:
+
+        -   `CLIENT_SECRET`, `CLIENT_ID`, and `OIDC_ISSUER_URL`: To get them, follow the guide for getting a JSON Web Token \(JWT\).
+        -   `DOMAIN_TO_EXPOSE_WORKLOADS`: Refers to either a custom domain or the default domain `local.kyma.dev`.
+        -   `COOKIE_SECRET`: Generate using the following command:
+
+            ```
+            openssl rand -base64 32 | tr -- '+/' '-_'
+            ```
+
+        -   `TOKEN_SCOPES`: Specifies the OAuth scopes. Each provider has a default set of scopes that are used if you haven't configured custom scopes. For a list of options and further details, refer to the [OAuth2 Proxy documentation](https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/#config-options).
+
+    2.  To install OAuth2 Proxy with your configuration, use the [OAuth2 Proxy Helm chart](https://github.com/oauth2-proxy/manifests).
+
+        ```
+        kubectl create namespace oauth2-proxy
+        helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
+        helm upgrade --install oauth2-proxy oauth2-proxy/oauth2-proxy -f values.yaml -n oauth2-proxy
+        ```
+
+    3.  Register OAuth2 Proxy as an authorization provider in the Istio module.
+
+        ```
+        kubectl patch istio -n kyma-system default --type merge --patch '{"spec":{"config":{"authorizers":[{"name":"oauth2-proxy","port":80,"service":"oauth2-proxy.oauth2-proxy.svc.cluster.local","headers":{"inCheck":{"include":["x-forwarded-for", "cookie", "authorization"]}}}]}}}'
+        ```
+
+
+3.  Adjust the obtained configuration of the `APIRule` to use the *extAuth* handler in version *v2*.
+
+    The following `APIRule` example delegates token validation to the previously configured OAuth2 Proxy. Existing tokens stay valid throughout the migration, ensuring that the process does not disrupt any exposed or secured workloads.
+
+    If you previously used a legacy gateway name in any of the following formats, you must update it to the new format: `namespace/gateway-name`
+
+    -   `gateway-name.namespace.svc.cluster.local`
+    -   `gateway-name.namespace.svc.cluster`
+    -   `gateway-name.namespace.svc`
+    -   `gateway-name.namespace`
+    -   `gateway-name`
+
+    ```
+    apiVersion: gateway.kyma-project.io/v2
+    kind: APIRule
+    metadata:
+      name: httpbin
+      namespace: test
+    spec:
+      hosts:
+        - httpbin
+      service:
+        name: httpbin
+        namespace: test
+        port: 8000
+      gateway: kyma-system/kyma-gateway
+      rules:
+        - extAuth:
+            authorizers:
+              - oauth2-proxy
+          methods:
+            - POST
+          path: /anything
+        - extAuth:
+            authorizers:
+              - oauth2-proxy
+          methods:
+            - GET
+          path: /{**}
+    ```
+
+    > ### Note:  
+    > The `hosts` field accepts a short host name \(without a domain\). Additionally, the path `/.*` has been changed to `/{**}` because `APIRule` *v2* does not support regular expressions in the `spec.rules.path` field. For more information, see [Changes Introduced in APIRule v2](changes-introduced-in-apirule-v2-aa34a4a.md).
+
+4.  Update the `APIRule` to version *v2* by applying the adjusted configuration.
+
+    To verify the version of the applied `APIRule`, check the value of the `gateway.kyma-project.io/original-version` annotation in the `APIRule` `spec`. A value of *v2* indicates that the `APIRule` has been successfully migrated. To see the value, run:
+
+    ```
+    kubectl get apirules.gateway.kyma-project.io -n $NAMESPACE $APIRULE_NAME -oyaml
+    ```
+
+    The following output indicates that the `APIRule` is successfully migrated to version *v2*:
+
+    ```
+    apiVersion: gateway.kyma-project.io/v2
+    kind: APIRule
+    metadata:
+      annotations:
+        gateway.kyma-project.io/original-version: v2
+    ...
+    ```
+
+    > ### Caution:  
+    > Do not manually change the `gateway.kyma-project.io/original-version` annotation. This annotation is automatically updated when you apply your `APIRule` in version *v2*.
+
+5.  To preserve the internal traffic policy from the `APIRule` *v1beta1*, apply the following `AuthorizationPolicy`.
+
+    In `APIRule` *v2*, internal traffic is blocked by default. Without this `AuthorizationPolicy`, attempts to connect internally to the workload will result in an ***RBAC: access denied*** error. Ensure that the selector label is updated to match the target workload.
+
+
+    <table>
+    <tr>
+    <th valign="top">
+
+    Option
+    
+    </th>
+    <th valign="top">
+
+    Description
+    
+    </th>
+    </tr>
+    <tr>
+    <td valign="top">
+    
+    `{NAMESPACE}`
+    
+    </td>
+    <td valign="top">
+    
+    The namespace to which the `AuthorizationPolicy` applies. This namespace must include the target workload for which you allow internal traffic.
+    
+    </td>
+    </tr>
+    <tr>
+    <td valign="top">
+    
+    `{LABEL_KEY}`: `{LABEL_VALUE}`
+    
+    </td>
+    <td valign="top">
+    
+    Specify label selectors that match the target workload. For more information, see [Authorization Policy](https://istio.io/latest/docs/reference/config/security/authorization-policy/).
+    
+    </td>
+    </tr>
+    </table>
+    
+    ```
+    apiVersion: security.istio.io/v1
+    kind: AuthorizationPolicy
+    metadata:
+      name: allow-internal
+      namespace: {NAMESPACE}
+    spec:
+      selector:
+        matchLabels:
+          {LABEL_KEY}: {LABEL_VALUE}
+      action: ALLOW
+      rules:
+      - from:
+        - source:
+            notPrincipals: ["cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"]
+    ```
+
+6.  To retain the CORS configuration from the `APIRule` *v1beta1*, update the `APIRule` in version *v2* to include the same CORS settings.
+
+    For preflight requests to work correctly, you must explicitly add the *"OPTIONS"* method to the `rules.methods` field of your `APIRule` *v2*.
+
+    > ### Caution:  
+    > If you migrated multiple `APIRule`s that target the same workload, and you applied an additional `AuthorizationPolicy` to avoid traffic disruption during migration, delete it. For instructions, see the last point of the procedure in [Migrate Multiple APIRules Targeting the Same Workload from v1beta1 to v2](migrate-multiple-apirules-targeting-the-same-workload-from-v1beta1-to-v2-b897dd3.md).
+
+
+
+
+<a name="loio394d18a93f46456bb42444a195ea107c__result_oauth2_verify"/>
+
+## Results
+
+Verify access to your workload:
+
+-   Send a *GET* request to the exposed workload using JWT authentication:
+
+    ```
+    curl -ik -X GET https://{SUBDOMAIN}.{DOMAIN_NAME}/ip --header "Authorization:Bearer $ACCESS_TOKEN"
+    ```
+
+    If successful, the call returns the ***200 OK*** response code.
+
+-   Send a *POST* request to the exposed workload using JWT authentication:
+
+    ```
+    curl -ik -X POST https://{SUBDOMAIN}.{DOMAIN_NAME}/anything -d "test data" --header "Authorization:Bearer $ACCESS_TOKEN"
+    ```
+
+    If successful, the call returns the ***200 OK*** response code.
+
+-   Send a *POST* request to the exposed workload without JWT authentication:
+
+    ```
+    curl -ik -X POST https://{SUBDOMAIN}.{DOMAIN_NAME}/anything -d "test data"
+    ```
+
+    The call returns the ***401*** error code.
+
+

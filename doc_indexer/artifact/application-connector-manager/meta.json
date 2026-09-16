@@ -1,0 +1,151 @@
+{
+  "base_url": "https://github.com/kyma-project/application-connector-manager/blob/19d5fb20f22306ccc83f7ee402164fcdb70f63a8",
+  "commit": "19d5fb20f22306ccc83f7ee402164fcdb70f63a8",
+  "module": "application-connector-manager",
+  "pages": {
+    "README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Application Connector Manager"
+    },
+    "docs/user/00-10-architecture.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Architecture"
+    },
+    "docs/user/03-15-network-policies.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Network Policies"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Application Connector Module"
+    },
+    "docs/user/resources/04-10-application.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Application CR"
+    },
+    "docs/user/resources/04-20-compassconnection.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "CompassConnection CR"
+    },
+    "docs/user/resources/04-30-application-connector.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Application Connector CR"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/technical-reference/02-10-istio-gateway.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Istio Gateway"
+    },
+    "docs/user/technical-reference/02-20-application-gateway.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Application Gateway"
+    },
+    "docs/user/technical-reference/02-30-application-connectivity-validator.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Application Connectivity Validator"
+    },
+    "docs/user/technical-reference/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Technical Reference"
+    },
+    "docs/user/technical-reference/runtime-agent/03-10-ucl-connection.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference > Runtime Agent",
+      "title": "UCL Connection"
+    },
+    "docs/user/technical-reference/runtime-agent/03-20-configuring-runtime.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference > Runtime Agent",
+      "title": "Configuring Runtime"
+    },
+    "docs/user/technical-reference/runtime-agent/README.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Runtime Agent"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/01-100-reconnect-runtime-agent-with-compass.md": {
+      "doc_type": "tutorial",
+      "section": "Technical Reference > Runtime Agent > Tutorials",
+      "title": "Reconnect Runtime Agent with UCL"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/01-60-establish-secure-connection-with-compass.md": {
+      "doc_type": "tutorial",
+      "section": "Technical Reference > Runtime Agent > Tutorials",
+      "title": "Establish a Secure Connection with UCL"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/01-70-maintain-secure-connection-with-compass.md": {
+      "doc_type": "tutorial",
+      "section": "Technical Reference > Runtime Agent > Tutorials",
+      "title": "Maintain a Secure Connection with UCL"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/01-80-revoke-client-certificate.md": {
+      "doc_type": "tutorial",
+      "section": "Technical Reference > Runtime Agent > Tutorials",
+      "title": "Revoke a Client Certificate (RA)"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/01-90-configure-runtime-agent-with-compass.md": {
+      "doc_type": "tutorial",
+      "section": "Technical Reference > Runtime Agent > Tutorials",
+      "title": "Configure Runtime Agent with UCL"
+    },
+    "docs/user/technical-reference/runtime-agent/tutorials/README.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference > Runtime Agent",
+      "title": "Tutorials"
+    },
+    "docs/user/tutorials/01-00-integrate-external-system.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Integrate an External System with Kyma"
+    },
+    "docs/user/tutorials/01-10-create-application.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Create an Application CR"
+    },
+    "docs/user/tutorials/01-20-register-manage-services.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Register a Service"
+    },
+    "docs/user/tutorials/01-30-register-secured-api.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials > Register a Service",
+      "title": "Register a Secured API"
+    },
+    "docs/user/tutorials/01-40-call-registered-service-from-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Call a Registered External Service from Kyma"
+    },
+    "docs/user/tutorials/01-50-disable-tls-certificate-verification.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials > Register a Service",
+      "title": "Disable TLS Validation"
+    },
+    "docs/user/tutorials/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Tutorials"
+    }
+  },
+  "repo": "kyma-project/application-connector-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

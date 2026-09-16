@@ -1,0 +1,150 @@
+# Update Community Modules
+
+## Prerequisites
+
+> [!TIP]
+> The prerequisite is required only for Kyma CLI and kubectl updates. In Kyma dashboard, the available version is picked automatically.
+
+Check the available versions for your community module. Run `kyma module catalog` to list all available modules and their versions in the community modules catalog. Alternatively, you can check the [community modules catalog](https://kyma-project.github.io/community-modules/all-modules.yaml) directly.
+
+> [!WARNING]
+> Before updating a module, review the release notes and changelog for breaking changes or migration requirements. Some updates may require additional configuration or manual migration steps.
+
+## Context
+
+Unlike managed modules in SAP BTP, Kyma runtime, community modules are not automatically updated. Regularly update your community modules to:
+
+- Receive **security** patches and vulnerability fixes that protect your cluster and applications
+- Access the **latest** functionality, improvements, and capabilities added by the community
+- Benefit from **bug fixes** and stability improvements
+- Ensure **compatibility** with newer versions of Kyma modules and other dependencies
+- Take advantage of **performance** optimizations and efficiency improvements
+
+## Procedure
+
+You can update community modules using Kyma dashboard, Kyma CLI, or kubectl.
+
+<!-- tabs:start -->
+
+#### **Kyma Dashboard (Busola)**
+
+1. Go to Kyma dashboard. The URL is in the **Overview** section of your subaccount.
+
+2. Go to **Configuration** -> **Modules** and scroll down to the list of community modules. You can see the **Outdated** label next to modules with a newer version available.
+
+3. Choose **Update** next to a single module you want to update. Alternatively, you can choose **Update All** to update all outdated modules at once. By default, the operation deletes old ModuleTemplates. In the pop-up window, uncheck the **Delete old module templates** box to keep them.
+
+4. Choose **Update** to confirm the operation.
+
+5.  To verify the update:
+
+     * Wait for the module status to change to `Ready`.
+     * Verify that the version number has been updated.
+     * Check if the module is functioning correctly.
+
+#### **Kyma CLI**
+
+1. Check the available module versions in the module catalog.
+
+   ```bash
+   kyma module catalog
+   ```
+
+2. Check the currently installed modules and their versions.
+
+   ```bash
+   kyma module list
+   ```
+
+3. Pull a new ModuleTemplate for the community module you want to update.
+
+   ```bash
+   kyma module pull {MODULE_NAME} --version {NEW_VERSION} --namespace {NAMESPACE}
+   ```
+
+   Replace:
+
+   - `{MODULE_NAME}` with your module name (e.g., `cap-operator`)
+   - `{NEW_VERSION}` with the target version (e.g., `0.21.0`)
+   - `{NAMESPACE}` with the namespace where the ModuleTemplate should be stored (default: `default`)
+
+   Example:
+   
+   ```bash
+   kyma module pull cap-operator --version 0.21.0 --namespace default
+   ```
+
+4. Update the module.
+
+   ```bash
+   kyma module add {MODULE_NAME} --origin {NAMESPACE}/{MODULE_NAME}-{NEW_VERSION}
+   ```
+
+   Replace:
+   - `{MODULE_NAME}` with your module name
+   - `{NAMESPACE}` with the namespace where you pulled the ModuleTemplate (usually default)
+   - `{NEW_VERSION}` with the new version
+
+   Example:
+   ```bash
+   kyma module add cap-operator --origin default/cap-operator-0.21.0
+   ```
+
+5. Verify the update and check if your module shows the new version.
+
+   ```bash
+   kyma module list
+   ```
+
+#### **kubectl**
+
+1. Check the available module versions in the module catalog.
+
+   ```bash
+   curl -s https://kyma-project.github.io/community-modules/all-modules.yaml | grep -A 5 "moduleName: {MODULE_NAME}"
+   ```
+
+   Replace `{MODULE_NAME}` with your module name.
+
+2. Check the currently installed module version.
+
+   ```bash
+   kubectl get moduletemplate -A | grep {MODULE_NAME}
+   ```
+
+3. Apply all new ModuleTemplates.
+
+   ```bash
+   kubectl apply -f https://kyma-project.github.io/community-modules/all-modules.yaml
+   ```
+
+   Alternatively, if you know the specific module file URL, you can pull a new ModuleTemplate only for the module you want to update:
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/kyma-project/community-modules/main/modules/{MODULE_NAME}/{MODULE_NAME}-{NEW_VERSION}.yaml
+   ```
+
+   Replace:
+   - `{MODULE_NAME}` with your module name
+   - `{NEW_VERSION}` with the new version
+
+   Example:
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/kyma-project/community-modules/main/modules/cap-operator/cap-operator-0.21.0.yaml
+   ```
+
+4. Install the module operator by applying the manifest referenced in the ModuleTemplate's `spec.resources.rawManifest` field:
+
+   ```bash
+   kubectl apply -f <rawManifest_URL>
+   ```
+
+5. Verify that the new ModuleTemplate exists and the module operator deployment is running.
+
+   ```bash
+   kubectl get moduletemplate -A | grep {MODULE_NAME}
+   kubectl get deployment -n {MODULE_SYSTEM_NAMESPACE}
+   ```
+
+<!-- tabs:end -->

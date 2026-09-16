@@ -1,0 +1,1779 @@
+<!-- loiobefe01d5d8864e59bf847fa5a5f3d669 -->
+
+# Available Plans in the Kyma Environment
+
+Depending on your global account type, you have access to a different plan that specifies the cluster parameters for the Kyma environment.
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_mt2_vxz_1pb"/>
+
+## Trial
+
+The trial version of SAP BTP, Kyma runtime is available only on request. For more information, see [Getting Started with a Trial Kyma Instance](../20-getting-started/getting-started-with-a-trial-kyma-instance-ccb83c7.md).
+
+For details on the trial cluster specification, see [Scope and Limitations](../20-getting-started/about-the-trial-kyma-instance-c4fff0f.md#loioc4fff0f58f90424f8e0af28975ac7f0f__section_scope_limitations).
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_jl3_cdm_1qb"/>
+
+## Free
+
+The technical name of the plan is `free`. With the free service plans for Kyma, you can try out services in global accounts without any additional cost for 30 days. However, the free model account has certain limitations.
+
+-   The free plan offers you a one-node cluster and is only available on AWS.
+
+-   Only community support is available for free tier service plans and these are not subject to SLAs.
+
+-   Before you enable the Kyma environment, you must first assign it as an entitlement to your subaccount.
+
+-   You can use the free plan only once in a global account for up to 30 days.
+
+    > ### Remember:  
+    > Once you have started the free plan in a subaccount, you cannot use it in another subaccount within the same global account even though the 30-day period has not ended.
+
+-   The services you plan to use must be available in the same region as the subaccount for the Kyma runtime. If necessary, change the default subaccount region.
+
+-   The upgrade to the paid plan is not yet supported.
+
+
+For more information, read [Using Free Service Plans](../10-concepts/using-free-service-plans-524e108.md).
+
+> ### Remember:  
+> The parameters marked with an asterisk "\*" are mandatory.
+
+**Free Plan Specification**
+
+
+<table>
+<tr>
+<th valign="top">
+
+Parameter
+
+</th>
+<th valign="top">
+
+Description
+
+</th>
+<th valign="top">
+
+Supported Operation
+
+</th>
+<th valign="top">
+
+More Information
+
+</th>
+</tr>
+<tr>
+<td valign="top">
+
+*Cluster Name\**
+
+btp CLI parameter: `name`
+
+</td>
+<td valign="top">
+
+Defines the name of your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Cluster Name\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Cluster_Name)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Region\**
+
+btp CLI parameter: `region`
+
+</td>
+<td valign="top">
+
+Defines a region \(set of datacenters\) where your cluster runs.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Region\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Region)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Modules*
+
+btp CLI parameter: `modules`
+
+</td>
+<td valign="top">
+
+Defines which Kyma modules are provisioned in your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Modules](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Modules)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Networking*
+
+btp CLI parameter: `networking`
+
+</td>
+<td valign="top">
+
+Provides a custom IP range for worker nodes.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Networking](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Networking)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*OpenID Connect*
+
+btp CLI parameter: `oidc`
+
+</td>
+<td valign="top">
+
+Provides a custom Open ID Connect \(OIDC\) configuration.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[OpenID Connect \(OIDC\)](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_OIDC)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Administrators*
+
+btp CLI parameter: `administrators`
+
+</td>
+<td valign="top">
+
+Specifies the list of runtime administrators.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Administrators](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Administrators)
+
+</td>
+</tr>
+</table>
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_y4g_qld_hpb"/>
+
+## Standard: Amazon Web Services, Google Cloud, Microsoft Azure, and Alibaba Cloud
+
+The technical names of the standard enterprise plans are `aws`, `gcp`, `azure`, and `alicloud`.
+
+Within these plans, Kyma offers the high availability feature. For more information, see [Availability Zones in the Kyma Environment](../10-concepts/availability-zones-in-the-kyma-environment-a649bd9.md).
+
+> ### Note:  
+> To indicate that your Kyma runtime is used for production, select *Used for production* in your subaccount details. This setting allows SAP BTP, Kyma runtime operators to prioritize incidents and support cases affecting production subaccounts over subaccounts used for non-production purposes. See [Change Subaccount Details](change-subaccount-details-567d4a8.md).
+
+After your Kyma instance is created, you can switch from standard enterprise plans to build runtime plans within the same cloud provider. However, you can't switch from build runtime plans to the standard plans. For more information, see [Updating Kyma Environment Plans](updating-kyma-environment-plans-64fa95a.md).
+
+> ### Remember:  
+> The parameters marked with an asterisk "\*" are mandatory.
+
+**Standard Plan Specification**
+
+
+<table>
+<tr>
+<th valign="top">
+
+Parameter
+
+</th>
+<th valign="top">
+
+Description
+
+</th>
+<th valign="top">
+
+Supported Operation
+
+</th>
+<th valign="top">
+
+More Information
+
+</th>
+</tr>
+<tr>
+<td valign="top">
+
+*Cluster Name\**
+
+btp CLI parameter: `name`
+
+</td>
+<td valign="top">
+
+Defines the name of your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Cluster Name\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Cluster_Name)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Region\**
+
+btp CLI parameter: `region`
+
+</td>
+<td valign="top">
+
+Defines a region \(set of datacenters\) where your cluster runs.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Region\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Region)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Colocate Control Plane*
+
+btp CLI parameter: `colocateControlPlane`
+
+</td>
+<td valign="top">
+
+Allows you to have both the control plane and worker nodes in the same region.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Colocate Control Plane](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_shoot_and_seed)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Machine Type*
+
+btp CLI parameter: `machineType`
+
+</td>
+<td valign="top">
+
+Specifies the provider-specific virtual machine type.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Machine Type](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Machine_Type)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Min*
+
+btp CLI parameter: `autoScalerMin`
+
+</td>
+<td valign="top">
+
+Specifies the minimum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Min](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Min)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Max*
+
+btp CLI parameter: `autoScalerMax`
+
+</td>
+<td valign="top">
+
+Specifies the maximum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Max](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Max)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Modules*
+
+btp CLI parameter: `modules`
+
+</td>
+<td valign="top">
+
+Defines which Kyma modules are provisioned in your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Modules](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Modules)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Networking*
+
+btp CLI parameter: `networking`
+
+</td>
+<td valign="top">
+
+Provides a custom IP range for worker nodes.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Networking](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Networking)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*OpenID Connect*
+
+btp CLI parameter: `oidc`
+
+</td>
+<td valign="top">
+
+Provides a custom Open ID Connect \(OIDC\) configuration.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[OpenID Connect \(OIDC\)](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_OIDC)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Administrators*
+
+btp CLI parameter: `administrators`
+
+</td>
+<td valign="top">
+
+Specifies the list of runtime administrators.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Administrators](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Administrators)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Worker Node Pools*
+
+btp CLI parameter: `additionalWorkerNodePools`
+
+</td>
+<td valign="top">
+
+Defines a custom list of additional worker node pools.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Worker Node Pools](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_WN_Pools)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Access Control List* [<sup>1,</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_gcp) [<sup>2</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_alicloud)
+
+`accessControlList`
+
+</td>
+<td valign="top">
+
+Specifies the IP ranges that can access the Kubernetes API.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Access Control List](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Access_Control_List)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Volume Size* [<sup>2</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_alicloud)
+
+btp CLI parameter: `additionalVolumeSizeGi`
+
+</td>
+<td valign="top">
+
+Specifies extra disk space on top of the default volume size for a worker node pool.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Volume Size](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_Volume_Size)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Audit Log Access* [<sup>2</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_alicloud)
+
+btp CLI parameter: `auditLogAccess`
+
+</td>
+<td valign="top">
+
+Enables direct read access to your own audit log data using the SAP Audit Log Retrieval API v2.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Audit Log Access](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_audit_log_access)
+
+</td>
+</tr>
+</table>
+
+> ### Note:  
+> <sup>1</sup> Not available in the standard Google Cloud \(`gcp`\) plan.
+
+> ### Note:  
+> <sup>2</sup> Not available in the standard Alibaba Cloud \(`alicloud`\) plan or in the China \(North 3\) \(cf-cn20\) region in the Microsoft Azure \(`azure`\) plan.
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_cvn_rkf_cbc"/>
+
+## SAP Cloud Infrastructure
+
+The technical name of this enterprise plan is `sap-converged-cloud`.
+
+> ### Remember:  
+> The parameters marked with an asterisk "\*" are mandatory.
+
+**SAP Cloud Infrastructure Plan Specification**
+
+
+<table>
+<tr>
+<th valign="top">
+
+Parameter
+
+</th>
+<th valign="top">
+
+Description
+
+</th>
+<th valign="top">
+
+Supported Operation
+
+</th>
+<th valign="top">
+
+More Information
+
+</th>
+</tr>
+<tr>
+<td valign="top">
+
+*Cluster Name\**
+
+btp CLI parameter: `name`
+
+</td>
+<td valign="top">
+
+Defines the name of your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Cluster Name\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Cluster_Name)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Region\**
+
+btp CLI parameter: `region`
+
+</td>
+<td valign="top">
+
+Defines a region \(set of datacenters\) where your cluster runs.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Region\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Region)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Colocate Control Plane*
+
+btp CLI parameter: `colocateControlPlane`
+
+</td>
+<td valign="top">
+
+Allows you to have both the control plane and worker nodes in the same region.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Colocate Control Plane](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_shoot_and_seed)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Machine Type*
+
+btp CLI parameter: `machineType`
+
+</td>
+<td valign="top">
+
+Specifies the provider-specific virtual machine type.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Machine Type](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Machine_Type)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Min*
+
+btp CLI parameter: `autoScalerMin`
+
+</td>
+<td valign="top">
+
+Specifies the minimum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Min](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Min)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Max*
+
+btp CLI parameter: `autoScalerMax`
+
+</td>
+<td valign="top">
+
+Specifies the maximum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Max](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Max)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Modules*
+
+btp CLI parameter: `modules`
+
+</td>
+<td valign="top">
+
+Defines which Kyma modules are provisioned in your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Modules](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Modules)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Networking*
+
+btp CLI parameter: `networking`
+
+</td>
+<td valign="top">
+
+Provides a custom IP range for worker nodes.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Networking](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Networking)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*OpenID Connect*
+
+btp CLI parameter: `oidc`
+
+</td>
+<td valign="top">
+
+Provides a custom Open ID Connect \(OIDC\) configuration.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[OpenID Connect \(OIDC\)](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_OIDC)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Administrators*
+
+btp CLI parameter: `administrators`
+
+</td>
+<td valign="top">
+
+Specifies the list of runtime administrators.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Administrators](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Administrators)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Worker Node Pools*
+
+btp CLI parameter: `additionalWorkerNodePools`
+
+</td>
+<td valign="top">
+
+Defines a custom list of additional worker node pools.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Worker Node Pools](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_WN_Pools)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Access Control List* 
+
+btp CLI parameter: `accessControlList`
+
+</td>
+<td valign="top">
+
+Specifies the IP ranges that can access the Kubernetes API.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Access Control List](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Access_Control_List)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Volume Size*
+
+btp CLI parameter: `additionalVolumeSizeGi`
+
+</td>
+<td valign="top">
+
+Specifies extra disk space on top of the default volume size for a worker node pool.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Volume Size](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_Volume_Size)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Audit Log Access*
+
+btp CLI parameter: `auditLogAccess`
+
+</td>
+<td valign="top">
+
+Enables direct read access to your own audit log data using the SAP Audit Log Retrieval API v2.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Audit Log Access](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_audit_log_access)
+
+</td>
+</tr>
+</table>
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_hnj_3nz_bfc"/>
+
+## Build Runtime: Amazon Web Services, Google Cloud, Microsoft Azure, and Alibaba Cloud
+
+The technical names of these enterprise plans are `build-runtime-aws`, `build-runtime-gcp`, `build-runtime-azure`, and `build-runtime-alicloud`. Use them to integrate Kyma's functionalities within SAP Build. See the [SAP Build documentation](https://help.sap.com/docs/build-service/build-service-guide/what-is-sap-build?version=Cloud).
+
+You can switch from the standard enterprise plans to build runtime plans within the same cloud provider. For more information, see [Updating Kyma Environment Plans](updating-kyma-environment-plans-64fa95a.md).
+
+You can also use the build runtime plans within the [*Pay-As-You-Go for SAP BTP for cloud test, demo, and development*](https://partneredge.sap.com/en/profile/create-profile.html) commercial model. For details, see [Service Plans and Metering](https://help.sap.com/docs/build-service/build-service-guide/service-plans-and-metering?locale=en-US&version=Cloud).
+
+> ### Remember:  
+> The parameters marked with an asterisk "\*" are mandatory.
+
+**Build Runtime Plan Specification**
+
+
+<table>
+<tr>
+<th valign="top">
+
+Parameter
+
+</th>
+<th valign="top">
+
+Description
+
+</th>
+<th valign="top">
+
+Supported Operation
+
+</th>
+<th valign="top">
+
+More Information
+
+</th>
+</tr>
+<tr>
+<td valign="top">
+
+*Cluster Name\**
+
+btp CLI parameter: `name`
+
+</td>
+<td valign="top">
+
+Defines the name of your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Cluster Name\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Cluster_Name)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Region\**
+
+btp CLI parameter: `region`
+
+</td>
+<td valign="top">
+
+Defines a region \(set of datacenters\) where your cluster runs.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Region\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Region)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Colocate Control Plane*
+
+btp CLI parameter: `colocateControlPlane`
+
+</td>
+<td valign="top">
+
+Allows you to have both the control plane and worker nodes in the same region.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Colocate Control Plane](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_shoot_and_seed)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Machine Type*
+
+btp CLI parameter: `machineType`
+
+</td>
+<td valign="top">
+
+Specifies the provider-specific virtual machine type.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Machine Type](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Machine_Type)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Min*
+
+btp CLI parameter: `autoScalerMin`
+
+</td>
+<td valign="top">
+
+Specifies the minimum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Min](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Min)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Max*
+
+btp CLI parameter: `autoScalerMax`
+
+</td>
+<td valign="top">
+
+Specifies the maximum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Max](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Max)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Modules*
+
+btp CLI parameter: `modules`
+
+</td>
+<td valign="top">
+
+Defines which Kyma modules are provisioned in your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Modules](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Modules)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Networking*
+
+btp CLI parameter: `networking`
+
+</td>
+<td valign="top">
+
+Provides a custom IP range for worker nodes.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Networking](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Networking)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*OpenID Connect*
+
+btp CLI parameter: `oidc`
+
+</td>
+<td valign="top">
+
+Provides a custom Open ID Connect \(OIDC\) configuration.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[OpenID Connect \(OIDC\)](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_OIDC)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Administrators*
+
+btp CLI parameter: `administrators`
+
+</td>
+<td valign="top">
+
+Specifies the list of runtime administrators.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Administrators](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Administrators)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Worker Node Pools*
+
+btp CLI parameter: `additionalWorkerNodePools`
+
+</td>
+<td valign="top">
+
+Defines a custom list of additional worker node pools.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Worker Node Pools](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_WN_Pools)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Access Control List* [<sup>3,</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_br_gcp) [<sup>4</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_br_alicloud)
+
+`accessControlList`
+
+</td>
+<td valign="top">
+
+Specifies the IP ranges that can access the Kubernetes API.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Access Control List](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Access_Control_List)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Volume Size* [<sup>4</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_br_alicloud)
+
+btp CLI parameter: `additionalVolumeSizeGi`
+
+</td>
+<td valign="top">
+
+Specifies extra disk space on top of the default volume size for a worker node pool.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Volume Size](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_Volume_Size)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Audit Log Access* [<sup>4</sup>](available-plans-in-the-kyma-environment-befe01d.md#loiobefe01d5d8864e59bf847fa5a5f3d669__footnote_not_br_alicloud)
+
+btp CLI parameter: `auditLogAccess`
+
+</td>
+<td valign="top">
+
+Enables direct read access to your own audit log data using the SAP Audit Log Retrieval API v2.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Audit Log Access](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_audit_log_access)
+
+</td>
+</tr>
+</table>
+
+> ### Note:  
+> <sup>3</sup> Not available in the Build Runtime: Google Cloud \(`build-runtime-gcp`\) plan.
+
+> ### Note:  
+> <sup>4</sup> Not available in the Build Runtime: Alibaba Cloud \(`build-runtime-alicloud`\) plan.
+
+
+
+<a name="loiobefe01d5d8864e59bf847fa5a5f3d669__section_vbl_4w4_wsb"/>
+
+## Kyma Test Demo and Development \(Azure Lite\)
+
+The technical name of the plan is `azure_lite`. The Kyma Test Demo and Development plan is offered to Partners, within the [*Pay-As-You-Go for SAP BTP for cloud test, demo, and development*](https://partneredge.sap.com/en/profile/create-profile.html) commercial model. You can use this plan for testing, development, and demo purposes. In the SAP BTP cockpit, the plan is called "Kyma Runtime Partner TDD".
+
+> ### Remember:  
+> The parameters marked with an asterisk "\*" are mandatory.
+
+**Kyma Test Demo and Development Plan Specification**
+
+
+<table>
+<tr>
+<th valign="top">
+
+Parameter
+
+</th>
+<th valign="top">
+
+Description
+
+</th>
+<th valign="top">
+
+Supported Operation
+
+</th>
+<th valign="top">
+
+More Information
+
+</th>
+</tr>
+<tr>
+<td valign="top">
+
+*Cluster Name\**
+
+btp CLI parameter: `name`
+
+</td>
+<td valign="top">
+
+Defines the name of your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Cluster Name\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Cluster_Name)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Region\**
+
+btp CLI parameter: `region`
+
+</td>
+<td valign="top">
+
+Defines a region \(set of datacenters\) where your cluster runs.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Region\*](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Region)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Machine Type*
+
+btp CLI parameter: `machineType`
+
+</td>
+<td valign="top">
+
+Specifies the provider-specific virtual machine type.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Machine Type](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Machine_Type)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Min*
+
+btp CLI parameter: `autoScalerMin`
+
+</td>
+<td valign="top">
+
+Specifies the minimum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Min](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Min)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Auto Scaler Max*
+
+btp CLI parameter: `autoScalerMax`
+
+</td>
+<td valign="top">
+
+Specifies the maximum number of virtual machines to create.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Auto Scaler Max](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Auto_Scaler_Max)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Modules*
+
+btp CLI parameter: `modules`
+
+</td>
+<td valign="top">
+
+Defines which Kyma modules are provisioned in your cluster.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Modules](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Modules)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Networking*
+
+btp CLI parameter: `networking`
+
+</td>
+<td valign="top">
+
+Provides a custom IP range for worker nodes.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Networking](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Networking)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*OpenID Connect*
+
+btp CLI parameter: `oidc`
+
+</td>
+<td valign="top">
+
+Provides a custom Open ID Connect \(OIDC\) configuration.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[OpenID Connect \(OIDC\)](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_OIDC)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Administrators*
+
+btp CLI parameter: `administrators`
+
+</td>
+<td valign="top">
+
+Specifies the list of runtime administrators.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Administrators](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Administrators)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Additional Worker Node Pools*
+
+btp CLI parameter: `additionalWorkerNodePools`
+
+</td>
+<td valign="top">
+
+Defines a custom list of additional worker node pools.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Additional Worker Node Pools](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_Additional_WN_Pools)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Colocate Control Plane*
+
+btp CLI parameter: `colocateControlPlane`
+
+</td>
+<td valign="top">
+
+Allows you to have both the control plane and worker nodes in the same region.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+</td>
+<td valign="top">
+
+[Colocate Control Plane](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_shoot_and_seed)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+*Audit Log Access*
+
+btp CLI parameter: `auditLogAccess`
+
+</td>
+<td valign="top">
+
+Enables direct read access to your own audit log data using the SAP Audit Log Retrieval API v2.
+
+</td>
+<td valign="top">
+
+Provisioning
+
+Updating
+
+</td>
+<td valign="top">
+
+[Audit Log Access](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md#loioe2e13bfaa2f54a4fb179f0f1f840353a__section_audit_log_access)
+
+</td>
+</tr>
+</table>
+
+**Related Information**  
+
+
+[Provisioning and Updating Parameters in the Kyma Environment](provisioning-and-updating-parameters-in-the-kyma-environment-e2e13bf.md "When creating a Kyma cluster, you can configure various parameters to adjust it to your specific needs.")
+
+[Regions for the Kyma Environment](../10-concepts/regions-for-the-kyma-environment-557ec3a.md "To work with the Kyma environment, you must specify the region for both your subaccount and the cluster.")
+
+[Kyma Modules](../10-concepts/kyma-modules-0dda141.md "With Kyma's modular approach, you can install just the modules you need, instead of a predefined set of components.")
+
+[Account Administration Using the SAP BTP Command Line Interface \(btp CLI\)](account-administration-using-the-sap-btp-command-line-interface-btp-cli-7c6df2d.md "Use the SAP BTP command line interface (btp CLI) for all account administration tasks, such as creating or updating subaccounts, authorization management, and working with service brokers and platforms. It is an alternative to the SAP BTP cockpit for users who like to work in a terminal or want to automate operations using scripts.")
+
+[Service Plans and Metering for Kyma Runtime](../10-concepts/service-plans-and-metering-for-kyma-runtime-c33bb11.md "This page explains the relationship between the service plans of the SAP Discovery Center and the service plans of the SAP BTP cockpit and provides information to help you understand how the service is billed.")
+
+[What Is the Consumption-Based Commercial Model?](../10-concepts/what-is-the-consumption-based-commercial-model-7047eb4.md "With the consumption-based model, your organization purchases an entitlement to all current and future SAP BTP services that are eligible for this model. Throughout the duration of your contract, you have complete flexibility to turn services on and off and to switch between services as your business requires.")
+

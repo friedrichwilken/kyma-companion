@@ -1,0 +1,152 @@
+{
+  "base_url": "https://github.com/sap-tutorials/btp-foundation/blob/d35b4782a244377121ab64084fe70f2c5afd4070",
+  "commit": "d35b4782a244377121ab64084fe70f2c5afd4070",
+  "module": "btp-foundation",
+  "pages": {
+    "tutorials/btp-cli-setup-kyma-cluster/btp-cli-setup-kyma-cluster.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Enable SAP BTP, Kyma Runtime Using the Command Line"
+    },
+    "tutorials/cp-kyma-api-postgres-golang/cp-kyma-api-postgres-golang.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy a Go PostgreSQL API Endpoint in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-app-push/cp-kyma-app-push.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Fast Prototyping in SAP BTP, Kyma Runtime Using App Push"
+    },
+    "tutorials/cp-kyma-create-function-cli/cp-kyma-create-function-cli.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Create Kyma Function Using Kyma CLI"
+    },
+    "tutorials/cp-kyma-create-function-ui/cp-kyma-create-function-ui.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Create Kyma Function and a Microservice via UI"
+    },
+    "tutorials/cp-kyma-download-cli/cp-kyma-download-cli.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Install the Kubernetes Command Line Tool"
+    },
+    "tutorials/cp-kyma-enable-module/cp-kyma-enable-module.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Add a module to Kyma environment"
+    },
+    "tutorials/cp-kyma-frontend-ui5-postgresql/cp-kyma-frontend-ui5-postgresql.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy the SAPUI5 Frontend in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-gateway-api/cp-kyma-gateway-api.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Use Gateway API to Expose a Workload in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-getting-started/cp-kyma-getting-started.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Enable SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-microservice-trigger/cp-kyma-microservice-trigger.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Trigger a Microservice with an Event"
+    },
+    "tutorials/cp-kyma-mocks/cp-kyma-mocks.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy Commerce Mock Application in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-mtls-requests-egress/cp-kyma-mtls-requests-egress.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Send mTLS Requests Using Istio Egress Gateway in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-postgres-cap/cp-kyma-postgres-cap.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy a CAP Application with PostgreSQL in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-postgres-seed/cp-kyma-postgres-seed.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Use and Seed SAP BTP PostgreSQL in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/cp-kyma-redis-function/cp-kyma-redis-function.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Use Redis in SAP BTP, Kyma Runtime to Store and Retrieve Data"
+    },
+    "tutorials/cp-kyma-requests-egress/cp-kyma-requests-egress.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Send Requests Using Istio Egress Gateway in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/private-link-aws-kyma/private-link-aws-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Connect SAP Private Link Service to AWS Private Link Service (Kyma)"
+    },
+    "tutorials/private-link-azure-kyma/private-link-azure-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Connect SAP Private Link Service to Microsoft Azure Private Link Service (Kyma)"
+    },
+    "tutorials/private-link-kyma/private-link-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Set Up SAP Private Link Service"
+    }
+  },
+  "repo": "sap-tutorials/btp-foundation",
+  "residue": [
+    "tutorials/btp-app-logging-neo-getting-started/btp-app-logging-neo-getting-started.md",
+    "tutorials/btp-cf-buildpacks-java-create/btp-cf-buildpacks-java-create.md",
+    "tutorials/btp-cf-buildpacks-node-create/btp-cf-buildpacks-node-create.md",
+    "tutorials/btp-cf-buildpacks-python-create/btp-cf-buildpacks-python-create.md",
+    "tutorials/btp-cf-ext-s4hanacloud/btp-cf-ext-s4hanacloud.md",
+    "tutorials/btp-cf-ext-successfactors/btp-cf-ext-successfactors.md",
+    "tutorials/btp-cockpit-cf-deploying-applications/btp-cockpit-cf-deploying-applications.md",
+    "tutorials/btp-cockpit-cf-getting-started-with-cf-env-and-cockpit/btp-cockpit-cf-getting-started-with-cf-env-and-cockpit.md",
+    "tutorials/btp-cockpit-cf-managing-deployed-applications/btp-cockpit-cf-managing-deployed-applications.md",
+    "tutorials/btp-cockpit-cf-managing-org-members/btp-cockpit-cf-managing-org-members.md",
+    "tutorials/btp-cockpit-cf-managing-routes/btp-cockpit-cf-managing-routes.md",
+    "tutorials/btp-cockpit-cf-managing-space-members/btp-cockpit-cf-managing-space-members.md",
+    "tutorials/btp-cockpit-cf-managing-user-provided-environment-variables/btp-cockpit-cf-managing-user-provided-environment-variables.md",
+    "tutorials/btp-cockpit-cf-monitoring-apps-and-spaces-with-events-and-logs/btp-cockpit-cf-monitoring-apps-and-spaces-with-events-and-logs.md",
+    "tutorials/btp-cockpit-cf-understanding-environment-variables/btp-cockpit-cf-understanding-environment-variables.md",
+    "tutorials/btp-cockpit-cf-understanding-security-groups/btp-cockpit-cf-understanding-security-groups.md",
+    "tutorials/btp-cockpit-cf-understanding-service-bindings/btp-cockpit-cf-understanding-service-bindings.md",
+    "tutorials/btp-cockpit-cf-understanding-space-quotas/btp-cockpit-cf-understanding-space-quotas.md",
+    "tutorials/btp-cockpit-cf-understanding-spaces/btp-cockpit-cf-understanding-spaces.md",
+    "tutorials/btp-cockpit-entitlements/btp-cockpit-entitlements.md",
+    "tutorials/btp-custom-domain-manager-getting-started/btp-custom-domain-manager-getting-started.md",
+    "tutorials/btp-deploy-cap-app-with-ias-and-ams/btp-deploy-cap-app-with-ias-and-ams.md",
+    "tutorials/btp-hana-tenantdb-xsapp-create/btp-hana-tenantdb-xsapp-create.md",
+    "tutorials/btp-hana-xs-app-create/btp-hana-xs-app-create.md",
+    "tutorials/cicd-corporate-git/cicd-corporate-git.md",
+    "tutorials/cicd-start-cap/cicd-start-cap.md",
+    "tutorials/cicd-start-fiori/cicd-start-fiori.md",
+    "tutorials/cicd-wdi5-cap/cicd-wdi5-cap.md",
+    "tutorials/cp-cf-security-xsuaa-create/cp-cf-security-xsuaa-create.md",
+    "tutorials/cp-cf-security-xsuaa-multi-tenant/cp-cf-security-xsuaa-multi-tenant.md",
+    "tutorials/cp-ias-azure-ad/cp-ias-azure-ad.md",
+    "tutorials/cp-monitoring-alerts-onpremise/cp-monitoring-alerts-onpremise.md",
+    "tutorials/cp-monitoring-dashboard/cp-monitoring-dashboard.md",
+    "tutorials/cp-monitoring-notification/cp-monitoring-notification.md",
+    "tutorials/cp-sapcp-getstarted/cp-sapcp-getstarted.md",
+    "tutorials/cp-trial-entitlements/cp-trial-entitlements.md",
+    "tutorials/private-link-aws/private-link-aws.md",
+    "tutorials/private-link-microsoft-azure/private-link-microsoft-azure.md",
+    "tutorials/private-link-onboarding/private-link-onboarding.md",
+    "tutorials/private-link-service-onboarding-aws/private-link-service-onboarding-aws.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}
