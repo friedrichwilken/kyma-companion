@@ -166,6 +166,66 @@ def _title_key(title: str) -> str:
     return " ".join(_tokenize(title))
 
 
+# Number of times a section heading's tokens are repeated in the section's BM25 document.
+_HEADING_WEIGHT = 2
+# H2 sections longer than this many tokens are split further at H3 headings.
+_SECTION_SPLIT_TOKENS = 1200
+
+_H2_RE = re.compile(r"^##\s+(.+?)\s*#*\s*$")
+_H3_RE = re.compile(r"^###\s+(.+?)\s*#*\s*$")
+
+
+def _split_at(text: str, heading_re: re.Pattern[str]) -> list[tuple[str, str]]:
+    """Split Markdown text at headings matching *heading_re*, ignoring fenced code.
+
+    Args:
+        text: Markdown text.
+        heading_re: Pattern for a heading line; group 1 is the heading text.
+
+    Returns:
+        ``(heading, body)`` pairs in document order. The text before the first
+        heading is returned with an empty heading, and is omitted when blank.
+    """
+    parts: list[tuple[str, str]] = []
+    heading = ""
+    body: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+        match = None if in_fence else heading_re.match(line)
+        if match:
+            parts.append((heading, "\n".join(body)))
+            heading, body = match.group(1).strip(), []
+        else:
+            body.append(line)
+    parts.append((heading, "\n".join(body)))
+    return [(h, b) for h, b in parts if h or b.strip()]
+
+
+def split_sections(content: str) -> list[tuple[str, str]]:
+    """Split a page into retrieval units: the intro, then one unit per H2 section.
+
+    H2 sections longer than ``_SECTION_SPLIT_TOKENS`` tokens are split again at
+    their H3 headings; those units are labelled ``"<H2> / <H3>"``.
+
+    Args:
+        content: Cleaned Markdown content of a page.
+
+    Returns:
+        ``(heading, body)`` pairs; the intro has an empty heading. A page
+        without H2 headings yields a single intro unit.
+    """
+    units: list[tuple[str, str]] = []
+    for heading, body in _split_at(content, _H2_RE):
+        if heading and len(_tokenize(body)) > _SECTION_SPLIT_TOKENS:
+            for sub_heading, sub_body in _split_at(body, _H3_RE):
+                units.append((f"{heading} / {sub_heading}" if sub_heading else heading, sub_body))
+        else:
+            units.append((heading, body))
+    return units or [("", content)]
+
+
 class DocIndex:
     """In-process BM25 search index over a local documentation artifact directory.
 
@@ -195,6 +255,8 @@ class DocIndex:
         self._pages: dict[str, DocPage] = {}
         self._page_list: list[DocPage] = []
         self._bm25: BM25Okapi | None = None
+        self._unit_page: list[int] = []
+        self._unit_heading: list[str] = []
         self._loaded = False
 
     # ------------------------------------------------------------------
@@ -215,6 +277,8 @@ class DocIndex:
         self._pages = {}
         self._page_list = []
         self._bm25 = None
+        self._unit_page = []
+        self._unit_heading = []
         self._loaded = False
         title_keys: dict[str, set[str]] = {}
 
@@ -261,12 +325,49 @@ class DocIndex:
         self._page_list = [page for page in self._page_list if not page.mirror_of]
 
         if self._page_list:
-            corpus = [
-                _tokenize(page.title) * _TITLE_WEIGHT + _tokenize(_index_text(page.content)) for page in self._page_list
-            ]
-            self._bm25 = BM25Okapi(corpus)
+            self._build_corpus()
 
         self._loaded = True
+
+    def _build_corpus(self) -> None:
+        """Compile the section-level BM25 index over the searchable pages.
+
+        Every page is split into retrieval units (intro plus one per H2 section,
+        long H2 sections further by H3). A unit's document is the page title
+        repeated ``_TITLE_WEIGHT`` times, the unit heading repeated
+        ``_HEADING_WEIGHT`` times, and the unit body. Scoring sections instead
+        of whole pages stops long pages from being penalised by length
+        normalisation when only one of their sections answers the query.
+        """
+        unit_docs: list[list[str]] = []
+        for page_index, page in enumerate(self._page_list):
+            title_tokens = _tokenize(page.title) * _TITLE_WEIGHT
+            for heading, body in split_sections(_index_text(page.content)):
+                unit_docs.append(title_tokens + _tokenize(heading) * _HEADING_WEIGHT + _tokenize(body))
+                self._unit_page.append(page_index)
+                self._unit_heading.append(heading)
+        self._bm25 = BM25Okapi(unit_docs)
+
+    def _page_scores(self, tokens: list[str]) -> tuple[list[float], list[str]]:
+        """Score every searchable page for *tokens* by its best-matching section.
+
+        Args:
+            tokens: Tokenized query.
+
+        Returns:
+            Per page index, the score and the heading of the best section
+            (empty for the intro).
+        """
+        assert self._bm25 is not None  # noqa: S101
+        unit_scores: list[float] = self._bm25.get_scores(tokens).tolist()
+        best: list[float] = [float("-inf")] * len(self._page_list)
+        best_heading: list[str] = [""] * len(self._page_list)
+        for unit_index, score in enumerate(unit_scores):
+            page_index = self._unit_page[unit_index]
+            if score > best[page_index]:
+                best[page_index] = score
+                best_heading[page_index] = self._unit_heading[unit_index]
+        return best, best_heading
 
     def _mark_mirrors(self, title_keys: dict[str, set[str]]) -> None:
         """Link non-canonical pages to the canonical page with the same title.
@@ -315,22 +416,36 @@ class DocIndex:
         Returns:
             Up to *top_k* ``DocPage`` objects ordered by relevance descending.
         """
+        return [page for page, _heading in self.search_with_sections(query, top_k, module)]
+
+    def search_with_sections(self, query: str, top_k: int = 5, module: str = "") -> list[tuple[DocPage, str]]:
+        """Like :meth:`search`, but also return the heading of each page's best-matching section.
+
+        Args:
+            query: Free-text search query.
+            top_k: Maximum number of results to return.
+            module: Optional module filter, see :meth:`search`.
+
+        Returns:
+            ``(page, heading)`` pairs ordered by relevance descending; the
+            heading is empty when the page's intro matched best.
+        """
         if not self._loaded or self._bm25 is None or not self._page_list:
             return []
 
         tokens = _tokenize(query)
-        scores: list[float] = self._bm25.get_scores(tokens).tolist()
+        scores, headings = self._page_scores(tokens)
         ranked = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
 
         if module:
             filtered = [(i, s) for i, s in ranked if self._page_list[i].module.lower() == module.lower()]
             if filtered:
-                return self._unique_by_title(filtered, top_k)
+                ranked = filtered
             # Fall back to global ranking when filter yields nothing.
 
-        return self._unique_by_title(ranked, top_k)
+        return [(page, headings[i]) for i, page in self._unique_by_title(ranked, top_k)]
 
-    def _unique_by_title(self, ranked: list[tuple[int, float]], top_k: int) -> list[DocPage]:
+    def _unique_by_title(self, ranked: list[tuple[int, float]], top_k: int) -> list[tuple[int, DocPage]]:
         """Take pages from *ranked* (descending score) until *top_k*, skipping repeated titles.
 
         Titles are compared after tokenization, so differences in case or
@@ -342,10 +457,10 @@ class DocIndex:
             top_k: Maximum number of pages to return.
 
         Returns:
-            Up to *top_k* distinct-title ``DocPage`` objects.
+            Up to *top_k* ``(page index, page)`` pairs with distinct titles.
         """
         seen: set[str] = set()
-        results: list[DocPage] = []
+        results: list[tuple[int, DocPage]] = []
         for i, _score in ranked:
             page = self._page_list[i]
             key = " ".join(_tokenize(page.title))
@@ -353,7 +468,7 @@ class DocIndex:
                 if key in seen:
                     continue
                 seen.add(key)
-            results.append(page)
+            results.append((i, page))
             if len(results) == top_k:
                 break
         return results

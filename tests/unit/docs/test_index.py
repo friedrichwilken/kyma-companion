@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from docs import DocIndex, DocPage
-from docs.index import _extract_title, _index_text, _tokenize
+from docs.index import _extract_title, _index_text, _tokenize, split_sections
 
 # Number of .md files created by the docs_dir fixture.
 FIXTURE_PAGE_COUNT = 4
@@ -574,3 +574,62 @@ def test_mirror_detected_by_heading_when_navigation_title_differs(tmp_path: Path
     assert mirror is not None
     assert mirror.mirror_of == "kyma-project/istio::inject.md"
     assert index.searchable_count == 1
+
+
+# ---------------------------------------------------------------------------
+# Section-level indexing
+# ---------------------------------------------------------------------------
+
+
+def _fillers(root: Path, count: int = 4) -> None:
+    for i in range(count):
+        (root / f"filler-{i}.md").write_text(f"# Filler {i}\n\nUnrelated text about nothing.\n", encoding="utf-8")
+
+
+def test_split_sections_intro_and_h2_ignoring_fenced_headings() -> None:
+    """Sections split at H2; headings inside code fences are body text; no H2 means one intro unit."""
+    content = "Intro text.\n\n## Setup\n\nStep one.\n```\n## not a heading\n```\n\n## Usage\n\nCall it.\n"
+    assert split_sections(content) == [
+        ("", "Intro text.\n"),
+        ("Setup", "\nStep one.\n```\n## not a heading\n```\n"),
+        ("Usage", "\nCall it."),
+    ]
+    assert split_sections("# Only a title\n\nBody.\n") == [("", "# Only a title\n\nBody.")]
+
+
+def test_late_section_outranks_diffuse_mentions(tmp_path: Path) -> None:
+    """A long page whose one late H2 section answers the query beats a page that mentions the terms loosely."""
+    root = tmp_path / "istio"
+    root.mkdir()
+    padding = "\n".join(f"## Topic {i}\n\nGeneral text about the service mesh and traffic routing." for i in range(12))
+    (root / "long.md").write_text(
+        f"# Istio Module\n\nOverview.\n\n{padding}\n\n## Egress gateway mTLS\n\n"
+        "Configure the egress gateway to originate mTLS connections with a client certificate.\n",
+        encoding="utf-8",
+    )
+    (root / "diffuse.md").write_text(
+        "# Networking Notes\n\nSome clusters use an egress path. A gateway may exist. mTLS is a protocol.\n",
+        encoding="utf-8",
+    )
+    _fillers(root)
+    index = DocIndex(str(tmp_path))
+    index.load()
+    results = index.search_with_sections("egress gateway mtls client certificate")
+    assert results[0][0].title == "Istio Module"
+    assert results[0][1] == "Egress gateway mTLS"
+
+
+def test_search_with_sections_reports_intro_as_empty_heading(tmp_path: Path) -> None:
+    """A page without H2 headings is searchable and reports an empty best-section heading."""
+    root = tmp_path / "notes"
+    root.mkdir()
+    (root / "flat.md").write_text(
+        "# Flat Page\n\nSubscription sink must be a cluster-local service URL.\n", encoding="utf-8"
+    )
+    _fillers(root)
+    index = DocIndex(str(tmp_path))
+    index.load()
+    results = index.search_with_sections("subscription sink cluster-local")
+    assert results[0][0].title == "Flat Page"
+    assert results[0][1] == ""
+    assert index.search("subscription sink cluster-local")[0].title == "Flat Page"
