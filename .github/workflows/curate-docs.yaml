@@ -6,8 +6,9 @@ name: curate-docs
 # request with the new manifest, residue and duplicates for a curator (or the `curate` skill in
 # https://github.com/friedrichwilken/pinakes) to review.
 #
-# pinakes is built from source at a pinned commit rather than a release binary, so this
-# workflow does not depend on pinakes publishing a release for the platform it runs on.
+# pinakes is installed from a pinned release with pinakes's own composite setup action
+# (friedrichwilken/pinakes@v1), which downloads the release binary for the runner's platform
+# and verifies it against the release's SHA256SUMS.
 
 on:
   workflow_dispatch:
@@ -22,10 +23,6 @@ permissions:
   contents: write
   pull-requests: write
 
-env:
-  PINAKES_COMMIT: a990185fa22ba4c93b8f9c1c191a92cdd7f50bbe
-  CARGO_TERM_COLOR: always
-
 jobs:
   curate:
     name: curate
@@ -34,26 +31,11 @@ jobs:
       - name: Check out kyma-companion
         uses: actions/checkout@v4
 
-      - name: Check out pinakes at the pinned commit
-        uses: actions/checkout@v4
+      - name: Set up pinakes
+        uses: friedrichwilken/pinakes@v1
         with:
-          repository: friedrichwilken/pinakes
-          ref: ${{ env.PINAKES_COMMIT }}
-          path: .pinakes
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Cache pinakes's build
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ".pinakes -> target"
-          shared-key: pinakes-${{ env.PINAKES_COMMIT }}
-
-      - name: Build pinakes
-        run: cargo build --release --manifest-path .pinakes/Cargo.toml
-
-      - name: Put the pinakes binary on PATH
-        run: echo "${{ github.workspace }}/.pinakes/target/release" >> "$GITHUB_PATH"
+          version: 1.0.1
+          github-token: ${{ github.token }}
 
       - run: pinakes --version
 
