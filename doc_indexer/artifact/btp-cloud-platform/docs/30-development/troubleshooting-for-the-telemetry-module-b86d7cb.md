@@ -1,0 +1,456 @@
+<!-- loiob86d7cb096bb45af82f00463b24c4334 -->
+
+# Troubleshooting for the Telemetry Module
+
+Troubleshoot problems related to the Telemetry module and its pipelines.
+
+If you can't find a solution, don't hesitate to create a [GitHub issue](https://github.com/kyma-project/telemetry-manager/issues/new/choose).
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_no_data"/>
+
+## No Data Arrive at the Backend
+
+
+
+### Symptom
+
+-   No data arrive at the backend.
+
+-   In the pipeline status, the `TelemetryFlowHealthy` condition has status ***GatewayAllTelemetryDataDropped*** or ***AgentAllTelemetryDataDropped***.
+
+
+
+
+### Cause
+
+The pipeline cannot connect to the backend and drops all data, typically because of one of the following reasons:
+
+-   Authentication Error: The credentials in your `MetricPipeline` output are incorrect.
+
+-   Network Unreachable: The backend URL is wrong, a firewall is blocking the connection, or there's a DNS issue preventing the agent or gateway from reaching the backend.
+
+-   Backend is Down: The observability backend itself is not running or is unhealthy.
+
+
+
+
+### Solution
+
+1.  Identify the failing component.
+
+    -   If the status is ***GatewayAllTelemetryDataDropped***, the problem is with the gateway.
+
+    -   If the status is ***AgentAllTelemetryDataDropped***, the problem is with the agent.
+
+
+2.  To check the failing component's logs, call <code>kubectl logs -n kyma-system <i class="varname">&lt;POD_NAME&gt;</i></code>:
+
+    -   For the gateway, check Pod `telemetry-otlp-gateway`.
+
+    -   For the agent, check Pod <code>telemetry-<i class="varname">&lt;log/metric&gt;</i>-agent</code>.
+
+
+    Look for errors related to authentication, connectivity, and DNS.
+
+3.  Check if the backend is up and reachable.
+
+4.  Based on the log messages, fix the `output` section of your pipeline and re-apply it.
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_not_all_data"/>
+
+## Not All Data Arrive at the Backend
+
+
+
+### Symptom
+
+-   The backend is reachable and the connection is properly configured, but some data points are refused.
+
+-   In the pipeline status, the `TelemetryFlowHealthy` condition has status ***GatewaySomeTelemetryDataDropped*** or ***AgentSomeTelemetryDataDropped***.
+
+
+
+
+### Cause
+
+This status indicates that the telemetry gateway or agent is successfully sending data, but the backend is rejecting some of it. Common reasons are:
+
+-   Rate Limiting: Your backend is rejecting requests because you're sending too much data at once.
+
+-   Invalid Data: Your backend is rejecting specific data due to incorrect formatting, invalid labels, or other schema violations.
+
+
+
+
+### Solution
+
+1.  Check the error logs for the affected Pod by calling `kubectl logs -n kyma-system {POD_NAME}`:
+
+    -   For ***GatewaySomeTelemetryDataDropped***, check Pod `telemetry-otlp-gateway`.
+
+    -   For ***AgentSomeTelemetryDataDropped***, check Pod <code>telemetry-<i class="varname">&lt;log/metric&gt;</i>-agent</code>.
+
+
+2.  Go to your observability backend and investigate potential causes.
+
+3.  If the backend is limiting the rate by refusing data, try the following options:
+
+    -   Increase the ingestion rate of your backend \(for example, by scaling out your SAP Cloud Logging instances\).
+
+    -   Reduce emitted data by re-configuring the pipeline \(for example, by disabling certain inputs or applying filters\).
+
+    -   Reduce emitted data in your applications.
+
+
+4.  Otherwise, fix the issues as indicated in the logs.
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_gateway_trottling"/>
+
+## Gateway Throttling
+
+
+
+### Symptom
+
+In the pipeline status, the `TelemetryFlowHealthy` condition has status ***GatewayThrottling***.
+
+
+
+### Cause
+
+The OTLP Gateway instance is receiving data faster than it can process and forward it.
+
+
+
+### Solution
+
+Reduce the volume of telemetry data, either by rebalancing workloads across nodes or reconfiguring your pipeline\(s\) to filter out unused inputs and irrelevant data.
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_q23_mjr_ygc"/>
+
+## Log Buffer Filling Up
+
+
+
+### Symptom
+
+In the `LogPipeline` status, the `TelemetryFlowHealthy` condition has status ***AgentBufferFillingUp***.
+
+
+
+### Cause
+
+The backend ingestion rate is too low compared to the export rate of the Log Agent, causing data to accumulate in its buffer.
+
+
+
+### Solution
+
+You can either increase the capacity of your backend or reduce the volume of log data being sent. Try one of the following options:
+
+-   Increase the ingestion rate of your backend \(for example, by scaling out your SAP Cloud Logging instances\).
+
+-   Reduce emitted data by re-configuring the pipeline \(for example, by disabling certain inputs or applying namespace filters\).
+
+-   Reduce the amount of log data generated by your applications.
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_transform_filter_no_effect"/>
+
+## Transform or Filter Rule Has No Effect
+
+
+
+### Symptom
+
+You have configured a `transform` or `filter` section in your pipeline, but the data arriving at your backend is not modified, or data you expect to be dropped is still present.
+
+
+
+### Cause
+
+This usually happens for one of the following reasons:
+
+-   Incorrect execution order: You're filtering data based on a field's original value, but a transformation rule has already changed it. Transformation rules always run before filter rules.
+
+-   Condition never met: The condition in your rule is valid \(otherwise, you'd see pipeline condition `ConfigurationGenerated`: ***False*** with the reason ***OTTLSpecInvalid***\) but never finds a match in the data. This is often due to a case-sensitive value mismatch or a flawed regular expression.
+
+
+
+
+### Solution
+
+1.  Review your rules and verify the execution order. For example, if you have a `transform` rule that renames `resource.attributes["foo"]` to `resource.attributes["bar"]`, your `filter` rule must check for “bar”, not “foo”.
+
+2.  Test your regex separately. Simplify complex conditions to a single comparison and re-apply.
+
+3.  To test your rules, temporarily remove all but one rule to confirm it works as expected. Then, add your other rules incrementally and isolate the rule that is causing the issue.
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_eof_error"/>
+
+## OTTL Spec Invalid with Unspecific Error Message
+
+
+
+### Symptom
+
+-   In the pipeline status, you see the condition `ConfigurationGenerated` with status ***False*** and reason ***OTTLSpecInvalid***.
+
+-   The pipeline configuration fails with unclear error messages, for example, mentioning “unexpected token `<EOF>`” or EOF \(End of File\) parsing errors, such as the following example:
+
+    > ### Output Code:  
+    > ```
+    > 'Invalid FilterSpec: condition has invalid syntax: 1:64: unexpected token
+    >       "<EOF>" (expected <opcomparison> Value)'
+    > ```
+
+
+
+
+### Cause
+
+If you get a generic EOF error instead of a specific error message, there's usually a syntax error in your OTTL transformation or filter rules. It occurs when the parser cannot diagnose the error precisely.
+
+The following example uses the incorrect function name `isMatch` \(it should be `IsMatch`, because the parser is case-sensitive\):
+
+```
+# ...
+filter:
+    - conditions:
+        - 'isMatch(resource.attributes["k8s.namespace.name"], ".*-system")'
+```
+
+
+
+### Solution
+
+Review the syntax of your transform and filter rules and ensure that the names of [OTTL functions](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/ottl/ottlfuncs/README.md) are spelled correctly \(for example, `IsMatch()` instead of `isMatch()`\).
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_log_entry_failed_to_scrape_prometheus"/>
+
+## MetricPipeline: Failed to Scrape Prometheus Endpoint
+
+
+
+### Symptom
+
+-   Custom metrics don't arrive at the destination.
+
+-   In the Metric Agent \(OTel Collector\) logs, you see entries saying ***Failed to scrape Prometheus endpoint*** like the following:
+
+    > ### Output Code:  
+    > ```
+    > 2023-08-29T09:53:07.123Z warn internal/transaction.go:111 Failed to scrape Prometheus endpoint {"kind": "receiver", "name": "prometheus/app-pods", "data_type": "metrics", "scrape_timestamp": 1693302787120, "target_labels": "{__name__=\"up\", instance=\"10.42.0.18:8080\", job=\"app-pods\"}"}
+    > ```
+
+
+
+
+### Cause
+
+There's a configuration or network issue between the Metric Agent and your application, such as:
+
+-   The Service that exposes your metrics port doesn't specify the application protocol.
+
+-   The workload is not configured to use `STRICT` mTLS mode, which the Metric Agent uses by default.
+
+-   A deny-all `NetworkPolicy` in your application's namespace prevents the agent from scraping metrics from annotated workloads.
+
+
+
+
+### Solution
+
+-   Define the application protocol in the Service port definition by either prefixing the port name with the protocol, or define the `appProtocol` attribute.
+
+-   If the issue is with mTLS, either configure your workload to use `STRICT` mTLS, or switch to unencrypted scraping by adding the `prometheus.io/scheme: "http"` annotation to your workload.
+
+-   Create a new `NetworkPolicy` to explicitly allow ingress traffic from the Metric Agent; such as the following example:
+
+    ```
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-traffic-from-agent
+    spec:
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: "annotated-workload" # <your workload here>
+      ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kyma-system
+          podSelector:
+            matchLabels:
+              telemetry.kyma-project.io/metric-scrape: "true"
+      policyTypes:
+      - Ingress
+    ```
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_no_custom_spans_only_istio"/>
+
+## Custom Spans Don’t Arrive at the Backend, but Istio Spans Do
+
+
+
+### Symptom
+
+You see traces generated by the Istio service mesh, but traces from your own application code \(custom spans\) are missing.
+
+
+
+### Cause
+
+The OpenTelemetry \(OTel\) SDK version used in your application is incompatible with the OTel Collector version.
+
+
+
+### Solution
+
+1.  Check which SDK version you're using for instrumentation.
+
+2.  Investigate whether it's compatible with the OTel Collector version.
+
+3.  If necessary, upgrade to a supported SDK version.
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_fewer_traces_than_expected"/>
+
+## Too Few Traces Arrive at the Backend
+
+
+
+### Symptom
+
+The observability backend shows significantly fewer traces than the number of requests your application receives.
+
+
+
+### Cause
+
+By default, Istio samples only 1% of requests for tracing to minimize performance overhead \(see [Configure Istio Tracing](configure-istio-tracing-3f504d8.md)\).
+
+For example, in low-traffic environments \(for development or testing\) or for low-traffic services, the request volume can be so low that a 1% sample rate may result in capturing zero traces.
+
+
+
+### Solution
+
+-   To see more traces in the backend, increase the percentage of requests that are sampled \(see [Configure the Sampling Rate](configure-istio-tracing-3f504d8.md#loio3f504d838f7841d19aac71baaa1801e9__section_configure_sampling_rate)\).
+
+-   Alternatively, to trace a single request, force sampling by adding a `traceparent` HTTP header to your client request. This header contains a sampled flag that instructs the system to capture the trace, bypassing the global sampling rate \(see [Trace Context: Sampled Flag](https://www.w3.org/TR/trace-context/#sampled-flag)\).
+
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_vpa_not_created"/>
+
+## VPA Resources Are Not Created
+
+
+
+### Symptom
+
+VPA resources are not created even though VPA is enabled.
+
+
+
+### Cause
+
+The Vertical Pod Autoscaler \(VPA\) CRD is not installed in your cluster.
+
+
+
+### Solution
+
+Install the VPA CRD in your cluster \(see [Vertical Pod Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler)\).
+
+
+
+<a name="loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_oom"/>
+
+## Telemetry Components Run Out of Memory
+
+
+
+### Symptom
+
+Telemetry components are running out of memory despite VPA being enabled.
+
+
+
+### Cause
+
+The memory limits are too restrictive for your telemetry volume. VPA calculates limits based on the smallest node in your cluster, which might not provide enough memory for high-volume telemetry workloads.
+
+
+
+### Solution
+
+If no data arrives at your backend, first check for backend-side issues \(see [Not All Data Arrive at the Backend](troubleshooting-for-the-telemetry-module-b86d7cb.md#loiob86d7cb096bb45af82f00463b24c4334__section_troubleshoot_not_all_data)\).
+
+If data arrives but components run out of memory, reduce memory pressure:
+
+-   Add nodes with more memory to increase the calculated *maxAllowed* value.
+
+-   Reduce telemetry volume by applying filters in your pipelines \(see [Filter Logs](filter-logs-58445a0.md), [Filter Traces](filter-traces-6a03a1b.md), [Filter Metrics](filter-metrics-6bd4bfd.md)\).
+
+
+As a workaround, you can disable VPA so that the system uses static resource limits:
+
+1.  Edit the Telemetry resource:
+
+    ```
+    kubectl edit telemetry default -n kyma-system
+    ```
+
+2.  Add or change the `telemetry.kyma-project.io/enable-vpa` annotation under `metadata.annotations` to *false*:
+
+    ```
+    apiVersion: operator.kyma-project.io/v1beta1
+    kind: Telemetry
+    metadata:
+      name: default
+      namespace: kyma-system
+      annotations:
+        telemetry.kyma-project.io/enable-vpa: "false"
+    spec:
+      # your telemetry configuration
+    ```
+
+3.  Save your changes.
+
+4.  Verify the configuration by listing VPA resources in the `kyma-system` namespace:
+
+    ```
+    kubectl get vpa -n kyma-system
+    ```
+
+    If VPA is disabled, no VPA resources appear in the namespace.
+
+5.  If you disabled VPA temporarily for debugging, you can re-enable it later by removing the annotation or setting its value to *true*.
+
+

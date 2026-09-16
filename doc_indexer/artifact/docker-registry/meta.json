@@ -1,0 +1,56 @@
+{
+  "base_url": "https://github.com/kyma-project/docker-registry/blob/08e0d7cea3867746ebe5b84b8815abff7cdeac2a",
+  "commit": "08e0d7cea3867746ebe5b84b8815abff7cdeac2a",
+  "module": "docker-registry",
+  "pages": {
+    "docs/user/00-20-configure-docker-registry.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Module Configuration"
+    },
+    "docs/user/00-30-storage-configuration.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Storage Configuration"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Docker Registry Module"
+    },
+    "docs/user/resources/06-20-docker-registry-cr.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Docker Registry Custom Resource"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/tutorials/01-10-use-registry-internally.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Use Docker Registry Internally"
+    },
+    "docs/user/tutorials/01-20-expose-registry.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Expose Docker Registry"
+    },
+    "docs/user/tutorials/01-30-remove-image-manifest.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Remove Image Manifest"
+    },
+    "docs/user/tutorials/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Tutorials"
+    }
+  },
+  "repo": "kyma-project/docker-registry",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

@@ -1,0 +1,56 @@
+{
+  "base_url": "https://github.com/kyma-project/keda-manager/blob/7a6cd3cb2704c9f6f033eeac6d93018ce6dba65b",
+  "commit": "7a6cd3cb2704c9f6f033eeac6d93018ce6dba65b",
+  "module": "keda-manager",
+  "pages": {
+    "docs/user/01-20-configuration.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Configuring Keda Module"
+    },
+    "docs/user/04-10-footprint.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Keda Module Footprint"
+    },
+    "docs/user/04-20-demo-applications.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "KEDA Demo Application"
+    },
+    "docs/user/06-70-configuring-logging.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Keda Logging Configuration"
+    },
+    "docs/user/07-10-http-add-on.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "KEDA HTTP Add-on"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Keda Module"
+    },
+    "docs/user/resources/06-10-keda-cr.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Keda CR"
+    },
+    "docs/user/troubleshooting-guides/07-10-cold-start-503-errors.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "HTTP Add-on Returns 503 Errors During Cold Start"
+    },
+    "docs/user/troubleshooting-guides/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting Guides"
+    }
+  },
+  "repo": "kyma-project/keda-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

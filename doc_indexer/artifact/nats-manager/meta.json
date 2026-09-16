@@ -1,0 +1,46 @@
+{
+  "base_url": "https://github.com/kyma-project/nats-manager/blob/ef0d4518a3540ee747caac367574001fc68d05a5",
+  "commit": "ef0d4518a3540ee747caac367574001fc68d05a5",
+  "module": "nats-manager",
+  "pages": {
+    "README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "NATS Manager"
+    },
+    "docs/user/01-05-nats-custom-resource.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "NATS Custom Resource"
+    },
+    "docs/user/01-10-access-nats-server.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Accessing the NATS Server Using CLI"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "NATS Module"
+    },
+    "docs/user/troubleshooting/03-05-nats-troubleshooting.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting",
+      "title": "General Diagnostics: NATS Module Readiness and Connectivity"
+    },
+    "docs/user/troubleshooting/03-10-fix-pending-events.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting",
+      "title": "Published Events Are Pending in the Stream"
+    },
+    "docs/user/troubleshooting/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting"
+    }
+  },
+  "repo": "kyma-project/nats-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

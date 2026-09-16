@@ -1,0 +1,134 @@
+# Environment Variables
+
+You can use environment variables to configure an existing runtime, to read existing configuration or to build your own runtime based on them.
+
+## Environments Passed to Runtimes
+
+Every runtime provides its own unique environment configuration which can be read by a server and the `handler.js` file during the container run:
+
+### Common Environments
+
+| Environment                  | Default                                                                       | Description                                                                                                                                                                    |
+| ---------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **FUNC_HANDLER**             | `main`                                                                        | Deprecated. Use `HANDLER_FUNC_NAME` instead. Supported only in nodejs22, nodejs24, and python312.                                                                    |
+| **HANDLER_FUNC_NAME**        | `main`                                                                        | The name of the exported Function inside the `HANDLER_MOD_NAME` file.                                                                                                         |
+| **MOD_NAME**                 | `handler`                                                                     | Deprecated. Use `HANDLER_MOD_NAME` instead. Supported only in nodejs22, nodejs24, and python312.                                                                     |
+| **HANDLER_MOD_NAME**         | `handler`                                                                     | The name of the main exported file. It must have an extension of `.py` for the Python runtimes and `.js` for the Node.js ones. The extension must be added on the server side. |
+| **KUBELESS_INSTALL_VOLUME**  | `/kubeless`                                                                   | Deprecated. Use `HANDLER_PATH` instead. Supported only in nodejs22, nodejs24, and python312.                                                                         |
+| **HANDLER_PATH**             | `/`                                                                           | Full path to volume mount with user's source code.                                                                                                                             |
+| **FUNC_RUNTIME**             | None                                                                          | The name of the actual runtime. Possible values: `nodejs22` - deprecated, `nodejs24`, `nodejs26`, `python312`, and `python314`.                                    |
+| **TRACE_COLLECTOR_ENDPOINT** | None                                                                          | Full address of OpenTelemetry Trace Collector is exported if the trace collector's endpoint is present.                                                                        |                                                      |
+| **PUBLISHER_PROXY_ADDRESS**  | `http://eventing-publisher-proxy.kyma-system.svc&nbsp;.cluster.local/publish` | Full address of the Publisher Proxy service.                                                                                                                                   |                                                                                                                   |
+
+### Specific Environments
+
+There are a few environments that occur only for a specific runtimes. The following list includes all of them:
+
+#### Python Runtime-Specific Environment Variables
+
+| Environment          | Default                                                                                   | Description                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **PYTHONPATH**       | `/kubeless/.local:$(PYTHONPATH)` | List of directories that Python must add to the sys.path directory list. |
+| **PYTHONUNBUFFERED** | `TRUE`                                                                                    | Defines if Python's logs must be buffered before printing them out.      |
+
+## Configure Runtime
+
+You can configure environment variables either separately for a given runtime or make them runtime-agnostic using a ConfigMap.
+
+### Define Environment Variables in a Config Map
+
+ConfigMaps allow you to define Function's environment variables for any runtime through key-value pairs. After you define the values in a ConfigMap, simply reference it in the Function custom resource (CR) through the **valueFrom** parameter. See an example of such a Function CR that specifies the `my-var` value as a reference to the key stored in the `my-vars-cm` ConfigMap as the `MY_VAR` environment variable.
+
+```yaml
+apiVersion: serverless.kyma-project.io/v1alpha2
+kind: Function
+metadata:
+  name: sample-cm-env-values
+  namespace: default
+spec:
+  env:
+    - name: MY_VAR
+      valueFrom:
+        configMapKeyRef:
+          key: my-var
+          name: my-vars-cm
+  runtime: nodejs22
+  source:
+    inline:
+      source: |
+        module.exports = {
+          main: function (event, context) {
+            return process.env["MY_VAR"];
+          }
+        }
+```
+
+### Node.js Runtime-Specific Environment Variables
+
+To configure the Function with the Node.js runtime, override the default values of these environment variables:
+
+| Environment variable                | Description                                                                                                                        | Type    | Default value |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------- |
+| **FUNC_TIMEOUT**                    | Specifies the number of seconds in which a runtime must execute the code.                                                          | Number  | `180`         |
+| **REQ_MB_LIMIT**                    | Deprecated. Use `FUNC_BODY_MB_LIMIT` instead. Supported only in nodejs22 and nodejs24.                                  | Number  | `1`           |
+| **FUNC_BODY_MB_LIMIT**              | Specifies the payload body size limit in megabytes.                                                                                | Number  | `1`           |
+| **KYMA_INTERNAL_LOGGER_ENABLED**    | Deprecated. Use `SERVER_INTERNAL_LOGGER` instead. Supported only in nodejs22 and nodejs24.                              | Boolean | `false`       |
+| **SERVER_INTERNAL_LOGGER**          | Enables the default HTTP request logger which uses the standard Apache combined log output. To enable it, set its value to `true`. | Boolean | `false`       |
+
+See the example of a Function with these environment variables set:
+
+```yaml
+apiVersion: serverless.kyma-project.io/v1alpha2
+kind: Function
+metadata:
+  name: sample-fn-with-envs
+  namespace: default
+spec:
+  env:
+    - name: FUNC_TIMEOUT
+      value: '2'
+    - name: FUNC_BODY_MB_LIMIT
+      value: '10'
+  runtime: nodejs26
+  source:
+    inline:
+      source: |
+        module.exports = {
+          main: function (req, res) {
+            res.send("Hello World!");
+          }
+        }
+```
+
+### Python Runtime-Specific Environment Variables
+
+To configure a Function with the Python runtime, override the default values of these environment variables:
+
+| Environment variable                | Description                                                                                                                        | Unit    | Default value   |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------- |
+| **FUNC_MEMFILE_MAX**                | Deprecated. Use `FUNC_BODY_MB_LIMIT` instead. Supported only in python312.                                                         | Number  | `100*1024*1024` |
+| **FUNC_BODY_MB_LIMIT**              | Sets the maximum HTTP request body size in megabytes.                                                                              | Number  | `1` |
+| **SERVER_NUMTHREADS**               | Specifies the number of requests that can be handled in parallel.                                                                  | Number  | `50`            |
+| **CHERRYPY_NUMTHREADS**             | Deprecated. Use `SERVER_NUMTHREADS` instead. Supported only in python312.                                                          | Number  | `50`            |
+| **KYMA_INTERNAL_LOGGER_ENABLED**    | Deprecated. Use `SERVER_INTERNAL_LOGGER` instead. Supported only in python312.                                                     | Boolean | `false`         |
+| **SERVER_INTERNAL_LOGGER**          | Enables the default HTTP request logger which uses the standard Apache combined log output. To enable it, set its value to `true`. | Boolean | `false`         |
+
+See [`kubeless.py`](https://github.com/kubeless/runtimes/blob/master/stable/python/_kubeless.py) to get a deeper understanding of how the Bottle server, which acts as a runtime, uses these values internally to run Python Functions.
+
+```yaml
+apiVersion: serverless.kyma-project.io/v1alpha2
+kind: Function
+metadata:
+  name: sample-fn-with-envs
+  namespace: default
+spec:
+  env:
+    - name: FUNC_BODY_MB_LIMIT
+      value: '1'
+  runtime: python314
+  source:
+    inline:
+      source: |
+        def main():
+          return "Hello World!"
+```

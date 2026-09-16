@@ -1,0 +1,131 @@
+{
+  "base_url": "https://github.com/kyma-project/kyma-environment-broker/blob/a6bcb5d548f6bae49ffd97cfe3eaa4204142d6c3",
+  "commit": "a6bcb5d548f6bae49ffd97cfe3eaa4204142d6c3",
+  "module": "kyma-environment-broker",
+  "pages": {
+    "docs/user/01-10-architecture.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Environment Broker Architecture"
+    },
+    "docs/user/02-10-broker-endpoints.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Environment Broker Endpoints"
+    },
+    "docs/user/03-10-service-description.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Service Description"
+    },
+    "docs/user/03-15-kubeconfig-endpoint.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kubeconfig Endpoint"
+    },
+    "docs/user/03-20-runtime-operations.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "SAP BTP, Kyma Runtime Operations"
+    },
+    "docs/user/03-25-runtime-updates.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "SAP BTP, Kyma Runtime Updates"
+    },
+    "docs/user/03-30-hap-assignment.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Assigning Kyma Instances to IaaS Provider Accounts"
+    },
+    "docs/user/04-05-cluster-name.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Cluster Name"
+    },
+    "docs/user/04-10-custom-oidc-configuration.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Custom OpenID Connect Configuration"
+    },
+    "docs/user/04-20-custom-administrators.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Set a Custom List of SAP BTP, Kyma Runtime Administrators"
+    },
+    "docs/user/04-30-custom-networking-configuration.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Custom Networking Configuration"
+    },
+    "docs/user/04-40-additional-worker-node-pools.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Additional Worker Node Pools"
+    },
+    "docs/user/04-50-ingress-filtering.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Enable Ingress Filtering"
+    },
+    "docs/user/04-60-access-control-list.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Access Control List"
+    },
+    "docs/user/04-70-gvisor-container-runtime.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "gVisor Container Runtime Sandbox"
+    },
+    "docs/user/04-80-audit-log-access.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Audit Log Access"
+    },
+    "docs/user/05-10-provisioning-kyma-environment.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Provision SAP BTP, Kyma Runtime Using Kyma Environment Broker"
+    },
+    "docs/user/05-20-deprovisioning-kyma-environment.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Deprovision SAP BTP, Kyma Runtime Using Kyma Environment Broker"
+    },
+    "docs/user/05-30-operation-status.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Check Operation Status"
+    },
+    "docs/user/05-40-instance-details.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Check SAP BTP, Kyma Runtime Instance Details"
+    },
+    "docs/user/05-50-configure-list-of-modules.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Configure List of Modules"
+    },
+    "docs/user/05-60-kyma-bindings.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Bindings"
+    },
+    "docs/user/05-70-manage-kyma-environment-through-cis-provisioning-service.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Manage SAP BTP, Kyma Runtime Using the Provisioning API"
+    },
+    "docs/user/06-10-metrics.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Environment Broker Metrics"
+    }
+  },
+  "repo": "kyma-project/kyma-environment-broker",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

@@ -1,0 +1,16 @@
+{
+  "base_url": "https://github.com/kyma-project/nats-manager/blob/ef0d4518a3540ee747caac367574001fc68d05a5",
+  "commit": "ef0d4518a3540ee747caac367574001fc68d05a5",
+  "module": "nats-manager-crds",
+  "pages": {
+    "reference/operator.kyma-project.io/nats-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "NATS (operator.kyma-project.io/v1alpha1)"
+    }
+  },
+  "repo": "kyma-project/nats-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

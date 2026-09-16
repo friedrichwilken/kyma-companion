@@ -1,0 +1,73 @@
+{
+  "base_url": "https://github.com/sap-tutorials/btp-dev-guidance/blob/3be90be9040b8e9d1c25c447553e5f0f9f507456",
+  "commit": "3be90be9040b8e9d1c25c447553e5f0f9f507456",
+  "module": "btp-dev-guidance",
+  "pages": {
+    "tutorials/deploy-to-kyma/deploy-to-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy in SAP BTP, Kyma Runtime"
+    },
+    "tutorials/integrate-with-work-zone-kymaruntime/integrate-with-work-zone-kymaruntime.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Integrate Your Application Deployed in SAP BTP, Kyma Runtime with SAP Build Work Zone, Standard Edition"
+    },
+    "tutorials/prepare-btp-kyma/prepare-btp-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Prepare for Deployment in the SAP BTP, Kyma Runtime"
+    },
+    "tutorials/remote-service-deploy-to-kyma/remote-service-deploy-to-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy and Run the Incident Management Application in the SAP BTP, Kyma Runtime with SAP S/4HANA Cloud Backend"
+    },
+    "tutorials/remote-service-deploy-with-mock-kyma/remote-service-deploy-with-mock-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Deploy and Run the Incident Management Application in the SAP BTP, Kyma Runtime with a Mock Server"
+    },
+    "tutorials/remote-service-set-up-mock-kyma/remote-service-set-up-mock-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Install a Mock Server in the SAP BTP, Kyma Runtime"
+    },
+    "tutorials/set-up-cicd-kyma/set-up-cicd-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime"
+    },
+    "tutorials/user-role-assignment-kyma/user-role-assignment-kyma.md": {
+      "doc_type": "tutorial",
+      "section": "tutorials",
+      "title": "Assign the User Roles"
+    }
+  },
+  "repo": "sap-tutorials/btp-dev-guidance",
+  "residue": [
+    "tutorials/add-authorization/add-authorization.md",
+    "tutorials/add-custom-logic/add-custom-logic.md",
+    "tutorials/add-fiori-elements-uis/add-fiori-elements-uis.md",
+    "tutorials/add-test-cases/add-test-cases.md",
+    "tutorials/build-cap-app/build-cap-app.md",
+    "tutorials/deploy-to-cf/deploy-to-cf.md",
+    "tutorials/integrate-with-work-zone/integrate-with-work-zone.md",
+    "tutorials/introduction/introduction.md",
+    "tutorials/prep-for-prod/prep-for-prod.md",
+    "tutorials/prepare-btp-cf/prepare-btp-cf.md",
+    "tutorials/remote-service-configure-connectivity/remote-service-configure-connectivity.md",
+    "tutorials/remote-service-deploy-to-cf/remote-service-deploy-to-cf.md",
+    "tutorials/remote-service-deploy-with-mock-cf/remote-service-deploy-with-mock-cf.md",
+    "tutorials/remote-service-extend/remote-service-extend.md",
+    "tutorials/remote-service-intro/remote-service-intro.md",
+    "tutorials/remote-service-run-dev-test/remote-service-run-dev-test.md",
+    "tutorials/remote-service-set-up-mock-cf/remote-service-set-up-mock-cf.md",
+    "tutorials/set-up-bas/set-up-bas.md",
+    "tutorials/set-up-cicd/set-up-cicd.md",
+    "tutorials/use-local-launch-page/use-local-launch-page.md",
+    "tutorials/user-role-assignment/user-role-assignment.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

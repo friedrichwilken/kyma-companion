@@ -1,0 +1,253 @@
+{
+  "base_url": "https://github.com/kyma-project/telemetry-manager/blob/6d51d1e1b451ac57b1e4cd5e127269fd51d849f6",
+  "commit": "6d51d1e1b451ac57b1e4cd5e127269fd51d849f6",
+  "module": "telemetry-manager",
+  "pages": {
+    "docs/user/02-logs.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Logs (Fluent Bit)"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Telemetry Module"
+    },
+    "docs/user/architecture/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Architecture"
+    },
+    "docs/user/architecture/istio-integration.md": {
+      "doc_type": "concept",
+      "section": "Architecture",
+      "title": "Istio Integration"
+    },
+    "docs/user/architecture/logs-architecture.md": {
+      "doc_type": "concept",
+      "section": "Architecture",
+      "title": "Logs Architecture"
+    },
+    "docs/user/architecture/metrics-architecture.md": {
+      "doc_type": "concept",
+      "section": "Architecture",
+      "title": "Metrics Architecture"
+    },
+    "docs/user/architecture/traces-architecture.md": {
+      "doc_type": "concept",
+      "section": "Architecture",
+      "title": "Traces Architecture"
+    },
+    "docs/user/collecting-logs/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Collecting Logs"
+    },
+    "docs/user/collecting-logs/istio-support.md": {
+      "doc_type": "concept",
+      "section": "Collecting Logs",
+      "title": "Configure Istio Access Logs"
+    },
+    "docs/user/collecting-logs/runtime-input.md": {
+      "doc_type": "concept",
+      "section": "Collecting Logs",
+      "title": "Configure Application Logs"
+    },
+    "docs/user/collecting-metrics/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Collecting Metrics"
+    },
+    "docs/user/collecting-metrics/istio-input.md": {
+      "doc_type": "concept",
+      "section": "Collecting Metrics",
+      "title": "Collect Istio Metrics"
+    },
+    "docs/user/collecting-metrics/prometheus-input.md": {
+      "doc_type": "concept",
+      "section": "Collecting Metrics",
+      "title": "Collect Prometheus Metrics"
+    },
+    "docs/user/collecting-metrics/runtime-input.md": {
+      "doc_type": "concept",
+      "section": "Collecting Metrics",
+      "title": "Collect Runtime Metrics"
+    },
+    "docs/user/collecting-traces/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Collecting Traces"
+    },
+    "docs/user/collecting-traces/istio-support.md": {
+      "doc_type": "concept",
+      "section": "Collecting Traces",
+      "title": "Configure Istio Tracing"
+    },
+    "docs/user/filter-and-process/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Filtering and Processing Data"
+    },
+    "docs/user/filter-and-process/automatic-data-enrichment.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Automatic Data Enrichment"
+    },
+    "docs/user/filter-and-process/filter-logs.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Filter Logs"
+    },
+    "docs/user/filter-and-process/filter-metrics.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Filter Metrics"
+    },
+    "docs/user/filter-and-process/filter-traces.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Filter Traces"
+    },
+    "docs/user/filter-and-process/ottl-transform-and-filter/README.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Transform and Filter with OTTL"
+    },
+    "docs/user/filter-and-process/ottl-transform-and-filter/ottl-filter.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data > Transform and Filter with OTTL",
+      "title": "Filter with OTTL"
+    },
+    "docs/user/filter-and-process/ottl-transform-and-filter/ottl-transform.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data > Transform and Filter with OTTL",
+      "title": "Transform with OTTL"
+    },
+    "docs/user/filter-and-process/transformation-to-otlp-logs.md": {
+      "doc_type": "concept",
+      "section": "Filtering and Processing Data",
+      "title": "Transformation to OTLP Logs"
+    },
+    "docs/user/integrate-otlp-backend/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Integrate with your OTLP Backend"
+    },
+    "docs/user/integrate-otlp-backend/migration-to-otlp-logs.md": {
+      "doc_type": "concept",
+      "section": "Integrate with your OTLP Backend",
+      "title": "Migrate Your LogPipeline from HTTP to OTLP Logs"
+    },
+    "docs/user/integration/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Integration Guides"
+    },
+    "docs/user/integration/aws-cloudwatch/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Amazon CloudWatch"
+    },
+    "docs/user/integration/dynatrace/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Dynatrace"
+    },
+    "docs/user/integration/jaeger/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Jaeger"
+    },
+    "docs/user/integration/k8s-events/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Kubernetes Events"
+    },
+    "docs/user/integration/loki/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Loki"
+    },
+    "docs/user/integration/opentelemetry-demo/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "OpenTelemetry Demo App"
+    },
+    "docs/user/integration/prometheus/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Prometheus, Grafana and Kiali"
+    },
+    "docs/user/integration/sample-app/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "Sample App"
+    },
+    "docs/user/integration/sap-cloud-logging/README.md": {
+      "doc_type": "tutorial",
+      "section": "Integration Guides",
+      "title": "SAP Cloud Logging"
+    },
+    "docs/user/migration-to-v1beta1-api.md": {
+      "doc_type": "reference",
+      "section": "Telemetry Pipeline API",
+      "title": "Migrate Telemetry Pipelines to v1beta1"
+    },
+    "docs/user/monitor-pipeline-health.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Monitor Pipeline Health"
+    },
+    "docs/user/otlp-input.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Set Up the OTLP Input"
+    },
+    "docs/user/pipelines.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Telemetry Pipeline API"
+    },
+    "docs/user/resources/01-telemetry.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Telemetry"
+    },
+    "docs/user/resources/02-logpipeline.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "LogPipeline"
+    },
+    "docs/user/resources/04-tracepipeline.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "TracePipeline"
+    },
+    "docs/user/resources/05-metricpipeline.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "MetricPipeline"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/troubleshooting.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting the Telemetry Module"
+    }
+  },
+  "repo": "kyma-project/telemetry-manager",
+  "residue": [
+    "docs/user/01-manager.md",
+    "docs/user/03-traces.md",
+    "docs/user/04-metrics.md",
+    "docs/user/collecting-metrics/runtime-metrics.md",
+    "docs/user/gateways.md",
+    "docs/user/logs.md"
+  ],
+  "unrendered": [],
+  "unresolved": []
+}

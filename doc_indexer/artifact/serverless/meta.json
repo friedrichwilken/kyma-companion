@@ -1,0 +1,196 @@
+{
+  "base_url": "https://github.com/kyma-project/serverless/blob/5b8d6537a220354bc219922076218f0f776032fc",
+  "commit": "5b8d6537a220354bc219922076218f0f776032fc",
+  "module": "serverless",
+  "pages": {
+    "docs/user/00-10-from-code-to-function.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "From Code to Function"
+    },
+    "docs/user/00-20-configure-serverless.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Configuring Serverless"
+    },
+    "docs/user/00-30-development-toolkit.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Development Toolkit"
+    },
+    "docs/user/00-40-security-considerations.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Function Security"
+    },
+    "docs/user/00-50-limitations.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Limitations"
+    },
+    "docs/user/00-70-configuring-logging.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Logging Configuration"
+    },
+    "docs/user/00-80-migrate-to-new-runtime-api.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Migrate to the New Runtime API"
+    },
+    "docs/user/00-90-runtime-deprecation-schedule.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Runtime Deprecation Schedule"
+    },
+    "docs/user/08-10-best-practices.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Best Practices"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Serverless Module"
+    },
+    "docs/user/resources/06-10-function-cr.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Function CR"
+    },
+    "docs/user/resources/06-20-serverless-cr.md": {
+      "doc_type": "concept",
+      "section": "Resources",
+      "title": "Serverless CR"
+    },
+    "docs/user/resources/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Resources"
+    },
+    "docs/user/technical-reference/04-10-architecture.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Serverless Architecture"
+    },
+    "docs/user/technical-reference/05-20-env-variables.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Environment Variables in Functions"
+    },
+    "docs/user/technical-reference/07-10-sample-functions.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Sample Functions"
+    },
+    "docs/user/technical-reference/07-20-function-processing-stages.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Function Processing"
+    },
+    "docs/user/technical-reference/07-40-git-source-type.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Git Source Type"
+    },
+    "docs/user/technical-reference/07-70-function-specification.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Function's Specification"
+    },
+    "docs/user/technical-reference/07-80-available-presets.md": {
+      "doc_type": "reference",
+      "section": "Technical Reference",
+      "title": "Available Presets"
+    },
+    "docs/user/technical-reference/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Technical Reference"
+    },
+    "docs/user/troubleshooting-guides/03-50-serverless-periodically-restaring.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Serverless Periodically Restarting"
+    },
+    "docs/user/troubleshooting-guides/03-60-conflicting-opentelemetry-dependencies.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Function Fails to Start With Customized OpenTelemetry Dependencies"
+    },
+    "docs/user/troubleshooting-guides/03-70-git-source-certificate-unknown-authority.md": {
+      "doc_type": "troubleshooting",
+      "section": "Troubleshooting Guides",
+      "title": "Git Source Certificate Signed by Unknown Authority"
+    },
+    "docs/user/troubleshooting-guides/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Troubleshooting Guides"
+    },
+    "docs/user/tutorials/01-10-create-inline-function.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Create an Inline Function"
+    },
+    "docs/user/tutorials/01-100-customize-function-traces.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Customize Function Traces"
+    },
+    "docs/user/tutorials/01-11-create-git-function.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Create a Git Function"
+    },
+    "docs/user/tutorials/01-110-override-runtime-image.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Override Runtime Image"
+    },
+    "docs/user/tutorials/01-120-inject-envs.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Inject Environment Variables"
+    },
+    "docs/user/tutorials/01-130-use-external-scalers.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Use External Scalers"
+    },
+    "docs/user/tutorials/01-140-use-secret-mounts.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Access to Secrets Mounted as Volume"
+    },
+    "docs/user/tutorials/01-20-expose-function.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Expose the Function"
+    },
+    "docs/user/tutorials/01-30-manage-functions-with-kyma-cli.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Manage Functions Through Kyma CLI"
+    },
+    "docs/user/tutorials/01-80-log-into-private-packages-registry.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Log Into a Private Package Registry"
+    },
+    "docs/user/tutorials/01-90-set-asynchronous-connection.md": {
+      "doc_type": "tutorial",
+      "section": "Tutorials",
+      "title": "Send and Receive Cloud Events"
+    },
+    "docs/user/tutorials/README.md": {
+      "doc_type": "concept",
+      "section": "",
+      "title": "Tutorials"
+    }
+  },
+  "repo": "kyma-project/serverless",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

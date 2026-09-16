@@ -1,0 +1,31 @@
+{
+  "base_url": "https://github.com/kyma-project/lifecycle-manager/blob/dc87b17b6bb1db2a680882bc3c253356faebc9bc",
+  "commit": "dc87b17b6bb1db2a680882bc3c253356faebc9bc",
+  "module": "lifecycle-manager",
+  "pages": {
+    "docs/user/01-10-kyma-crd.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Kyma Custom Resource"
+    },
+    "docs/user/02-unmanaging-modules.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Setting Your Module to the Unmanaged and Managed State"
+    },
+    "docs/user/03-skipping-maintenance-windows.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Skipping Maintenance Windows"
+    },
+    "docs/user/README.md": {
+      "doc_type": "",
+      "section": "",
+      "title": "Lifecycle Manager User Documentation"
+    }
+  },
+  "repo": "kyma-project/lifecycle-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}

@@ -1,0 +1,84 @@
+<!-- loio2f69be279c3b46aab70eaa5802930f1e -->
+
+# Keda Module
+
+Learn more about the Keda module. Use it to install and manage the [KEDA](https://keda.sh/) autoscaler in your Kubernetes cluster.
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_h2t_yq2_qbc"/>
+
+## What Is KEDA?
+
+Kubernetes-based Event Driven Autoscaler \(KEDA\) is an autoscaler that allows you to easily scale your Kubernetes-based resources. You can scale your applications based on the data of your choice.
+
+KEDA supports a great number of scalers that help you manage your deployments. For the complete list, see the[KEDA Scalers documentation](https://keda.sh/docs/latest/scalers/).
+
+For more information about KEDA features, see the[KEDA documentation](https://keda.sh/docs/latest).
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_prg_1r2_qbc"/>
+
+## Features
+
+With the Keda module, you can have a custom event-driven autoscaling for Kubernetes workloads.
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_ixg_1r2_qbc"/>
+
+## Architecture
+
+![Keda architecture diagram](images/Keda_Architecture_Diagram_bfa1325.png)
+
+1.  User configures the Keda custom resource \(CR\). With the CR you can determine the way the Keda module runs.
+
+2.  Keda Manager watches the Keda CR.
+3.  Keda Manager manages the KEDA workloads.
+
+To learn more about the KEDA architecture, see the [KEDA architecture diagram](https://keda.sh/docs/latest/concepts/#architecture).
+
+
+
+### Keda Manager
+
+Keda Manager helps you to install and manage KEDA in your cluster. It manages the lifecycle of KEDA based on the dedicated Keda CR.
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_j3q_qr2_qbc"/>
+
+## API/Custom Resource Definitions
+
+The `kedas.operator.kyma-project.io` CustomResourceDefinition \(CRD\) is a detailed description of the Keda module configuration that you want to install on your cluster. See [Keda](https://kyma-project.io/external-content/keda-manager/docs/user/06-10-keda-cr.html).
+
+To learn more about the KEDA CR, see [KEDA Custom Resources](https://keda.sh/docs/latest/concepts/#custom-resources-crd).
+
+
+
+## Authorization
+
+To assign access permissions to the Keda module resources, use the following [aggregated ClusterRoles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles):
+
+-   `kyma-keda-view` - Grants read-only access to the Keda custom resource and resources from all API groups managed by KEDA.
+-   `kyma-keda-edit` - Grants full access to the Keda custom resource and resources from all API groups managed by KEDA.
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_u2c_qr2_qbc"/>
+
+## Resource Consumption
+
+To learn more about the resources used by the Keda module, see [Keda Module's Sizing](../50-administration-and-ops/kyma-modules-sizing-3a92490.md#loio3a924906857b4f01969cb684ccd25309__section_keda).
+
+
+
+
+
+<a name="loio2f69be279c3b46aab70eaa5802930f1e__section_jwg_3y1_tcc"/>
+
+## Keda Module Demo Applications
+
+To learn how to scale the Kubernetes workloads using the KEDA API based on a simple CPU consumption case, and how the Keda module can complement other Kyma components, see [Demo Applications](https://github.com/kyma-project/keda-manager/blob/main/docs/user/04-20-demo-applications.md).
+

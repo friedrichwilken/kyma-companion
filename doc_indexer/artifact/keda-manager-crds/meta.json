@@ -1,0 +1,16 @@
+{
+  "base_url": "https://github.com/kyma-project/keda-manager/blob/7a6cd3cb2704c9f6f033eeac6d93018ce6dba65b",
+  "commit": "7a6cd3cb2704c9f6f033eeac6d93018ce6dba65b",
+  "module": "keda-manager-crds",
+  "pages": {
+    "reference/operator.kyma-project.io/keda-v1alpha1.md": {
+      "doc_type": "reference",
+      "section": "operator.kyma-project.io",
+      "title": "Keda (operator.kyma-project.io/v1alpha1)"
+    }
+  },
+  "repo": "kyma-project/keda-manager",
+  "residue": [],
+  "unrendered": [],
+  "unresolved": []
+}
