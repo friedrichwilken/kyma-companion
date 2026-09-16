@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T18:40:37Z",
+  "generated_at": "2026-09-16T23:01:07Z",
   "sources": {
     "api-gateway": {
       "archived": false,
@@ -264,6 +264,13 @@
           "sha256": "08f3d0e905712bc956bdcff67a9e4955a43276dd0173d9bde21b5b72cc9507c2",
           "title": "Configure Local Rate Limiting"
         },
+        "docs/user/security/01-62-set-up-idp.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "d393ba8dfefe553886b56e49d4ddfb7094f446ad7d424c15435f7feb39f244b9",
+          "title": "Set Up a Custom Identity Provider"
+        },
         "docs/user/technical-reference/05-00-api-gateway-operator-parameters.md": {
           "doc_type": "reference",
           "section": "Technical Reference",
@@ -341,6 +348,13 @@
           "sha256": "5764751327790aa97abf72c5557a5aa7ebd606a69a2d14f638d11f612366d4d4",
           "title": "APIRule v1beta1 Management Issues"
         },
+        "docs/user/troubleshooting-guides/03-71-apirule-v1beta1-reconciliation-disabled.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "146268636f2cca599478c382ac20ce8300df93afe2e0e9926c186d2981a48941",
+          "title": "APIRule `v1beta1` Is No Longer Reconciled"
+        },
         "docs/user/troubleshooting-guides/03-80-blocked-in-cluster-communication.md": {
           "doc_type": "troubleshooting",
           "section": "Troubleshooting Guides",
@@ -394,10 +408,7 @@
       "ref": "main",
       "repo": "kyma-project/api-gateway",
       "repo_url": "https://github.com/kyma-project/api-gateway.git",
-      "residue": [
-        "docs/user/security/01-62-set-up-idp.md",
-        "docs/user/troubleshooting-guides/03-71-apirule-v1beta1-reconciliation-disabled.md"
-      ],
+      "residue": [],
       "resolver": "vitepress",
       "unrendered": [],
       "unresolved": [
@@ -3728,6 +3739,13 @@
           "sha256": "553312d48569e493185711d81d41859e5d92ceec94b322eee639ac10934910ae",
           "title": "Running an Application Using the `app push` Command"
         },
+        "docs/user/tutorials/01-30-image-import.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "43c98dd736d53d10469ea16b71cf0a23841d3f1ca7762041519ab7c60c4ace43",
+          "title": "Import Image Into Kyma's Internal Docker Registry"
+        },
         "docs/user/tutorials/01-40-fast-prototyping-app-push.md": {
           "doc_type": "tutorial",
           "section": "Tutorials",
@@ -3746,9 +3764,7 @@
       "ref": "main",
       "repo": "kyma-project/cli",
       "repo_url": "https://github.com/kyma-project/cli.git",
-      "residue": [
-        "docs/user/tutorials/01-30-image-import.md"
-      ],
+      "residue": [],
       "resolver": "vitepress",
       "unrendered": [],
       "unresolved": []
@@ -3771,6 +3787,13 @@
           "sha256": "1f490806f91500310e5dab1d9bcf911086b0a0f1c2456882de03b32dc67a45d9",
           "title": "NFS"
         },
+        "docs/user/00-25-scheduling-best-practices.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "85256e9a6052434ad082b8ed4e8137914614887c7388fd2460b94154fed0b855",
+          "title": "Scheduling Best Practices"
+        },
         "docs/user/00-30-vpc-peering.md": {
           "doc_type": "concept",
           "section": "",
@@ -3791,6 +3814,20 @@
           "selected_by": "resolver",
           "sha256": "f2d8f011c770da7fb31987615a5fb6ae1730b202dfeacddbde631913d058f466",
           "title": "Redis"
+        },
+        "docs/user/00-50-redis-cluster.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "456e978a03f0d6655d7e3ac8bdf1c45a55c2b3a95041bbdc76fb7b677fb95532",
+          "title": "Redis Cluster"
+        },
+        "docs/user/00-60-vpc-dns-link.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "61f522f1b527c1b562baed2e4a68a2ad3909f7dfaa52fa525cf8792aa3ec15e7",
+          "title": "VPC DNS Link"
         },
         "docs/user/README.md": {
           "doc_type": "concept",
@@ -3939,6 +3976,13 @@
           "sha256": "ca42dfcfbf5cce19854e55076403a8985e2c401959623eb049b7c430bbd7b22e",
           "title": "AzureRedisInstance Custom Resource"
         },
+        "docs/user/resources/04-40-32-azure-managed-redis.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "86343452437dd60feb6fddacdeebfd00215e5f6d5eb526bb06205fe5970366f4",
+          "title": "AzureManagedRedis Custom Resource"
+        },
         "docs/user/resources/04-40-40-azure-vpc-dns-link.md": {
           "doc_type": "concept",
           "section": "Resources",
@@ -4002,12 +4046,54 @@
           "sha256": "502b6bf7a5c8e2c8e65aac9e4f33a4ea965b6bbb1b9d76ee14307ee21719302b",
           "title": "Using NFS in Amazon Web Services"
         },
+        "docs/user/tutorials/01-20-11-aws-nfs-volume-backup.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "8a5a4483815c6d24f77f303d6224c694748461eb5d96983095ae55d36d19228c",
+          "title": "Backing Up NFS Volumes in Amazon Web Services"
+        },
+        "docs/user/tutorials/01-20-12-aws-scheduled-nfs-backup.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "1a7ccafcfa135124fa84f0fb6b534d91d776b19760bb68c2e05a0a7636eb3a51",
+          "title": "Creating Scheduled Automatic NFS Volume Backups in Amazon Web Services"
+        },
+        "docs/user/tutorials/01-20-13-aws-nfs-volume-restore.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "38376d500dc0c2e9fb943e166ea43b0a5d7bc727330ab3b1b301bf46a38b5e11",
+          "title": "Restoring NFS Volume Backups in Amazon Web Services"
+        },
         "docs/user/tutorials/01-20-20-gcp-nfs-volume.md": {
           "doc_type": "tutorial",
           "section": "Tutorials",
           "selected_by": "resolver",
           "sha256": "07d316ca931e62ee49db14950082013f5e8e073de6ab6ffdc8e4f2f282f84c9c",
           "title": "Using NFS in Google Cloud"
+        },
+        "docs/user/tutorials/01-20-21-gcp-nfs-volume-backup.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "e66a69eb4f201148c021100705ba22509bd307178f5b764f56eff2f4f9538acb",
+          "title": "Backing Up NFS Volumes in Google Cloud"
+        },
+        "docs/user/tutorials/01-20-22-gcp-scheduled-nfs-backup.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "78af6e70e82274aadfbf757dd5734154b3bc63895b4fba24af78600834b80609",
+          "title": "Creating Scheduled Automatic NFS Volume Backups in Google Cloud"
+        },
+        "docs/user/tutorials/01-20-23-gcp-nfs-volume-restore.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "58b4d12e9a73ec3780ea32e4d0cc355da5b1e3ab7ccf376ba2da5c75b94fb086",
+          "title": "Restoring NFS Volume Backups in Google Cloud"
         },
         "docs/user/tutorials/01-30-10-aws-vpc-peering.md": {
           "doc_type": "tutorial",
@@ -4111,18 +4197,7 @@
       "ref": "main",
       "repo": "kyma-project/cloud-manager",
       "repo_url": "https://github.com/kyma-project/cloud-manager.git",
-      "residue": [
-        "docs/user/00-25-scheduling-best-practices.md",
-        "docs/user/00-50-redis-cluster.md",
-        "docs/user/00-60-vpc-dns-link.md",
-        "docs/user/resources/04-40-32-azure-managed-redis.md",
-        "docs/user/tutorials/01-20-11-aws-nfs-volume-backup.md",
-        "docs/user/tutorials/01-20-12-aws-scheduled-nfs-backup.md",
-        "docs/user/tutorials/01-20-13-aws-nfs-volume-restore.md",
-        "docs/user/tutorials/01-20-21-gcp-nfs-volume-backup.md",
-        "docs/user/tutorials/01-20-22-gcp-scheduled-nfs-backup.md",
-        "docs/user/tutorials/01-20-23-gcp-nfs-volume-restore.md"
-      ],
+      "residue": [],
       "resolver": "vitepress",
       "unrendered": [],
       "unresolved": []
@@ -4311,6 +4386,13 @@
           "sha256": "42842af6a84f12d378499ad22d1f7b2aac6524d47370852f2994505977bd64a4",
           "title": "NATS Backend Storage Is Full"
         },
+        "docs/user/tutorials/README.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "7ec081819ebef5c525559b48040771570b9144135c1309533fef414057c2b748",
+          "title": "Eventing Tutorials"
+        },
         "docs/user/tutorials/evnt-01-choose-backend.md": {
           "doc_type": "concept",
           "section": "",
@@ -4343,9 +4425,7 @@
       "ref": "main",
       "repo": "kyma-project/eventing-manager",
       "repo_url": "https://github.com/kyma-project/eventing-manager.git",
-      "residue": [
-        "docs/user/tutorials/README.md"
-      ],
+      "residue": [],
       "resolver": "vitepress",
       "unrendered": [],
       "unresolved": []
@@ -4406,6 +4486,13 @@
           "selected_by": "resolver",
           "sha256": "7e8cb2a0b3dc1581f5d6ab65dac2f61bced8ebdff22f7cae23998928a5d361da",
           "title": "Istio Version"
+        },
+        "docs/user/00-15-overview-istio-setup.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "8da482d2b273baa73b14d1e0ca2f61853c831256494ab4cc501337e9814fe37f",
+          "title": "Default Istio Configuration"
         },
         "docs/user/00-20-istio-proxy-as-native-sidecar.md": {
           "doc_type": "concept",
@@ -4677,9 +4764,7 @@
       "ref": "main",
       "repo": "kyma-project/istio",
       "repo_url": "https://github.com/kyma-project/istio.git",
-      "residue": [
-        "docs/user/00-15-overview-istio-setup.md"
-      ],
+      "residue": [],
       "resolver": "vitepress",
       "unrendered": [],
       "unresolved": []
@@ -5829,6 +5914,13 @@
           "sha256": "cea2f34f683bb4f54e996a3022e637c8878d21f92f1e525bdac59bceec417c14",
           "title": "Collect Runtime Metrics"
         },
+        "docs/user/collecting-metrics/runtime-metrics.md": {
+          "doc_type": "",
+          "section": "",
+          "selected_by": "decision",
+          "sha256": "5229897c07961fd0741939350bda2fedf10876bf8e502b19142553c41446add8",
+          "title": "Runtime Metrics"
+        },
         "docs/user/collecting-traces/README.md": {
           "doc_type": "concept",
           "section": "",
@@ -6068,7 +6160,6 @@
         "docs/user/01-manager.md",
         "docs/user/03-traces.md",
         "docs/user/04-metrics.md",
-        "docs/user/collecting-metrics/runtime-metrics.md",
         "docs/user/gateways.md",
         "docs/user/logs.md"
       ],
