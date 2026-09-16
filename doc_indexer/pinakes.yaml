@@ -1,17 +1,14 @@
 # Curated documentation corpus for kyma-companion, compiled by pinakes
-# (https://github.com/friedrichwilken/pinakes), pinned at commit
-# a990185fa22ba4c93b8f9c1c191a92cdd7f50bbe.
+# (https://github.com/friedrichwilken/pinakes) v1.0.1.
 #
 # This is the same 23 sources as doc_indexer/docs_sources.json, converted to pinakes's
 # resolver types:
 #
 # - Module repositories with a VitePress sidebar (`docs/user/_sidebar.ts`) use the built-in
-#   `vitepress` resolver. pinakes's `vitepress` resolver has no `include` key (unlike the old
-#   Python `sidebar` resolver, which always added the module's landing README even when the
-#   sidebar does not link it): the landing README, and every other file the old
-#   `include_files` list carried, is instead brought into the resolver's residue `scope` (so it
-#   shows up in `residue.jsonl` after `resolve`) and then selected with `pinakes decide … include`
-#   (see `doc_indexer/README.md`). The decisions are committed in `decisions.jsonl`.
+#   `vitepress` resolver. Since pinakes 1.0.1, every resolver accepts an `include` glob list
+#   (SPEC.md §2.1): the module's landing README, and every other file the old Python
+#   `include_files` list carried, is selected directly with `include`, landing in the manifest
+#   with `selected_by: "include"` — no `decisions.jsonl` entry needed.
 # - btp-cloud-platform (SAP Help table of contents) and the two sap-tutorials repositories use
 #   `external` resolvers that reimplement the old `sap_help_toc` / `tutorials` Python resolvers
 #   as dependency-free scripts in `doc_indexer/resolvers/`.
@@ -40,6 +37,7 @@ sources:
       type: vitepress
       path: docs/user/_sidebar.ts
       scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
 
   - name: nats-manager
     repo: https://github.com/kyma-project/nats-manager.git
@@ -49,6 +47,7 @@ sources:
       type: vitepress
       path: docs/user/_sidebar.ts
       scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
 
   - name: istio
     repo: https://github.com/kyma-project/istio.git
@@ -57,6 +56,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: cloud-manager
     repo: https://github.com/kyma-project/cloud-manager.git
@@ -73,6 +73,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: telemetry-manager
     repo: https://github.com/kyma-project/telemetry-manager.git
@@ -81,6 +82,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: btp-manager
     repo: https://github.com/kyma-project/btp-manager.git
@@ -89,6 +91,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: application-connector-manager
     repo: https://github.com/kyma-project/application-connector-manager.git
@@ -98,6 +101,7 @@ sources:
       type: vitepress
       path: docs/user/_sidebar.ts
       scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
 
   - name: docker-registry
     repo: https://github.com/kyma-project/docker-registry.git
@@ -106,6 +110,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: keda-manager
     repo: https://github.com/kyma-project/keda-manager.git
@@ -114,6 +119,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: serverless
     repo: https://github.com/kyma-project/serverless.git
@@ -122,6 +128,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: busola
     repo: https://github.com/kyma-project/busola.git
@@ -131,6 +138,10 @@ sources:
       type: vitepress
       path: docs/user/_sidebar.ts
       scope: ["docs/user/**/*.md", "docs/resource-validation/*", "docs/custom-extensions/*"]
+      include:
+        - "docs/user/README.md"
+        - "docs/resource-validation/README.md"
+        - "docs/custom-extensions/busola-web-components.md"
 
   - name: btp-foundation
     repo: https://github.com/sap-tutorials/btp-foundation.git
@@ -165,6 +176,53 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      # The landing README and the generated CLI command reference are not linked from the
+      # sidebar; listed individually (rather than a `docs/user/gen-docs/*.md` glob) so the
+      # selected set stays pinned to exactly what was reviewed, not whatever gen-docs happens
+      # to contain upstream at resolve time.
+      include:
+        - "docs/user/README.md"
+        - "docs/user/gen-docs/kyma.md"
+        - "docs/user/gen-docs/kyma_alpha.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_group.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_repository.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_serviceaccount.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_user.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard_start.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard_stop.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_cluster.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_istio.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_logs.md"
+        - "docs/user/gen-docs/kyma_alpha_hana.md"
+        - "docs/user/gen-docs/kyma_alpha_hana_map.md"
+        - "docs/user/gen-docs/kyma_alpha_kubeconfig.md"
+        - "docs/user/gen-docs/kyma_alpha_kubeconfig_generate.md"
+        - "docs/user/gen-docs/kyma_alpha_module.md"
+        - "docs/user/gen-docs/kyma_alpha_module_catalog.md"
+        - "docs/user/gen-docs/kyma_alpha_module_list.md"
+        - "docs/user/gen-docs/kyma_alpha_module_pull.md"
+        - "docs/user/gen-docs/kyma_alpha_provision.md"
+        - "docs/user/gen-docs/kyma_alpha_reference-instance.md"
+        - "docs/user/gen-docs/kyma_app.md"
+        - "docs/user/gen-docs/kyma_app_push.md"
+        - "docs/user/gen-docs/kyma_completion.md"
+        - "docs/user/gen-docs/kyma_completion_bash.md"
+        - "docs/user/gen-docs/kyma_completion_fish.md"
+        - "docs/user/gen-docs/kyma_completion_powershell.md"
+        - "docs/user/gen-docs/kyma_completion_zsh.md"
+        - "docs/user/gen-docs/kyma_help.md"
+        - "docs/user/gen-docs/kyma_module.md"
+        - "docs/user/gen-docs/kyma_module_add.md"
+        - "docs/user/gen-docs/kyma_module_catalog.md"
+        - "docs/user/gen-docs/kyma_module_delete.md"
+        - "docs/user/gen-docs/kyma_module_list.md"
+        - "docs/user/gen-docs/kyma_module_manage.md"
+        - "docs/user/gen-docs/kyma_module_pull.md"
+        - "docs/user/gen-docs/kyma_module_unmanage.md"
+        - "docs/user/gen-docs/kyma_version.md"
 
   - name: registry-proxy
     repo: https://github.com/kyma-project/registry-proxy.git
@@ -173,6 +231,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: registry-cache
     repo: https://github.com/kyma-project/registry-cache.git
@@ -182,6 +241,7 @@ sources:
       type: vitepress
       path: docs/user/_sidebar.ts
       scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
 
   - name: modulectl
     repo: https://github.com/kyma-project/modulectl.git
@@ -206,6 +266,7 @@ sources:
     resolver:
       type: vitepress
       path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
 
   - name: kyma
     repo: https://github.com/kyma-project/kyma.git
