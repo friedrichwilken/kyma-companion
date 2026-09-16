@@ -1,1 +1,0 @@
-{"_comment": "Phase 3 eval-question proposals -- populated by doc_indexer/src/curation/eval_question_drafter.py (issue #54). Each line is an EvalQuestionProposal JSON object. Accepted proposals are promoted to doc_indexer/evaluation/queries.jsonl by the human reviewer."}

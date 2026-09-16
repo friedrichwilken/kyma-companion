@@ -11,5 +11,4 @@ extend = "../ruff.toml"
     "ANN204", # Missing return type annotation for special method
     "ANN205", # Missing return type annotation for staticmethod
     "ANN206", # Missing return type annotation for classmethod
-    "PLR2004", # Magic value used in comparison -- acceptable in test assertions
 ]
