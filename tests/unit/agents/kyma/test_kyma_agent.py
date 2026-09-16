@@ -22,7 +22,9 @@ def _make_page(
 def _make_tool(pages: list[DocPage]) -> DocSearchTool:
     """Create a DocSearchTool backed by a mocked DocIndex returning *pages*."""
     mock_index = Mock(spec=DocIndex)
-    mock_index.search = Mock(return_value=[p for p in pages if p.content.strip()])
+    kept = [p for p in pages if p.content.strip()]
+    mock_index.search = Mock(return_value=kept)
+    mock_index.search_with_sections = Mock(return_value=[(p, "") for p in kept])
     return DocSearchTool(mock_index)
 
 

@@ -32,6 +32,8 @@ from agents.common.utils import (
 )
 from agents.k8s.tools.logs import POD_LOGS_TAIL_LINES_LIMIT
 from agents.kyma.prompts import REACT_AGENT_INSTRUCTIONS, REACT_AGENT_PROMPT
+from agents.kyma.tools.doc_list import DocListTool
+from agents.kyma.tools.doc_read import DocReadTool
 from agents.kyma.tools.query import DEPRECATED_API_VERSIONS
 from agents.kyma.tools.search import DocSearchTool, SearchKymaDocTool
 from docs.index import DocIndex
@@ -307,6 +309,8 @@ class KymaReActAgent:
         tools: list[BaseTool] = [
             *_make_bound_tools(self._k8s_client, self._summarizer, invoke_ctx),
             self._search_tool,
+            DocReadTool(self._search_tool.index),
+            DocListTool(self._search_tool.index),
         ]
         graph = create_agent(
             model=self._llm,

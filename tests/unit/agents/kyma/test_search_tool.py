@@ -23,10 +23,12 @@ def _make_page(
     return DocPage(title=title, url=url, repo=repo, path=path, module=module, content=content)
 
 
-def _make_tool(pages: list[DocPage]) -> DocSearchTool:
+def _make_tool(pages: list[DocPage], sections: list[str] | None = None) -> DocSearchTool:
     """Create a DocSearchTool with a mocked DocIndex returning the given pages."""
     mock_index = Mock(spec=DocIndex)
     mock_index.search.return_value = pages
+    headings = sections or [""] * len(pages)
+    mock_index.search_with_sections.return_value = list(zip(pages, headings, strict=True))
     return DocSearchTool(mock_index)
 
 
@@ -37,7 +39,7 @@ class TestDocSearchToolModuleScope:
     async def test_arun_passes_module_to_index(self) -> None:
         tool = _make_tool([_make_page(content="Body.")])
         await tool._arun("sidecar injection", module="istio")
-        tool.index.search.assert_called_once_with("sidecar injection", top_k=5, module="istio")
+        tool.index.search_with_sections.assert_called_once_with("sidecar injection", top_k=5, module="istio")
 
     @pytest.mark.asyncio
     async def test_arun_documents_passes_module_to_index(self) -> None:
@@ -47,7 +49,27 @@ class TestDocSearchToolModuleScope:
 
 
 class TestDocSearchToolFormatting:
-    """Formatting of navigation metadata."""
+    """Formatting of navigation metadata, matched sections and long pages."""
+
+    @pytest.mark.asyncio
+    async def test_arun_names_matched_section(self) -> None:
+        page = _make_page(title="Istio Module", content="# Istio Module\n\nIntro.\n\n## Authorization\n\nDetails.\n")
+        tool = _make_tool([page], sections=["Authorization"])
+        result = await tool._arun("istio authorization")
+        assert "Matched section: Authorization" in result
+        assert "Details." in result
+
+    @pytest.mark.asyncio
+    async def test_arun_shortens_long_page_to_intro_and_matched_section(self) -> None:
+        filler = "word " * 4000  # well above MAX_PAGE_CHARS
+        content = f"Intro text.\n\n## Alpha\n\n{filler}\n\n## Beta\n\nBeta text.\n\n## Gamma\n\n{filler}"
+        page = _make_page(title="Long", content=content)
+        tool = _make_tool([page], sections=["Beta"])
+        result = await tool._arun("beta")
+        assert "Intro text." in result
+        assert "Beta text." in result
+        assert "Gamma" not in result
+        assert "read_kyma_doc with ID kyma-project/kyma::docs/test.md" in result
 
     @pytest.mark.asyncio
     async def test_arun_includes_doc_type_when_present(self) -> None:

@@ -3,12 +3,15 @@
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field, PrivateAttr
 
-from docs.index import DocIndex
+from docs.index import DocIndex, split_sections
 from docs.types import DocPage
 from utils.logging import get_logger
 
 DEFAULT_TOP_K: int = 5
 SEARCH_KYMA_DOC_TOOL_NAME: str = "search_kyma_doc"
+# Pages longer than this (characters) are reduced to their intro plus the
+# matched section in search results; read_kyma_doc returns the full text.
+MAX_PAGE_CHARS: int = 12_000
 
 logger = get_logger(__name__)
 
@@ -42,11 +45,34 @@ def page_id(page: DocPage) -> str:
     return f"{page.repo}::{page.path}"
 
 
-def _format_page(page: DocPage) -> str:
+def _excerpt(page: DocPage, matched_section: str) -> str:
+    """Return the page content, reduced to intro plus matched section when the page is very long.
+
+    Args:
+        page: The page to excerpt.
+        matched_section: Heading of the section that matched the query (``""`` for the intro).
+
+    Returns:
+        The full content for pages up to ``MAX_PAGE_CHARS``; otherwise the
+        intro and the matched section with a note on how to read the rest.
+    """
+    if len(page.content) <= MAX_PAGE_CHARS:
+        return page.content
+    sections = split_sections(page.content)
+    intro = sections[0][1] if sections and not sections[0][0] else ""
+    matched = next((text for heading, text in sections if heading == matched_section), "")
+    parts = [part for part in (intro, matched if matched_section else "") if part]
+    note = f"[Page shortened to the matching section. Use read_kyma_doc with ID {page_id(page)} for the full page.]"
+    return "\n\n".join([*parts, note])
+
+
+def _format_page(page: DocPage, matched_section: str | None = None) -> str:
     """Format a single DocPage into a human-readable block with title, source URL, module, ID, and content.
 
     Args:
         page: A DocPage with title, url, module, and content fields.
+        matched_section: Heading of the section that matched the query, when
+            formatting a search result. ``None`` formats the whole page.
 
     Returns:
         Formatted string block for the page.
@@ -59,8 +85,10 @@ def _format_page(page: DocPage) -> str:
     if page.doc_type:
         lines.append(f"Type: {page.doc_type}")
     lines.append(f"ID: {page_id(page)}")
+    if matched_section:
+        lines.append(f"Matched section: {matched_section}")
     lines.append("")
-    lines.append(page.content)
+    lines.append(page.content if matched_section is None else _excerpt(page, matched_section))
     return "\n".join(lines)
 
 
@@ -120,19 +148,29 @@ class DocSearchTool(BaseTool):
             Formatted documentation pages separated by horizontal rules,
             or a message indicating no results were found.
         """
-        docs = self._index.search(query, top_k=DEFAULT_TOP_K, module=module)
+        hits = self._index.search_with_sections(query, top_k=DEFAULT_TOP_K, module=module)
         logger.info(
             "doc_search",
             extra={
                 "query": query,
                 "module_filter": module,
-                "result_count": len(docs),
-                "results": [{"title": d.title, "url": d.url, "module": d.module, "path": d.path} for d in docs],
+                "result_count": len(hits),
+                "results": [
+                    {
+                        "title": d.title,
+                        "url": d.url,
+                        "module": d.module,
+                        "doc_type": d.doc_type,
+                        "path": d.path,
+                        "section": section,
+                    }
+                    for d, section in hits
+                ],
             },
         )
-        if not docs:
+        if not hits:
             return "No relevant documentation found."
-        return "\n\n---\n\n".join(_format_page(d) for d in docs)
+        return "\n\n---\n\n".join(_format_page(d, section) for d, section in hits)
 
     async def arun_documents(self, query: str, top_k: int = DEFAULT_TOP_K, module: str = "") -> list[DocPage]:
         """Retrieve raw DocPage objects for the given query.
