@@ -4,7 +4,7 @@ fixture:
   predicate:
     kind: Function
     name: func1
-    condition: status.ready=false
+    condition: BuildReady=True
 description: The Serverless Function has a syntax error; it calls Dates() instead of Date().
 queries:
   - user_query: What is wrong with the Function's source code?

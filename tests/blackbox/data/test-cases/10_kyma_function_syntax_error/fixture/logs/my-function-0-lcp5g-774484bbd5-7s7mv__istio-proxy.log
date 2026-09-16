@@ -1,0 +1,6 @@
+2026-09-16T22:16:21.461390Z	warning	envoy main external/envoy/source/server/server.cc:852	Usage of the deprecated runtime key overload.global_downstream_max_connections, consider switching to `envoy.resource_monitors.global_downstream_max_connections` instead.This runtime key will be removed in future.	thread=18
+2026-09-16T22:16:21.462164Z	warning	envoy main external/envoy/source/server/server.cc:948	There is no configured limit to the number of allowed active downstream connections. Configure a limit in `envoy.resource_monitors.global_downstream_max_connections` resource monitor.	thread=18
+2026-09-16T22:16:28.811009Z	error	Request to probe app failed: Get "http://100.96.0.70:8080/healthz": dial tcp 127.0.0.6:0->100.96.0.70:8080: connect: connection refused, original URL path = /app-health/function/startupz
+app URL path = /healthz
+2026-09-16T22:16:33.810851Z	error	Request to probe app failed: Get "http://100.96.0.70:8080/healthz": dial tcp 127.0.0.6:0->100.96.0.70:8080: connect: connection refused, original URL path = /app-health/function/startupz
+app URL path = /healthz

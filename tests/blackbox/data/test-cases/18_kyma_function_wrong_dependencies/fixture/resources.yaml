@@ -76,6 +76,51 @@ items:
       pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
       volume.kubernetes.io/provisioner-deletion-secret-name: ''
       volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+    creationTimestamp: '2026-09-16T22:15:43Z'
+    finalizers:
+    - external-provisioner.volume.kubernetes.io/finalizer
+    - kubernetes.io/pv-protection
+    - external-attacher/ebs-csi-aws-com
+    name: pv-shoot--kymatunas--comp-tests-0-1eeaade8-526f-416d-b27c-1cabab7f1641
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    claimRef:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: redis-data-redis-0
+      namespace: test-function-8
+      resourceVersion: '620836162'
+      uid: 1eeaade8-526f-416d-b27c-1cabab7f1641
+    csi:
+      driver: ebs.csi.aws.com
+      fsType: ext4
+      volumeAttributes:
+        storage.kubernetes.io/csiProvisionerIdentity: 1789563576656-7823-ebs.csi.aws.com
+      volumeHandle: vol-022342501a8eea14c
+    nodeAffinity:
+      required:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - eu-west-1a
+    persistentVolumeReclaimPolicy: Delete
+    storageClassName: default
+    volumeMode: Filesystem
+  status:
+    lastPhaseTransitionTime: '2026-09-16T22:15:43Z'
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    annotations:
+      pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
+      volume.kubernetes.io/provisioner-deletion-secret-name: ''
+      volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
     creationTimestamp: '2025-02-04T09:48:47Z'
     finalizers:
     - external-provisioner.volume.kubernetes.io/finalizer
@@ -158,51 +203,6 @@ items:
     volumeMode: Filesystem
   status:
     lastPhaseTransitionTime: '2025-02-04T09:48:41Z'
-    phase: Bound
-- apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    annotations:
-      pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
-      volume.kubernetes.io/provisioner-deletion-secret-name: ''
-      volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-    creationTimestamp: '2026-09-16T19:10:26Z'
-    finalizers:
-    - external-provisioner.volume.kubernetes.io/finalizer
-    - kubernetes.io/pv-protection
-    - external-attacher/ebs-csi-aws-com
-    name: pv-shoot--kymatunas--comp-tests-0-531a8bd5-402d-468f-ac73-f0a812397531
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    capacity:
-      storage: 1Gi
-    claimRef:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: redis-data-redis-0
-      namespace: test-function-8
-      resourceVersion: '620733735'
-      uid: 531a8bd5-402d-468f-ac73-f0a812397531
-    csi:
-      driver: ebs.csi.aws.com
-      fsType: ext4
-      volumeAttributes:
-        storage.kubernetes.io/csiProvisionerIdentity: 1789563576656-7823-ebs.csi.aws.com
-      volumeHandle: vol-04d877a2506168314
-    nodeAffinity:
-      required:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: topology.kubernetes.io/zone
-            operator: In
-            values:
-            - eu-west-1a
-    persistentVolumeReclaimPolicy: Delete
-    storageClassName: default
-    volumeMode: Filesystem
-  status:
-    lastPhaseTransitionTime: '2026-09-16T19:10:26Z'
     phase: Bound
 - apiVersion: v1
   kind: PersistentVolume
@@ -346,7 +346,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"PersistentVolume","metadata":{"annotations":{},"name":"redis-pv"},"spec":{"accessModes":["ReadWriteOnce"],"capacity":{"storage":"10Mi"},"hostPath":{"path":"/data/redis"},"persistentVolumeReclaimPolicy":"Retain","storageClassName":"standard"}}
 
         '
-    creationTimestamp: '2026-09-16T19:12:28Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     finalizers:
     - kubernetes.io/pv-protection
     name: redis-pv
@@ -362,7 +362,7 @@ items:
     storageClassName: standard
     volumeMode: Filesystem
   status:
-    lastPhaseTransitionTime: '2026-09-16T19:12:28Z'
+    lastPhaseTransitionTime: '2026-09-16T22:15:41Z'
     phase: Available
 - apiVersion: v1
   data:

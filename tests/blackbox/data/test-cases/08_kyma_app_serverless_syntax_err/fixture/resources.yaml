@@ -4,33 +4,31 @@ items:
   kind: Pod
   metadata:
     annotations:
-      cni.projectcalico.org/containerID: 9d72e93751a6633927082e53733e3cb007dcd67b6e85c519e13afcea5af2fce0
-      cni.projectcalico.org/podIP: 100.96.1.46/32
-      cni.projectcalico.org/podIPs: 100.96.1.46/32
+      cni.projectcalico.org/containerID: a18f3b4a9c45b9764650d1c850f6f7857d6346241bb3e209dc7d854133365212
+      cni.projectcalico.org/podIP: ''
+      cni.projectcalico.org/podIPs: ''
       sidecar.istio.io/inject: 'false'
-    creationTimestamp: '2026-09-16T19:10:25Z'
-    finalizers:
-    - batch.kubernetes.io/job-tracking
-    generateName: func1-build-hkpc9-
+    creationTimestamp: '2026-09-16T22:15:42Z'
+    generateName: func1-build-2p6fg-
     generation: 1
     labels:
       app: restapi
-      batch.kubernetes.io/controller-uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
-      batch.kubernetes.io/job-name: func1-build-hkpc9
-      controller-uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
-      job-name: func1-build-hkpc9
+      batch.kubernetes.io/controller-uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
+      batch.kubernetes.io/job-name: func1-build-2p6fg
+      controller-uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
+      job-name: func1-build-2p6fg
       serverless.kyma-project.io/function-name: func1
       serverless.kyma-project.io/managed-by: function-controller
-      serverless.kyma-project.io/uuid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
-    name: func1-build-hkpc9-xx9ts
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1-build-2p6fg-x954p
     namespace: test-function-8
     ownerReferences:
     - apiVersion: batch/v1
       blockOwnerDeletion: true
       controller: true
       kind: Job
-      name: func1-build-hkpc9
-      uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
+      name: func1-build-2p6fg
+      uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
   spec:
     containers:
     - args:
@@ -41,7 +39,7 @@ items:
       - --cache=true
       - --use-new-run
       - --compressed-caching=false
-      - --destination=serverless-docker-registry.kyma-system.svc.cluster.local:5000/test-function-8-func1:0a807980c280634a3b934f6bb8a90bbb41ad3a3748105977fae0ca40f1001dcf
+      - --destination=serverless-docker-registry.kyma-system.svc.cluster.local:5000/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
       - --context=dir:///workspace
       env:
       - name: DOCKER_CONFIG
@@ -95,7 +93,7 @@ items:
         readOnly: true
         subPath: .npmrc
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-clhgb
+        name: kube-api-access-z62rg
         readOnly: true
     dnsPolicy: ClusterFirst
     enableServiceLinks: true
@@ -140,9 +138,9 @@ items:
       name: runtime
     - configMap:
         defaultMode: 420
-        name: func1-pthpz
+        name: func1-4hncr
       name: sources
-    - name: kube-api-access-clhgb
+    - name: kube-api-access-z62rg
       projected:
         defaultMode: 420
         sources:
@@ -163,45 +161,65 @@ items:
   status:
     conditions:
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:25Z'
+      lastTransitionTime: '2026-09-16T22:15:56Z'
       observedGeneration: 1
       status: 'False'
       type: PodReadyToStartContainers
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:25Z'
+      lastTransitionTime: '2026-09-16T22:15:42Z'
       observedGeneration: 1
+      reason: PodCompleted
       status: 'True'
       type: Initialized
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:25Z'
-      message: 'containers with unready status: [executor]'
+      lastTransitionTime: '2026-09-16T22:15:54Z'
       observedGeneration: 1
-      reason: ContainersNotReady
+      reason: PodCompleted
       status: 'False'
       type: Ready
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:25Z'
-      message: 'containers with unready status: [executor]'
+      lastTransitionTime: '2026-09-16T22:15:54Z'
       observedGeneration: 1
-      reason: ContainersNotReady
+      reason: PodCompleted
       status: 'False'
       type: ContainersReady
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:25Z'
+      lastTransitionTime: '2026-09-16T22:15:42Z'
       observedGeneration: 1
       status: 'True'
       type: PodScheduled
     containerStatuses:
-    - image: europe-docker.pkg.dev/kyma-project/prod/external/gcr.io/kaniko-project/executor:v1.23.2
-      imageID: ''
+    - allocatedResources:
+        cpu: 200m
+        memory: 200Mi
+      containerID: containerd://3bac461d53db1e753eaf2fd6f764967516fa7350a422b108e397751fe315bef6
+      image: europe-docker.pkg.dev/kyma-project/prod/external/gcr.io/kaniko-project/executor:v1.23.2
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/gcr.io/kaniko-project/executor@sha256:9e69fd4330ec887829c780f5126dd80edc663df6def362cd22e79bcdf00ac53f
       lastState: {}
       name: executor
       ready: false
+      resources:
+        limits:
+          cpu: 700m
+          memory: 700Mi
+        requests:
+          cpu: 200m
+          memory: 200Mi
       restartCount: 0
       started: false
       state:
-        waiting:
-          reason: ContainerCreating
+        terminated:
+          containerID: containerd://3bac461d53db1e753eaf2fd6f764967516fa7350a422b108e397751fe315bef6
+          exitCode: 0
+          finishedAt: '2026-09-16T22:15:53Z'
+          reason: Completed
+          startedAt: '2026-09-16T22:15:43Z'
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          uid: 0
       volumeMounts:
       - mountPath: /workspace/src/package.json
         name: sources
@@ -224,20 +242,549 @@ items:
         readOnly: true
         recursiveReadOnly: Disabled
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-clhgb
+        name: kube-api-access-z62rg
         readOnly: true
         recursiveReadOnly: Disabled
     hostIP: 10.250.26.115
     hostIPs:
     - ip: 10.250.26.115
     observedGeneration: 1
-    phase: Pending
+    phase: Succeeded
+    podIP: 100.96.1.51
+    podIPs:
+    - ip: 100.96.1.51
     qosClass: Burstable
-    startTime: '2026-09-16T19:10:25Z'
+    startTime: '2026-09-16T22:15:42Z'
 - apiVersion: v1
   kind: Pod
   metadata:
     annotations:
+      cni.projectcalico.org/containerID: 7fe514b0c333fdee8489dacbac88e90d783b17a5686d534d9ea3578d0d7db03e
+      cni.projectcalico.org/podIP: 100.96.0.68/32
+      cni.projectcalico.org/podIPs: 100.96.0.68/32
+      istio.io/rev: default
+      kubectl.kubernetes.io/default-container: function
+      kubectl.kubernetes.io/default-logs-container: function
+      proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+      sidecar.istio.io/interceptionMode: REDIRECT
+      sidecar.istio.io/status: '{"initContainers":["istio-validation"],"containers":["istio-proxy"],"volumes":["workload-socket","credential-socket","workload-certs","istio-envoy","istio-data","istio-podinfo","istio-token","istiod-ca-cert"],"imagePullSecrets":null,"revision":"default"}'
+      traffic.sidecar.istio.io/excludeInboundPorts: '15020'
+      traffic.sidecar.istio.io/includeInboundPorts: '*'
+      traffic.sidecar.istio.io/includeOutboundIPRanges: '*'
+    creationTimestamp: '2026-09-16T22:15:58Z'
+    generateName: func1-hv7ck-6f6d6dd94c-
+    generation: 1
+    labels:
+      app.kubernetes.io/name: func1
+      pod-template-hash: 6f6d6dd94c
+      security.istio.io/tlsMode: istio
+      serverless.kyma-project.io/function-name: func1
+      serverless.kyma-project.io/managed-by: function-controller
+      serverless.kyma-project.io/resource: deployment
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+      service.istio.io/canonical-name: func1
+      service.istio.io/canonical-revision: latest
+    name: func1-hv7ck-6f6d6dd94c-6hpbg
+    namespace: test-function-8
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: func1-hv7ck-6f6d6dd94c
+      uid: 28db0091-89c2-44f0-b7a7-7307b29375f9
+  spec:
+    containers:
+    - args:
+      - proxy
+      - sidecar
+      - --domain
+      - $(POD_NAMESPACE).svc.cluster.local
+      - --proxyLogLevel=warning
+      - --proxyComponentLogLevel=misc:error
+      - --log_output_level=all:warn
+      env:
+      - name: PILOT_CERT_PROVIDER
+        value: istiod
+      - name: CA_ADDR
+        value: istiod.istio-system.svc:15012
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+      - name: INSTANCE_IP
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
+      - name: SERVICE_ACCOUNT
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.serviceAccountName
+      - name: HOST_IP
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.hostIP
+      - name: ISTIO_CPU_LIMIT
+        valueFrom:
+          resourceFieldRef:
+            divisor: '0'
+            resource: limits.cpu
+      - name: PROXY_CONFIG
+        value: '{"tracingServiceName":"CANONICAL_NAME_ONLY","proxyMetadata":{"BOOTSTRAP_XDS_AGENT":"true","CITADEL_SELF_SIGNED_CA_RSA_KEY_SIZE":"4096","WORKLOAD_RSA_KEY_SIZE":"3072"},"holdApplicationUntilProxyStarts":true}
+
+          '
+      - name: ISTIO_META_POD_PORTS
+        value: '[
+
+          ]'
+      - name: ISTIO_META_APP_CONTAINERS
+        value: function
+      - name: GOMEMLIMIT
+        valueFrom:
+          resourceFieldRef:
+            divisor: '0'
+            resource: limits.memory
+      - name: GOMAXPROCS
+        valueFrom:
+          resourceFieldRef:
+            divisor: '0'
+            resource: limits.cpu
+      - name: ISTIO_META_CLUSTER_ID
+        value: Kubernetes
+      - name: ISTIO_META_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: ISTIO_META_INTERCEPTION_MODE
+        value: REDIRECT
+      - name: ISTIO_META_WORKLOAD_NAME
+        value: func1-hv7ck
+      - name: ISTIO_META_OWNER
+        value: kubernetes://apis/apps/v1/namespaces/test-function-8/deployments/func1-hv7ck
+      - name: ISTIO_META_MESH_ID
+        value: cluster.local
+      - name: TRUST_DOMAIN
+        value: cluster.local
+      - name: BOOTSTRAP_XDS_AGENT
+        value: 'true'
+      - name: CITADEL_SELF_SIGNED_CA_RSA_KEY_SIZE
+        value: '4096'
+      - name: WORKLOAD_RSA_KEY_SIZE
+        value: '3072'
+      - name: ISTIO_KUBE_APP_PROBERS
+        value: '{"/app-health/function/livez":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"timeoutSeconds":4},"/app-health/function/readyz":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"timeoutSeconds":2},"/app-health/function/startupz":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"timeoutSeconds":1}}'
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imagePullPolicy: IfNotPresent
+      lifecycle:
+        postStart:
+          exec:
+            command:
+            - pilot-agent
+            - wait
+      name: istio-proxy
+      ports:
+      - containerPort: 15090
+        name: http-envoy-prom
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 14
+        httpGet:
+          path: /healthz/ready
+          port: 15021
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 15
+        successThreshold: 1
+        timeoutSeconds: 3
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 1337
+        runAsNonRoot: true
+        runAsUser: 1337
+      startupProbe:
+        failureThreshold: 600
+        httpGet:
+          path: /healthz/ready
+          port: 15021
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 3
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/workload-spiffe-uds
+        name: workload-socket
+      - mountPath: /var/run/secrets/credential-uds
+        name: credential-socket
+      - mountPath: /var/run/secrets/workload-spiffe-credentials
+        name: workload-certs
+      - mountPath: /var/run/secrets/istio
+        name: istiod-ca-cert
+      - mountPath: /var/lib/istio/data
+        name: istio-data
+      - mountPath: /etc/istio/proxy
+        name: istio-envoy
+      - mountPath: /var/run/secrets/tokens
+        name: istio-token
+      - mountPath: /etc/istio/pod
+        name: istio-podinfo
+    - env:
+      - name: FUNC_RUNTIME
+        value: nodejs20
+      - name: FUNC_NAME
+        value: func1
+      - name: SERVICE_NAMESPACE
+        value: test-function-8
+      - name: TRACE_COLLECTOR_ENDPOINT
+      - name: PUBLISHER_PROXY_ADDRESS
+        value: http://eventing-publisher-proxy.kyma-system.svc.cluster.local/publish
+      - name: FUNC_HANDLER
+        value: main
+      - name: MOD_NAME
+        value: handler
+      - name: FUNC_PORT
+        value: '8080'
+      - name: KUBERNETES_SERVICE_HOST
+        value: api.comp-tests-0.kymatunas.internal.canary.k8s.ondemand.com
+      image: localhost:32137/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /app-health/function/livez
+          port: 15020
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 4
+      name: function
+      readinessProbe:
+        failureThreshold: 1
+        httpGet:
+          path: /app-health/function/readyz
+          port: 15020
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 2
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+      securityContext:
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        procMount: Default
+        readOnlyRootFilesystem: true
+      startupProbe:
+        failureThreshold: 30
+        httpGet:
+          path: /app-health/function/startupz
+          port: 15020
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 1
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp
+        name: tmp-dir
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    imagePullSecrets:
+    - name: serverless-registry-config-default
+    initContainers:
+    - args:
+      - istio-iptables
+      - -p
+      - '15001'
+      - -z
+      - '15006'
+      - -u
+      - '1337'
+      - -m
+      - REDIRECT
+      - -i
+      - '*'
+      - -x
+      - ''
+      - -b
+      - '*'
+      - -d
+      - 15090,15021,15020
+      - --log_output_level=all:warn
+      - --run-validation
+      - --skip-rule-apply
+      env:
+      - name: BOOTSTRAP_XDS_AGENT
+        value: 'true'
+      - name: CITADEL_SELF_SIGNED_CA_RSA_KEY_SIZE
+        value: '4096'
+      - name: WORKLOAD_RSA_KEY_SIZE
+        value: '3072'
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imagePullPolicy: IfNotPresent
+      name: istio-validation
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 1337
+        runAsNonRoot: true
+        runAsUser: 1337
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+    nodeName: ip-10-250-8-135.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsGroup: 10001
+      runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: serverless-function
+    serviceAccountName: serverless-function
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - emptyDir: {}
+      name: workload-socket
+    - emptyDir: {}
+      name: credential-socket
+    - emptyDir: {}
+      name: workload-certs
+    - emptyDir:
+        medium: Memory
+      name: istio-envoy
+    - emptyDir: {}
+      name: istio-data
+    - downwardAPI:
+        defaultMode: 420
+        items:
+        - fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.labels
+          path: labels
+        - fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.annotations
+          path: annotations
+      name: istio-podinfo
+    - name: istio-token
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            audience: istio-ca
+            expirationSeconds: 43200
+            path: istio-token
+    - configMap:
+        defaultMode: 420
+        name: istio-ca-root-cert
+      name: istiod-ca-cert
+    - emptyDir:
+        sizeLimit: 100Mi
+      name: tmp-dir
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:59Z'
+      observedGeneration: 1
+      status: 'True'
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:59Z'
+      observedGeneration: 1
+      status: 'True'
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:16:23Z'
+      observedGeneration: 1
+      status: 'True'
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:16:23Z'
+      observedGeneration: 1
+      status: 'True'
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:58Z'
+      observedGeneration: 1
+      status: 'True'
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 50m
+        memory: 64Mi
+      containerID: containerd://a82c8795f6a7b3dc13a463ab3a3e605c4e545bef1249f651b65e19d1ebe832b3
+      image: localhost:32137/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
+      imageID: localhost:32137/test-function-8-func1@sha256:aec57c87c4bf8e9330a7994b2d2e0b22c8bb8ab15947da6a533d0135866990c6
+      lastState: {}
+      name: function
+      ready: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2026-09-16T22:16:07Z'
+      user:
+        linux:
+          gid: 10001
+          supplementalGroups:
+          - 10001
+          uid: 10001
+      volumeMounts:
+      - mountPath: /tmp
+        name: tmp-dir
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://942678474b955e7908bd59110dbd187fa6435d24b287e55e8fff21ef69d1ea9a
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
+      lastState: {}
+      name: istio-proxy
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2026-09-16T22:16:00Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
+      volumeMounts:
+      - mountPath: /var/run/secrets/workload-spiffe-uds
+        name: workload-socket
+      - mountPath: /var/run/secrets/credential-uds
+        name: credential-socket
+      - mountPath: /var/run/secrets/workload-spiffe-credentials
+        name: workload-certs
+      - mountPath: /var/run/secrets/istio
+        name: istiod-ca-cert
+      - mountPath: /var/lib/istio/data
+        name: istio-data
+      - mountPath: /etc/istio/proxy
+        name: istio-envoy
+      - mountPath: /var/run/secrets/tokens
+        name: istio-token
+      - mountPath: /etc/istio/pod
+        name: istio-podinfo
+    hostIP: 10.250.8.135
+    hostIPs:
+    - ip: 10.250.8.135
+    initContainerStatuses:
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://75d00e1383e6f189478f90123ded8da1d36ac1180cc6ceca7157d78e31da426b
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
+      lastState: {}
+      name: istio-validation
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://75d00e1383e6f189478f90123ded8da1d36ac1180cc6ceca7157d78e31da426b
+          exitCode: 0
+          finishedAt: '2026-09-16T22:15:59Z'
+          reason: Completed
+          startedAt: '2026-09-16T22:15:59Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
+    observedGeneration: 1
+    phase: Running
+    podIP: 100.96.0.68
+    podIPs:
+    - ip: 100.96.0.68
+    qosClass: Burstable
+    startTime: '2026-09-16T22:15:58Z'
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 2436a7edc138490c83807ab218637f1ed0de192b0997a510b10d7486fc7a8eea
+      cni.projectcalico.org/podIP: 100.96.0.67/32
+      cni.projectcalico.org/podIPs: 100.96.0.67/32
       istio.io/rev: default
       kubectl.kubernetes.io/default-container: redis
       kubectl.kubernetes.io/default-logs-container: redis
@@ -246,7 +793,7 @@ items:
       traffic.sidecar.istio.io/excludeInboundPorts: '15020'
       traffic.sidecar.istio.io/includeInboundPorts: '*'
       traffic.sidecar.istio.io/includeOutboundIPRanges: '*'
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     generateName: redis-
     generation: 1
     labels:
@@ -265,7 +812,7 @@ items:
       controller: true
       kind: StatefulSet
       name: redis
-      uid: 503b2520-9f47-42fb-b86f-7d5bb2ca9b3f
+      uid: 849ca0c4-acdd-4576-b2eb-e03b66d56f8d
   spec:
     containers:
     - args:
@@ -421,7 +968,7 @@ items:
       - mountPath: /etc/istio/pod
         name: istio-podinfo
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-jgmz6
+        name: kube-api-access-29kp2
         readOnly: true
     - env:
       - name: REDIS_PASSWORD
@@ -444,7 +991,7 @@ items:
       - mountPath: /data
         name: redis-data
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-jgmz6
+        name: kube-api-access-29kp2
         readOnly: true
     dnsPolicy: ClusterFirst
     enableServiceLinks: true
@@ -502,8 +1049,9 @@ items:
       terminationMessagePolicy: File
       volumeMounts:
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-jgmz6
+        name: kube-api-access-29kp2
         readOnly: true
+    nodeName: ip-10-250-8-135.eu-west-1.compute.internal
     preemptionPolicy: PreemptLowerPriority
     priority: 0
     restartPolicy: Always
@@ -561,7 +1109,7 @@ items:
     - name: redis-data
       persistentVolumeClaim:
         claimName: redis-data-redis-0
-    - name: kube-api-access-jgmz6
+    - name: kube-api-access-29kp2
       projected:
         defaultMode: 420
         sources:
@@ -580,15 +1128,160 @@ items:
                 fieldPath: metadata.namespace
               path: namespace
   status:
-    phase: Pending
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:54Z'
+      observedGeneration: 1
+      status: 'True'
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:54Z'
+      observedGeneration: 1
+      status: 'True'
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:16:01Z'
+      observedGeneration: 1
+      status: 'True'
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:16:01Z'
+      observedGeneration: 1
+      status: 'True'
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: '2026-09-16T22:15:44Z'
+      observedGeneration: 1
+      status: 'True'
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://33d5c9986b79f83ad7250fa0428ad264f42d05ed7c16d013dc9edd1e9aed4857
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
+      lastState: {}
+      name: istio-proxy
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2026-09-16T22:15:55Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
+      volumeMounts:
+      - mountPath: /var/run/secrets/workload-spiffe-uds
+        name: workload-socket
+      - mountPath: /var/run/secrets/credential-uds
+        name: credential-socket
+      - mountPath: /var/run/secrets/workload-spiffe-credentials
+        name: workload-certs
+      - mountPath: /var/run/secrets/istio
+        name: istiod-ca-cert
+      - mountPath: /var/lib/istio/data
+        name: istio-data
+      - mountPath: /etc/istio/proxy
+        name: istio-envoy
+      - mountPath: /var/run/secrets/tokens
+        name: istio-token
+      - mountPath: /etc/istio/pod
+        name: istio-podinfo
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-29kp2
+        readOnly: true
+        recursiveReadOnly: Disabled
+    - containerID: containerd://98e6952f361030f791ba436e54a8c974080896d87e5b2d0321b88bbf56eb14db
+      image: docker.io/library/redis:latest
+      imageID: docker.io/library/redis@sha256:298e5b3bc566bade82f46ad5511777a4a07a294097ce16ada2f6a42be5239df5
+      lastState: {}
+      name: redis
+      ready: true
+      resources: {}
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2026-09-16T22:15:59Z'
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          uid: 0
+      volumeMounts:
+      - mountPath: /data
+        name: redis-data
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-29kp2
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.250.8.135
+    hostIPs:
+    - ip: 10.250.8.135
+    initContainerStatuses:
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://dc561922e26bb279dcf456a59dc4c8d1ad97058dbd9842e55aba49de0af451c6
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
+      lastState: {}
+      name: istio-validation
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://dc561922e26bb279dcf456a59dc4c8d1ad97058dbd9842e55aba49de0af451c6
+          exitCode: 0
+          finishedAt: '2026-09-16T22:15:54Z'
+          reason: Completed
+          startedAt: '2026-09-16T22:15:54Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-29kp2
+        readOnly: true
+        recursiveReadOnly: Disabled
+    observedGeneration: 1
+    phase: Running
+    podIP: 100.96.0.67
+    podIPs:
+    - ip: 100.96.0.67
     qosClass: Burstable
+    startTime: '2026-09-16T22:15:44Z'
 - apiVersion: v1
   kind: Pod
   metadata:
     annotations:
-      cni.projectcalico.org/containerID: 58ec5f7c56772491d60bfdea50f67537561b14b187502b4f4c000b3e02825133
-      cni.projectcalico.org/podIP: 100.96.0.56/32
-      cni.projectcalico.org/podIPs: 100.96.0.56/32
+      cni.projectcalico.org/containerID: ef5365d3019cdd14900166b96a42ca79e8cab75fc76372931e2abb002963e40f
+      cni.projectcalico.org/podIP: 100.96.0.66/32
+      cni.projectcalico.org/podIPs: 100.96.0.66/32
       istio.io/rev: default
       kubectl.kubernetes.io/default-container: restapi
       kubectl.kubernetes.io/default-logs-container: restapi
@@ -597,7 +1290,7 @@ items:
       traffic.sidecar.istio.io/excludeInboundPorts: '15020'
       traffic.sidecar.istio.io/includeInboundPorts: '*'
       traffic.sidecar.istio.io/includeOutboundIPRanges: '*'
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     generateName: restapi-54fc4968f4-
     generation: 1
     labels:
@@ -606,7 +1299,7 @@ items:
       security.istio.io/tlsMode: istio
       service.istio.io/canonical-name: restapi
       service.istio.io/canonical-revision: latest
-    name: restapi-54fc4968f4-2l28w
+    name: restapi-54fc4968f4-5djxw
     namespace: test-function-8
     ownerReferences:
     - apiVersion: apps/v1
@@ -614,7 +1307,7 @@ items:
       controller: true
       kind: ReplicaSet
       name: restapi-54fc4968f4
-      uid: c96839ba-506e-41c3-9bc8-9ec3dddf9bf0
+      uid: 8e48f5ad-da1a-432f-ae8f-d0d2fae7f1ea
   spec:
     containers:
     - args:
@@ -772,7 +1465,7 @@ items:
       - mountPath: /etc/istio/pod
         name: istio-podinfo
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
     - env:
       - name: REDIS_PASSWORD
@@ -818,7 +1511,7 @@ items:
       terminationMessagePolicy: File
       volumeMounts:
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
     dnsPolicy: ClusterFirst
     enableServiceLinks: true
@@ -875,7 +1568,7 @@ items:
       terminationMessagePolicy: File
       volumeMounts:
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
     nodeName: ip-10-250-8-135.eu-west-1.compute.internal
     preemptionPolicy: PreemptLowerPriority
@@ -931,7 +1624,7 @@ items:
         defaultMode: 420
         name: istio-ca-root-cert
       name: istiod-ca-cert
-    - name: kube-api-access-cslgx
+    - name: kube-api-access-zbd4m
       projected:
         defaultMode: 420
         sources:
@@ -952,47 +1645,58 @@ items:
   status:
     conditions:
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:24Z'
+      lastTransitionTime: '2026-09-16T22:15:43Z'
       observedGeneration: 1
-      status: 'False'
+      status: 'True'
       type: PodReadyToStartContainers
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:24Z'
-      message: 'containers with incomplete status: [istio-validation]'
+      lastTransitionTime: '2026-09-16T22:15:43Z'
       observedGeneration: 1
-      reason: ContainersNotInitialized
-      status: 'False'
+      status: 'True'
       type: Initialized
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:24Z'
-      message: 'containers with unready status: [istio-proxy restapi]'
+      lastTransitionTime: '2026-09-16T22:16:29Z'
       observedGeneration: 1
-      reason: ContainersNotReady
-      status: 'False'
+      status: 'True'
       type: Ready
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:24Z'
-      message: 'containers with unready status: [istio-proxy restapi]'
+      lastTransitionTime: '2026-09-16T22:16:29Z'
       observedGeneration: 1
-      reason: ContainersNotReady
-      status: 'False'
+      status: 'True'
       type: ContainersReady
     - lastProbeTime: null
-      lastTransitionTime: '2026-09-16T19:10:24Z'
+      lastTransitionTime: '2026-09-16T22:15:41Z'
       observedGeneration: 1
       status: 'True'
       type: PodScheduled
     containerStatuses:
-    - image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
-      imageID: ''
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://5e8411428561e3d5f55702afb6540cba3082ec3db293afe5943b7b01f6e73d3f
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
       lastState: {}
       name: istio-proxy
-      ready: false
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
       restartCount: 0
-      started: false
+      started: true
       state:
-        waiting:
-          reason: PodInitializing
+        running:
+          startedAt: '2026-09-16T22:15:43Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
       volumeMounts:
       - mountPath: /var/run/secrets/workload-spiffe-uds
         name: workload-socket
@@ -1011,47 +1715,136 @@ items:
       - mountPath: /etc/istio/pod
         name: istio-podinfo
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
         recursiveReadOnly: Disabled
-    - image: jfwilken/restapi:latest
-      imageID: ''
-      lastState: {}
+    - containerID: containerd://87822cf067c52c5961dc3604934528651360fef92c1ddd36a66ef18e6ee70ed8
+      image: docker.io/jfwilken/restapi:latest
+      imageID: docker.io/jfwilken/restapi@sha256:cd38304723c3844401a963f17a2a7bf8344d721430c45c4597f4ef25de19bba0
+      lastState:
+        terminated:
+          containerID: containerd://a9c1f7ccf5b22a2af8ea5060357295f8fea9ac0432c41d31ce62c9727bb4ffac
+          exitCode: 1
+          finishedAt: '2026-09-16T22:15:59Z'
+          reason: Error
+          startedAt: '2026-09-16T22:15:58Z'
       name: restapi
-      ready: false
-      restartCount: 0
-      started: false
+      ready: true
+      resources: {}
+      restartCount: 2
+      started: true
       state:
-        waiting:
-          reason: PodInitializing
+        running:
+          startedAt: '2026-09-16T22:16:17Z'
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 6
+          - 10
+          - 11
+          - 20
+          - 26
+          - 27
+          uid: 0
       volumeMounts:
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
         recursiveReadOnly: Disabled
     hostIP: 10.250.8.135
     hostIPs:
     - ip: 10.250.8.135
     initContainerStatuses:
-    - image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
-      imageID: ''
+    - allocatedResources:
+        cpu: 10m
+        memory: 32Mi
+      containerID: containerd://af57337d5de2794fcc100d65410752dac0cea3398ea96fb4e1fbe10373a564c5
+      image: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2:1.24.2-distroless
+      imageID: europe-docker.pkg.dev/kyma-project/prod/external/istio/proxyv2@sha256:51040f26a25fa49151c94453f8ade6120c25e20afc8690f8021072da76ffa23f
       lastState: {}
       name: istio-validation
-      ready: false
+      ready: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 254Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
       restartCount: 0
       started: false
       state:
-        waiting:
-          reason: PodInitializing
+        terminated:
+          containerID: containerd://af57337d5de2794fcc100d65410752dac0cea3398ea96fb4e1fbe10373a564c5
+          exitCode: 0
+          finishedAt: '2026-09-16T22:15:42Z'
+          reason: Completed
+          startedAt: '2026-09-16T22:15:42Z'
+      user:
+        linux:
+          gid: 1337
+          supplementalGroups:
+          - 1337
+          uid: 1337
       volumeMounts:
       - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: kube-api-access-cslgx
+        name: kube-api-access-zbd4m
         readOnly: true
         recursiveReadOnly: Disabled
     observedGeneration: 1
-    phase: Pending
+    phase: Running
+    podIP: 100.96.0.66
+    podIPs:
+    - ip: 100.96.0.66
     qosClass: Burstable
-    startTime: '2026-09-16T19:10:24Z'
+    startTime: '2026-09-16T22:15:41Z'
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/path: /metrics
+      prometheus.io/port: '8080'
+      prometheus.io/scrape: 'true'
+    creationTimestamp: '2026-09-16T22:15:58Z'
+    labels:
+      app: restapi
+      serverless.kyma-project.io/function-name: func1
+      serverless.kyma-project.io/managed-by: function-controller
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1
+    namespace: test-function-8
+    ownerReferences:
+    - apiVersion: serverless.kyma-project.io/v1alpha2
+      blockOwnerDeletion: true
+      controller: true
+      kind: Function
+      name: func1
+      uid: cf230507-6c6c-46af-8a6d-0280becf6625
+  spec:
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      serverless.kyma-project.io/function-name: func1
+      serverless.kyma-project.io/managed-by: function-controller
+      serverless.kyma-project.io/resource: deployment
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
 - apiVersion: v1
   kind: Service
   metadata:
@@ -1059,7 +1852,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"redis","namespace":"test-function-8"},"spec":{"ports":[{"port":6379,"protocol":"TCP","targetPort":6379}],"selector":{"app":"redis"}}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     name: redis
     namespace: test-function-8
   spec:
@@ -1084,7 +1877,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"restapi","namespace":"test-function-8"},"spec":{"ports":[{"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"restapi"}}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     name: restapi
     namespace: test-function-8
   spec:
@@ -1107,10 +1900,158 @@ items:
   metadata:
     annotations:
       deployment.kubernetes.io/revision: '1'
+    creationTimestamp: '2026-09-16T22:15:58Z'
+    generateName: func1-
+    generation: 1
+    labels:
+      app: restapi
+      serverless.kyma-project.io/function-name: func1
+      serverless.kyma-project.io/managed-by: function-controller
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1-hv7ck
+    namespace: test-function-8
+    ownerReferences:
+    - apiVersion: serverless.kyma-project.io/v1alpha2
+      blockOwnerDeletion: true
+      controller: true
+      kind: Function
+      name: func1
+      uid: cf230507-6c6c-46af-8a6d-0280becf6625
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 0
+    selector:
+      matchLabels:
+        serverless.kyma-project.io/function-name: func1
+        serverless.kyma-project.io/managed-by: function-controller
+        serverless.kyma-project.io/resource: deployment
+        serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+        labels:
+          app.kubernetes.io/name: func1
+          serverless.kyma-project.io/function-name: func1
+          serverless.kyma-project.io/managed-by: function-controller
+          serverless.kyma-project.io/resource: deployment
+          serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+      spec:
+        containers:
+        - env:
+          - name: FUNC_RUNTIME
+            value: nodejs20
+          - name: FUNC_NAME
+            value: func1
+          - name: SERVICE_NAMESPACE
+            value: test-function-8
+          - name: TRACE_COLLECTOR_ENDPOINT
+          - name: PUBLISHER_PROXY_ADDRESS
+            value: http://eventing-publisher-proxy.kyma-system.svc.cluster.local/publish
+          - name: FUNC_HANDLER
+            value: main
+          - name: MOD_NAME
+            value: handler
+          - name: FUNC_PORT
+            value: '8080'
+          image: localhost:32137/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 4
+          name: function
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: true
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsGroup: 10001
+          runAsUser: 10001
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: serverless-function
+        serviceAccountName: serverless-function
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            sizeLimit: 100Mi
+          name: tmp-dir
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: '2026-09-16T22:16:23Z'
+      lastUpdateTime: '2026-09-16T22:16:23Z'
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: 'True'
+      type: Available
+    - lastTransitionTime: '2026-09-16T22:15:58Z'
+      lastUpdateTime: '2026-09-16T22:16:23Z'
+      message: ReplicaSet "func1-hv7ck-6f6d6dd94c" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: 'True'
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '1'
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"restapi","namespace":"test-function-8"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"restapi"}},"template":{"metadata":{"labels":{"app":"restapi"}},"spec":{"containers":[{"env":[{"name":"REDIS_PASSWORD","valueFrom":{"secretKeyRef":{"key":"REDIS_PASSWORD","name":"redis"}}},{"name":"RESTAPI_URL","valueFrom":{"configMapKeyRef":{"key":"restapi-url","name":"restapi-config"}}}],"image":"jfwilken/restapi:latest","livenessProbe":{"httpGet":{"path":"/health/live","port":80},"initialDelaySeconds":10,"periodSeconds":20},"name":"restapi","ports":[{"containerPort":80}],"readinessProbe":{"httpGet":{"path":"/health/ready","port":80},"initialDelaySeconds":5,"periodSeconds":10}}],"serviceAccountName":"restapi"}}}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     generation: 1
     name: restapi
     namespace: test-function-8
@@ -1180,22 +2121,23 @@ items:
         serviceAccountName: restapi
         terminationGracePeriodSeconds: 30
   status:
+    availableReplicas: 1
     conditions:
-    - lastTransitionTime: '2026-09-16T19:10:24Z'
-      lastUpdateTime: '2026-09-16T19:10:24Z'
-      message: Deployment does not have minimum availability.
-      reason: MinimumReplicasUnavailable
-      status: 'False'
+    - lastTransitionTime: '2026-09-16T22:16:29Z'
+      lastUpdateTime: '2026-09-16T22:16:29Z'
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: 'True'
       type: Available
-    - lastTransitionTime: '2026-09-16T19:10:24Z'
-      lastUpdateTime: '2026-09-16T19:10:24Z'
-      message: ReplicaSet "restapi-54fc4968f4" is progressing.
-      reason: ReplicaSetUpdated
+    - lastTransitionTime: '2026-09-16T22:15:41Z'
+      lastUpdateTime: '2026-09-16T22:16:29Z'
+      message: ReplicaSet "restapi-54fc4968f4" has successfully progressed.
+      reason: NewReplicaSetAvailable
       status: 'True'
       type: Progressing
     observedGeneration: 1
+    readyReplicas: 1
     replicas: 1
-    unavailableReplicas: 1
     updatedReplicas: 1
 - apiVersion: apps/v1
   kind: ReplicaSet
@@ -1204,7 +2146,140 @@ items:
       deployment.kubernetes.io/desired-replicas: '1'
       deployment.kubernetes.io/max-replicas: '2'
       deployment.kubernetes.io/revision: '1'
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:58Z'
+    generation: 1
+    labels:
+      app.kubernetes.io/name: func1
+      pod-template-hash: 6f6d6dd94c
+      serverless.kyma-project.io/function-name: func1
+      serverless.kyma-project.io/managed-by: function-controller
+      serverless.kyma-project.io/resource: deployment
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1-hv7ck-6f6d6dd94c
+    namespace: test-function-8
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: func1-hv7ck
+      uid: 9aa37132-0c7b-4872-be57-5bda23085870
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        pod-template-hash: 6f6d6dd94c
+        serverless.kyma-project.io/function-name: func1
+        serverless.kyma-project.io/managed-by: function-controller
+        serverless.kyma-project.io/resource: deployment
+        serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    template:
+      metadata:
+        annotations:
+          proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+        labels:
+          app.kubernetes.io/name: func1
+          pod-template-hash: 6f6d6dd94c
+          serverless.kyma-project.io/function-name: func1
+          serverless.kyma-project.io/managed-by: function-controller
+          serverless.kyma-project.io/resource: deployment
+          serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+      spec:
+        containers:
+        - env:
+          - name: FUNC_RUNTIME
+            value: nodejs20
+          - name: FUNC_NAME
+            value: func1
+          - name: SERVICE_NAMESPACE
+            value: test-function-8
+          - name: TRACE_COLLECTOR_ENDPOINT
+          - name: PUBLISHER_PROXY_ADDRESS
+            value: http://eventing-publisher-proxy.kyma-system.svc.cluster.local/publish
+          - name: FUNC_HANDLER
+            value: main
+          - name: MOD_NAME
+            value: handler
+          - name: FUNC_PORT
+            value: '8080'
+          image: localhost:32137/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 4
+          name: function
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: true
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsGroup: 10001
+          runAsUser: 10001
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: serverless-function
+        serviceAccountName: serverless-function
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            sizeLimit: 100Mi
+          name: tmp-dir
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: '1'
+      deployment.kubernetes.io/max-replicas: '2'
+      deployment.kubernetes.io/revision: '1'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     generation: 1
     labels:
       app: restapi
@@ -1217,7 +2292,7 @@ items:
       controller: true
       kind: Deployment
       name: restapi
-      uid: e16787f3-7035-436a-afb5-3152b2b969d4
+      uid: 1f4382fd-8573-4510-aba7-fe80f2704919
   spec:
     replicas: 1
     selector:
@@ -1279,8 +2354,10 @@ items:
         serviceAccountName: restapi
         terminationGracePeriodSeconds: 30
   status:
+    availableReplicas: 1
     fullyLabeledReplicas: 1
     observedGeneration: 1
+    readyReplicas: 1
     replicas: 1
 - apiVersion: apps/v1
   kind: StatefulSet
@@ -1289,7 +2366,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"name":"redis","namespace":"test-function-8"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"redis"}},"serviceName":"redis","template":{"metadata":{"labels":{"app":"redis"}},"spec":{"containers":[{"env":[{"name":"REDIS_PASSWORD","valueFrom":{"secretKeyRef":{"key":"REDIS_PASSWORD","name":"redis"}}}],"image":"redis","name":"redis","ports":[{"containerPort":6379}],"volumeMounts":[{"mountPath":"/data","name":"redis-data"}]}]}},"volumeClaimTemplates":[{"metadata":{"name":"redis-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"10Mi"}}}}]}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     generation: 1
     name: redis
     namespace: test-function-8
@@ -1352,26 +2429,27 @@ items:
       status:
         phase: Pending
   status:
-    availableReplicas: 0
+    availableReplicas: 1
     collisionCount: 0
     currentReplicas: 1
     currentRevision: redis-54d644cb96
     observedGeneration: 1
+    readyReplicas: 1
     replicas: 1
     updateRevision: redis-54d644cb96
     updatedReplicas: 1
 - apiVersion: batch/v1
   kind: Job
   metadata:
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     generateName: func1-build-
     generation: 1
     labels:
       app: restapi
       serverless.kyma-project.io/function-name: func1
       serverless.kyma-project.io/managed-by: function-controller
-      serverless.kyma-project.io/uuid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
-    name: func1-build-hkpc9
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1-build-2p6fg
     namespace: test-function-8
     ownerReferences:
     - apiVersion: serverless.kyma-project.io/v1alpha2
@@ -1379,7 +2457,7 @@ items:
       controller: true
       kind: Function
       name: func1
-      uid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
+      uid: cf230507-6c6c-46af-8a6d-0280becf6625
   spec:
     backoffLimit: 0
     completionMode: NonIndexed
@@ -1389,7 +2467,7 @@ items:
     podReplacementPolicy: TerminatingOrFailed
     selector:
       matchLabels:
-        batch.kubernetes.io/controller-uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
+        batch.kubernetes.io/controller-uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
     suspend: false
     template:
       metadata:
@@ -1397,13 +2475,13 @@ items:
           sidecar.istio.io/inject: 'false'
         labels:
           app: restapi
-          batch.kubernetes.io/controller-uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
-          batch.kubernetes.io/job-name: func1-build-hkpc9
-          controller-uid: dbe40721-2e19-42ee-ab5d-4cf13d0a3f65
-          job-name: func1-build-hkpc9
+          batch.kubernetes.io/controller-uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
+          batch.kubernetes.io/job-name: func1-build-2p6fg
+          controller-uid: 77e2bf46-bf20-49ae-98ec-710f28b184d5
+          job-name: func1-build-2p6fg
           serverless.kyma-project.io/function-name: func1
           serverless.kyma-project.io/managed-by: function-controller
-          serverless.kyma-project.io/uuid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
+          serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
       spec:
         containers:
         - args:
@@ -1414,7 +2492,7 @@ items:
           - --cache=true
           - --use-new-run
           - --compressed-caching=false
-          - --destination=serverless-docker-registry.kyma-system.svc.cluster.local:5000/test-function-8-func1:0a807980c280634a3b934f6bb8a90bbb41ad3a3748105977fae0ca40f1001dcf
+          - --destination=serverless-docker-registry.kyma-system.svc.cluster.local:5000/test-function-8-func1:8ceba4683ac1aea2c197ce25245e0485f3868d1974d737f0b11468c6c93dfc30
           - --context=dir:///workspace
           env:
           - name: DOCKER_CONFIG
@@ -1493,12 +2571,26 @@ items:
           name: runtime
         - configMap:
             defaultMode: 420
-            name: func1-pthpz
+            name: func1-4hncr
           name: sources
   status:
-    active: 1
+    completionTime: '2026-09-16T22:15:56Z'
+    conditions:
+    - lastProbeTime: '2026-09-16T22:15:56Z'
+      lastTransitionTime: '2026-09-16T22:15:56Z'
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: 'True'
+      type: SuccessCriteriaMet
+    - lastProbeTime: '2026-09-16T22:15:56Z'
+      lastTransitionTime: '2026-09-16T22:15:56Z'
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: 'True'
+      type: Complete
     ready: 0
-    startTime: '2026-09-16T19:10:25Z'
+    startTime: '2026-09-16T22:15:42Z'
+    succeeded: 1
     terminating: 0
     uncountedTerminatedPods: {}
 - apiVersion: v1
@@ -1510,7 +2602,7 @@ items:
       volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
       volume.kubernetes.io/selected-node: ip-10-250-8-135.eu-west-1.compute.internal
       volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     finalizers:
     - kubernetes.io/pvc-protection
     labels:
@@ -1525,7 +2617,7 @@ items:
         storage: 10Mi
     storageClassName: default
     volumeMode: Filesystem
-    volumeName: pv-shoot--kymatunas--comp-tests-0-531a8bd5-402d-468f-ac73-f0a812397531
+    volumeName: pv-shoot--kymatunas--comp-tests-0-1eeaade8-526f-416d-b27c-1cabab7f1641
   status:
     accessModes:
     - ReadWriteOnce
@@ -1600,6 +2692,51 @@ items:
     volumeMode: Filesystem
   status:
     lastPhaseTransitionTime: '2025-02-04T09:48:47Z'
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    annotations:
+      pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
+      volume.kubernetes.io/provisioner-deletion-secret-name: ''
+      volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+    creationTimestamp: '2026-09-16T22:15:43Z'
+    finalizers:
+    - external-provisioner.volume.kubernetes.io/finalizer
+    - kubernetes.io/pv-protection
+    - external-attacher/ebs-csi-aws-com
+    name: pv-shoot--kymatunas--comp-tests-0-1eeaade8-526f-416d-b27c-1cabab7f1641
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    claimRef:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: redis-data-redis-0
+      namespace: test-function-8
+      resourceVersion: '620836162'
+      uid: 1eeaade8-526f-416d-b27c-1cabab7f1641
+    csi:
+      driver: ebs.csi.aws.com
+      fsType: ext4
+      volumeAttributes:
+        storage.kubernetes.io/csiProvisionerIdentity: 1789563576656-7823-ebs.csi.aws.com
+      volumeHandle: vol-022342501a8eea14c
+    nodeAffinity:
+      required:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - eu-west-1a
+    persistentVolumeReclaimPolicy: Delete
+    storageClassName: default
+    volumeMode: Filesystem
+  status:
+    lastPhaseTransitionTime: '2026-09-16T22:15:43Z'
     phase: Bound
 - apiVersion: v1
   kind: PersistentVolume
@@ -1698,56 +2835,12 @@ items:
       pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
       volume.kubernetes.io/provisioner-deletion-secret-name: ''
       volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-    creationTimestamp: '2026-09-16T19:10:26Z'
-    finalizers:
-    - external-provisioner.volume.kubernetes.io/finalizer
-    - kubernetes.io/pv-protection
-    name: pv-shoot--kymatunas--comp-tests-0-531a8bd5-402d-468f-ac73-f0a812397531
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    capacity:
-      storage: 1Gi
-    claimRef:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: redis-data-redis-0
-      namespace: test-function-8
-      resourceVersion: '620733735'
-      uid: 531a8bd5-402d-468f-ac73-f0a812397531
-    csi:
-      driver: ebs.csi.aws.com
-      fsType: ext4
-      volumeAttributes:
-        storage.kubernetes.io/csiProvisionerIdentity: 1789563576656-7823-ebs.csi.aws.com
-      volumeHandle: vol-04d877a2506168314
-    nodeAffinity:
-      required:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: topology.kubernetes.io/zone
-            operator: In
-            values:
-            - eu-west-1a
-    persistentVolumeReclaimPolicy: Delete
-    storageClassName: default
-    volumeMode: Filesystem
-  status:
-    lastPhaseTransitionTime: '2026-09-16T19:10:26Z'
-    phase: Bound
-- apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    annotations:
-      pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
-      volume.kubernetes.io/provisioner-deletion-secret-name: ''
-      volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-    creationTimestamp: '2026-09-16T14:32:25Z'
+    creationTimestamp: '2026-09-16T19:12:30Z'
     finalizers:
     - external-provisioner.volume.kubernetes.io/finalizer
     - kubernetes.io/pv-protection
     - external-attacher/ebs-csi-aws-com
-    name: pv-shoot--kymatunas--comp-tests-0-5933679d-94c2-4ca7-a92d-dbec2560e2ba
+    name: pv-shoot--kymatunas--comp-tests-0-551a89c6-d4e9-4fb6-929d-391d1e433232
   spec:
     accessModes:
     - ReadWriteOnce
@@ -1758,14 +2851,14 @@ items:
       kind: PersistentVolumeClaim
       name: redis-data-redis-0
       namespace: test-subscription-14
-      resourceVersion: '620580592'
-      uid: 5933679d-94c2-4ca7-a92d-dbec2560e2ba
+      resourceVersion: '620735389'
+      uid: 551a89c6-d4e9-4fb6-929d-391d1e433232
     csi:
       driver: ebs.csi.aws.com
       fsType: ext4
       volumeAttributes:
         storage.kubernetes.io/csiProvisionerIdentity: 1789563576656-7823-ebs.csi.aws.com
-      volumeHandle: vol-05da58e2dd36476a6
+      volumeHandle: vol-0043231e770f6c688
     nodeAffinity:
       required:
         nodeSelectorTerms:
@@ -1778,7 +2871,7 @@ items:
     storageClassName: default
     volumeMode: Filesystem
   status:
-    lastPhaseTransitionTime: '2026-09-16T14:32:25Z'
+    lastPhaseTransitionTime: '2026-09-16T19:12:30Z'
     phase: Bound
 - apiVersion: v1
   kind: PersistentVolume
@@ -1877,7 +2970,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"PersistentVolume","metadata":{"annotations":{},"name":"redis-pv"},"spec":{"accessModes":["ReadWriteOnce"],"capacity":{"storage":"10Mi"},"hostPath":{"path":"/data/redis"},"persistentVolumeReclaimPolicy":"Retain","storageClassName":"standard"}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     finalizers:
     - kubernetes.io/pv-protection
     name: redis-pv
@@ -1893,7 +2986,7 @@ items:
     storageClassName: standard
     volumeMode: Filesystem
   status:
-    lastPhaseTransitionTime: '2026-09-16T19:10:23Z'
+    lastPhaseTransitionTime: '2026-09-16T22:15:41Z'
     phase: Available
 - apiVersion: v1
   data:
@@ -1934,7 +3027,7 @@ items:
 
         Any modifications are discarded and the resource is reverted to the original
         state.'
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       app: serverless
       app.kubernetes.io/component: serverless
@@ -1989,7 +3082,7 @@ items:
 
         Any modifications are discarded and the resource is reverted to the original
         state.'
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       app: serverless
       app.kubernetes.io/component: serverless
@@ -2037,7 +3130,7 @@ items:
 
         Any modifications are discarded and the resource is reverted to the original
         state.'
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       app: serverless
       app.kubernetes.io/component: serverless
@@ -2065,14 +3158,14 @@ items:
       \ response;\n  }\n}\n"
   kind: ConfigMap
   metadata:
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     generateName: func1-
     labels:
       app: restapi
       serverless.kyma-project.io/function-name: func1
       serverless.kyma-project.io/managed-by: function-controller
-      serverless.kyma-project.io/uuid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
-    name: func1-pthpz
+      serverless.kyma-project.io/uuid: cf230507-6c6c-46af-8a6d-0280becf6625
+    name: func1-4hncr
     namespace: test-function-8
     ownerReferences:
     - apiVersion: serverless.kyma-project.io/v1alpha2
@@ -2080,7 +3173,7 @@ items:
       controller: true
       kind: Function
       name: func1
-      uid: 8e2b091f-756d-46dd-ae4f-dd551616dd0f
+      uid: cf230507-6c6c-46af-8a6d-0280becf6625
 - apiVersion: v1
   data:
     root-cert.pem: '-----BEGIN CERTIFICATE-----
@@ -2144,7 +3237,7 @@ items:
       '
   kind: ConfigMap
   metadata:
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       istio.io/config: 'true'
     name: istio-ca-root-cert
@@ -2253,7 +3346,7 @@ items:
         kube-apiserver when using internal endpoints such as the internal service
         IP or kubernetes.default.svc. No other usage is guaranteed across distributions
         of Kubernetes clusters.
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     name: kube-root-ca.crt
     namespace: test-function-8
 - apiVersion: v1
@@ -2265,7 +3358,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"restapi-url":"http://func1.kyma-app-no-function.svc.cluster.local:80"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"restapi-config","namespace":"test-function-8"}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     name: restapi-config
     namespace: test-function-8
 - apiVersion: v1
@@ -2277,7 +3370,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"REDIS_PASSWORD":"cGFzc3dvcmQ="},"kind":"Secret","metadata":{"annotations":{},"name":"redis","namespace":"test-function-8"},"type":"Opaque"}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     name: redis
     namespace: test-function-8
   type: Opaque
@@ -2297,7 +3390,7 @@ items:
 
         Any modifications are discarded and the resource is reverted to the original
         state.'
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       serverless.kyma-project.io/config: credentials
     name: serverless-registry-config-default
@@ -2306,7 +3399,7 @@ items:
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     name: default
     namespace: test-function-8
 - apiVersion: v1
@@ -2316,7 +3409,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"restapi","namespace":"test-function-8"}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:41Z'
     name: restapi
     namespace: test-function-8
 - apiVersion: v1
@@ -2331,7 +3424,7 @@ items:
 
         Any modifications are discarded and the resource is reverted to the original
         state.'
-    creationTimestamp: '2026-09-16T19:10:23Z'
+    creationTimestamp: '2026-09-16T22:15:40Z'
     labels:
       app: serverless
       app.kubernetes.io/component: serverless
@@ -2353,7 +3446,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"rbac.authorization.k8s.io/v1","kind":"Role","metadata":{"annotations":{},"name":"restapi-access-role","namespace":"test-function-8"},"rules":[{"apiGroups":[""],"resources":["pods","services","endpoints","events","configmaps"],"verbs":["get","list","watch"]}]}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     name: restapi-access-role
     namespace: test-function-8
   rules:
@@ -2376,7 +3469,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"restapi-access-role-binding","namespace":"test-function-8"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"restapi-access-role"},"subjects":[{"kind":"ServiceAccount","name":"restapi","namespace":"test-function-8"}]}
 
         '
-    creationTimestamp: '2026-09-16T19:10:24Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     name: restapi-access-role-binding
     namespace: test-function-8
   roleRef:
@@ -15100,7 +16193,7 @@ items:
         response);\n    return response;\n  }\n}\n"}}}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     generation: 1
     labels:
       app: restapi
@@ -15122,18 +16215,24 @@ items:
   status:
     buildResourceProfile: slow
     conditions:
-    - lastTransitionTime: '2026-09-16T19:10:26Z'
-      message: Job func1-build-hkpc9 is still in progress
-      reason: JobRunning
-      status: Unknown
+    - lastTransitionTime: '2026-09-16T22:21:24Z'
+      message: Deployment func1-hv7ck is ready
+      reason: DeploymentReady
+      status: 'True'
+      type: Running
+    - lastTransitionTime: '2026-09-16T22:15:57Z'
+      message: Job func1-build-2p6fg finished
+      reason: JobFinished
+      status: 'True'
       type: BuildReady
-    - lastTransitionTime: '2026-09-16T19:10:25Z'
-      message: ConfigMap func1-pthpz created
+    - lastTransitionTime: '2026-09-16T22:15:42Z'
+      message: ConfigMap func1-4hncr created
       reason: ConfigMapCreated
       status: 'True'
       type: ConfigurationReady
     functionResourceProfile: XS
-    podSelector: serverless.kyma-project.io/function-name=func1,serverless.kyma-project.io/managed-by=function-controller,serverless.kyma-project.io/resource=deployment,serverless.kyma-project.io/uuid=8e2b091f-756d-46dd-ae4f-dd551616dd0f
+    podSelector: serverless.kyma-project.io/function-name=func1,serverless.kyma-project.io/managed-by=function-controller,serverless.kyma-project.io/resource=deployment,serverless.kyma-project.io/uuid=cf230507-6c6c-46af-8a6d-0280becf6625
+    replicas: 1
     runtime: nodejs20
     runtimeImage: europe-docker.pkg.dev/kyma-project/prod/function-runtime-nodejs20:1.6.8
 - apiVersion: eventing.kyma-project.io/v1alpha2
@@ -15143,7 +16242,7 @@ items:
       kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"eventing.kyma-project.io/v1alpha2","kind":"Subscription","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"sub1"},"name":"sub1","namespace":"test-function-8"},"spec":{"config":{"maxInFlightMessages":"10"},"sink":"http://restapi.kyma-app-no-function.svc.cluster.local/api/v1/counter","source":"noapp","typeMatching":"standard","types":["increase.counter.v1"]}}
 
         '
-    creationTimestamp: '2026-09-16T19:10:25Z'
+    creationTimestamp: '2026-09-16T22:15:42Z'
     finalizers:
     - eventing.kyma-project.io
     generation: 1
@@ -15162,7 +16261,7 @@ items:
   status:
     backend: {}
     conditions:
-    - lastTransitionTime: '2026-09-16T19:10:25Z'
+    - lastTransitionTime: '2026-09-16T22:15:42Z'
       message: 'Subscription validation failed: metadata.namespace: Invalid value:
         "http://restapi.kyma-app-no-function.svc.cluster.local/api/v1/counter": must
         have the same namespace as the subscriber: kyma-app-no-function'

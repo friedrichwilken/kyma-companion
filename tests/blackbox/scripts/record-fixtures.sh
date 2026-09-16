@@ -208,6 +208,13 @@ check_predicate() {
                     ;;
             esac
             ;;
+        BuildReady=True)
+            # Wait until the Function build job has completed (BuildReady condition status=True)
+            local build_ready
+            build_ready=$(kubectl get "$kind" "$name" -n "$ns" \
+                -o jsonpath='{.status.conditions[?(@.type=="BuildReady")].status}' 2>/dev/null || echo "")
+            [[ "$build_ready" == "True" ]]
+            ;;
         reason=*)
             local want="${cond#reason=}"
             local got
@@ -282,18 +289,27 @@ record_scenario() {
 functions.serverless.kyma-project.io,subscriptions.eventing.kyma-project.io \
         -n "$ns" -o yaml > "$resources_raw" 2>/dev/null || true
 
+    # Export Kyma CRDs so replay can install them into KWOK (which has no Kyma operators)
+    rlog "Exporting Kyma CRDs"
+    kubectl get crd \
+        functions.serverless.kyma-project.io \
+        subscriptions.eventing.kyma-project.io \
+        -o yaml > "$fixture_dir/crds.yaml" 2>/dev/null || true
+    # Remove empty file if no CRDs found (non-Kyma scenarios)
+    [[ -s "$fixture_dir/crds.yaml" ]] || rm -f "$fixture_dir/crds.yaml"
+
     rlog "Exporting events from $ns"
     kubectl get events -n "$ns" -o yaml > "$fixture_dir/events.yaml.tmp" 2>/dev/null || true
 
     # 5. Export logs
     rlog "Exporting pod logs from $ns"
     local pods
-    pods=$(kubectl get pods -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || echo "")
+    pods=$(kubectl get pods -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null | tr -d '\r' || echo "")
     for pod in $pods; do
         local containers
         containers=$(kubectl get pod "$pod" -n "$ns" \
             -o jsonpath='{range .spec.containers[*]}{.name}{"\n"}{end}{range .spec.initContainers[*]}{.name}{"\n"}{end}' \
-            2>/dev/null || echo "")
+            2>/dev/null | tr -d '\r' || echo "")
         for container in $containers; do
             [[ -z "$container" ]] && continue
             rlog "  Logs: $pod / $container"

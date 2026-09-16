@@ -1,0 +1,5 @@
+
+> nodejs20-runtime@0.1.0 start
+> node server.mjs
+
+user code loaded in 0sec 1.879491ms

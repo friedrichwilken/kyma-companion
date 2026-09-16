@@ -4,7 +4,7 @@ fixture:
   predicate:
     kind: Function
     name: my-function-0
-    condition: status.ready=false
+    condition: BuildReady=True
 description: The Function has a syntax error in its JavaScript source code.
 queries:
   - user_query: Why is my Kyma Function not working?

@@ -399,6 +399,18 @@ kubectl create namespace "$NS" --dry-run=client -o yaml | kubectl apply -f - 2>&
     while read -r line; do log "  $line"; done || true
 
 # ---------------------------------------------------------------------------
+# 1c. Install Kyma CRDs if present in fixture
+#     KWOK has no Kyma operators, so Function/Subscription CRDs must be
+#     applied explicitly before snapshot restore or kubectl apply can accept them.
+# ---------------------------------------------------------------------------
+
+CRDS_FILE="$FIXTURE_DIR/crds.yaml"
+if [[ -f "$CRDS_FILE" ]]; then
+    log "Installing Kyma CRDs from fixture"
+    kubectl apply -f "$CRDS_FILE" 2>&1 | while read -r line; do log "  $line"; done || true
+fi
+
+# ---------------------------------------------------------------------------
 # 2. Convert timestamps: update creationTimestamp to current time
 #    (kwokctl snapshot restore rejects far-future timestamps)
 # ---------------------------------------------------------------------------
