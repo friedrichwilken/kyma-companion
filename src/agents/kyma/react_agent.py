@@ -289,9 +289,12 @@ class KymaReActAgent:
         # Build a per-call snapshot so concurrent ainvoke calls on the same
         # instance cannot corrupt each other's query/config context.
         invoke_ctx: dict[str, Any] = {"query": query, "config": run_config}
+        # EXPERIMENT: documentation search is deliberately not offered to the
+        # agent. Everything else (RAG initialisation, prompt, other tools) is
+        # unchanged, so an evaluation run on this branch measures what the
+        # end-to-end score is worth without retrieval.
         tools: list[BaseTool] = [
             *_make_bound_tools(self._k8s_client, self._summarizer, invoke_ctx),
-            self._search_tool,
         ]
         graph = create_agent(
             model=self._llm,
