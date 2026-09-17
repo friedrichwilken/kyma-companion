@@ -180,6 +180,17 @@ for i in $(seq 1 10); do
     echo "=== Stopping server (PID $SERVER_PID) ==="
     kill "$SERVER_PID" 2>/dev/null || true
     wait "$SERVER_PID" 2>/dev/null || true
+    # Wait for port 8000 to be fully released before next iteration
+    port_wait=0
+    while lsof -ti:8000 > /dev/null 2>&1; do
+        sleep 1
+        port_wait=$((port_wait + 1))
+        if [[ $port_wait -ge 15 ]]; then
+            lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+            sleep 2
+            break
+        fi
+    done
 
     echo "=== Extracting doc_search entries ==="
     extract_doc_search "$SERVER_LOG" "$DOC_SEARCH_JSON"
