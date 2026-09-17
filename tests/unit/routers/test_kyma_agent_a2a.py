@@ -141,7 +141,7 @@ class TestKymaAgentExecutorExecute:
             patch("routers.kyma_agent_a2a.DataSanitizer") as mock_sanitizer_cls,
             patch("routers.kyma_agent_a2a.K8sClient") as mock_k8s_cls,
             patch("routers.kyma_agent_a2a._ModelsRegistry") as mock_models_cls,
-            patch("routers.kyma_agent_a2a._SearchToolRegistry") as mock_search_registry_cls,
+            patch("routers.kyma_agent_a2a._DocIndexRegistry") as mock_search_registry_cls,
             patch("routers.kyma_agent_a2a.KymaReActAgent") as mock_agent_cls,
             patch("routers.kyma_agent_a2a.load_conversation_history", new_callable=AsyncMock) as mock_load,
             patch("routers.kyma_agent_a2a.save_conversation_history", new_callable=AsyncMock),
@@ -153,7 +153,7 @@ class TestKymaAgentExecutorExecute:
             mock_sanitizer_cls.return_value = MagicMock()
             mock_k8s_cls.return_value = MagicMock()
             mock_models_cls.return_value = MagicMock(models={})
-            mock_search_registry_cls.return_value = MagicMock(tool=MagicMock())
+            mock_search_registry_cls.return_value = MagicMock(index=MagicMock())
             mock_load.return_value = []
 
             mock_agent_instance = AsyncMock()
@@ -253,7 +253,7 @@ class TestKymaAgentExecutorExecute:
             patch("routers.kyma_agent_a2a.DataSanitizer"),
             patch("routers.kyma_agent_a2a.K8sClient"),
             patch("routers.kyma_agent_a2a._ModelsRegistry") as mock_models_cls,
-            patch("routers.kyma_agent_a2a._SearchToolRegistry") as mock_search_registry_cls,
+            patch("routers.kyma_agent_a2a._DocIndexRegistry") as mock_search_registry_cls,
             patch("routers.kyma_agent_a2a.KymaReActAgent") as mock_agent_cls,
             patch("routers.kyma_agent_a2a.load_conversation_history", new_callable=AsyncMock) as mock_load,
             patch("routers.kyma_agent_a2a.save_conversation_history", new_callable=AsyncMock),
@@ -261,7 +261,7 @@ class TestKymaAgentExecutorExecute:
             mock_config.return_value = MagicMock(sanitization_config=None)
             mock_headers.return_value = MagicMock()
             mock_models_cls.return_value = MagicMock(models={})
-            mock_search_registry_cls.return_value = MagicMock(tool=MagicMock())
+            mock_search_registry_cls.return_value = MagicMock(index=MagicMock())
             mock_load.return_value = []
             mock_agent_instance = AsyncMock()
             mock_agent_instance.ainvoke = AsyncMock(return_value="answer")
@@ -298,7 +298,7 @@ class TestKymaAgentExecutorExecute:
             patch("routers.kyma_agent_a2a.DataSanitizer"),
             patch("routers.kyma_agent_a2a.K8sClient"),
             patch("routers.kyma_agent_a2a._ModelsRegistry") as mock_models_cls,
-            patch("routers.kyma_agent_a2a._SearchToolRegistry") as mock_search_registry_cls,
+            patch("routers.kyma_agent_a2a._DocIndexRegistry") as mock_search_registry_cls,
             patch("routers.kyma_agent_a2a.KymaReActAgent") as mock_agent_cls,
             patch("routers.kyma_agent_a2a.load_conversation_history", new_callable=AsyncMock) as mock_load,
             patch("routers.kyma_agent_a2a.save_conversation_history", new_callable=AsyncMock),
@@ -307,7 +307,7 @@ class TestKymaAgentExecutorExecute:
             mock_config.return_value = MagicMock(sanitization_config=None)
             mock_headers.return_value = MagicMock()
             mock_models_cls.return_value = MagicMock(models={})
-            mock_search_registry_cls.return_value = MagicMock(tool=MagicMock())
+            mock_search_registry_cls.return_value = MagicMock(index=MagicMock())
             mock_load.return_value = []
             mock_agent_instance = AsyncMock()
             mock_agent_instance.ainvoke = AsyncMock(return_value="answer")

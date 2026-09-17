@@ -1,0 +1,366 @@
+# Curated documentation corpus for kyma-companion, compiled by pinakes
+# (https://github.com/friedrichwilken/pinakes) v1.0.1.
+#
+# This is the same 23 sources as doc_indexer/docs_sources.json, converted to pinakes's
+# resolver types:
+#
+# - Module repositories with a VitePress sidebar (`docs/user/_sidebar.ts`) use the built-in
+#   `vitepress` resolver. Since pinakes 1.0.1, every resolver accepts an `include` glob list
+#   (SPEC.md §2.1): the module's landing README, and every other file the old Python
+#   `include_files` list carried, is selected directly with `include`, landing in the manifest
+#   with `selected_by: "include"` — no `decisions.jsonl` entry needed.
+# - btp-cloud-platform (SAP Help table of contents) and the two sap-tutorials repositories use
+#   `external` resolvers that reimplement the old `sap_help_toc` / `tutorials` Python resolvers
+#   as dependency-free scripts in `doc_indexer/resolvers/`.
+# - Repositories with no sidebar (kyma, lifecycle-manager, modulectl, kyma-environment-broker)
+#   keep the old hand-picked path list as a `glob` resolver.
+# - Eight module repos also get a second `<name>-crds` source that renders their CRDs
+#   (`config/crd/bases/*.yaml`) into reference pages with the built-in `openapi` renderer;
+#   serverless and telemetry-manager have no `config/crd/bases` directory and are not included.
+version: 1
+sources:
+  - name: btp-cloud-platform
+    repo: https://github.com/SAP-docs/btp-cloud-platform.git
+    ref: main
+    priority: 1
+    resolver:
+      type: external
+      command: ["python3", "resolvers/sap_help_toc.py"]
+      args: ["docs/index.md", "(?i)kyma"]
+      residue_mention: "(?i)kyma"
+
+  - name: eventing-manager
+    repo: https://github.com/kyma-project/eventing-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
+
+  - name: nats-manager
+    repo: https://github.com/kyma-project/nats-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
+
+  - name: istio
+    repo: https://github.com/kyma-project/istio.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: cloud-manager
+    repo: https://github.com/kyma-project/cloud-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+
+  - name: api-gateway
+    repo: https://github.com/kyma-project/api-gateway.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: telemetry-manager
+    repo: https://github.com/kyma-project/telemetry-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: btp-manager
+    repo: https://github.com/kyma-project/btp-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: application-connector-manager
+    repo: https://github.com/kyma-project/application-connector-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
+
+  - name: docker-registry
+    repo: https://github.com/kyma-project/docker-registry.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: keda-manager
+    repo: https://github.com/kyma-project/keda-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: serverless
+    repo: https://github.com/kyma-project/serverless.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: busola
+    repo: https://github.com/kyma-project/busola.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      scope: ["docs/user/**/*.md", "docs/resource-validation/*", "docs/custom-extensions/*"]
+      include:
+        - "docs/user/README.md"
+        - "docs/resource-validation/README.md"
+        - "docs/custom-extensions/busola-web-components.md"
+
+  - name: btp-foundation
+    repo: https://github.com/sap-tutorials/btp-foundation.git
+    ref: main
+    priority: 1
+    resolver:
+      type: external
+      command: ["python3", "resolvers/tutorials.py"]
+      args: ["tutorials", "kyma"]
+
+  - name: btp-dev-guidance
+    repo: https://github.com/sap-tutorials/btp-dev-guidance.git
+    ref: main
+    priority: 1
+    resolver:
+      type: external
+      command: ["python3", "resolvers/tutorials.py"]
+      args: ["tutorials", "kyma"]
+
+  - name: kyma-environment-broker
+    repo: https://github.com/kyma-project/kyma-environment-broker.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["docs/user/*"]
+
+  - name: cli
+    repo: https://github.com/kyma-project/cli.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      # The landing README and the generated CLI command reference are not linked from the
+      # sidebar; listed individually (rather than a `docs/user/gen-docs/*.md` glob) so the
+      # selected set stays pinned to exactly what was reviewed, not whatever gen-docs happens
+      # to contain upstream at resolve time.
+      include:
+        - "docs/user/README.md"
+        - "docs/user/gen-docs/kyma.md"
+        - "docs/user/gen-docs/kyma_alpha.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_group.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_repository.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_serviceaccount.md"
+        - "docs/user/gen-docs/kyma_alpha_authorize_user.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard_start.md"
+        - "docs/user/gen-docs/kyma_alpha_dashboard_stop.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_cluster.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_istio.md"
+        - "docs/user/gen-docs/kyma_alpha_diagnose_logs.md"
+        - "docs/user/gen-docs/kyma_alpha_hana.md"
+        - "docs/user/gen-docs/kyma_alpha_hana_map.md"
+        - "docs/user/gen-docs/kyma_alpha_kubeconfig.md"
+        - "docs/user/gen-docs/kyma_alpha_kubeconfig_generate.md"
+        - "docs/user/gen-docs/kyma_alpha_module.md"
+        - "docs/user/gen-docs/kyma_alpha_module_catalog.md"
+        - "docs/user/gen-docs/kyma_alpha_module_list.md"
+        - "docs/user/gen-docs/kyma_alpha_module_pull.md"
+        - "docs/user/gen-docs/kyma_alpha_provision.md"
+        - "docs/user/gen-docs/kyma_alpha_reference-instance.md"
+        - "docs/user/gen-docs/kyma_app.md"
+        - "docs/user/gen-docs/kyma_app_push.md"
+        - "docs/user/gen-docs/kyma_completion.md"
+        - "docs/user/gen-docs/kyma_completion_bash.md"
+        - "docs/user/gen-docs/kyma_completion_fish.md"
+        - "docs/user/gen-docs/kyma_completion_powershell.md"
+        - "docs/user/gen-docs/kyma_completion_zsh.md"
+        - "docs/user/gen-docs/kyma_help.md"
+        - "docs/user/gen-docs/kyma_module.md"
+        - "docs/user/gen-docs/kyma_module_add.md"
+        - "docs/user/gen-docs/kyma_module_catalog.md"
+        - "docs/user/gen-docs/kyma_module_delete.md"
+        - "docs/user/gen-docs/kyma_module_list.md"
+        - "docs/user/gen-docs/kyma_module_manage.md"
+        - "docs/user/gen-docs/kyma_module_pull.md"
+        - "docs/user/gen-docs/kyma_module_unmanage.md"
+        - "docs/user/gen-docs/kyma_version.md"
+
+  - name: registry-proxy
+    repo: https://github.com/kyma-project/registry-proxy.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: registry-cache
+    repo: https://github.com/kyma-project/registry-cache.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      scope: ["docs/user/**/*.md", "README.md"]
+      include: ["docs/user/README.md", "README.md"]
+
+  - name: modulectl
+    repo: https://github.com/kyma-project/modulectl.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["docs/gen-docs/*"]
+
+  - name: lifecycle-manager
+    repo: https://github.com/kyma-project/lifecycle-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["docs/user/*"]
+
+  - name: community-modules
+    repo: https://github.com/kyma-project/community-modules.git
+    ref: main
+    priority: 10
+    resolver:
+      type: vitepress
+      path: docs/user/_sidebar.ts
+      include: ["docs/user/README.md"]
+
+  - name: kyma
+    repo: https://github.com/kyma-project/kyma.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      # The legacy fetcher's `filter_file_types` keeps only `.md`; pinakes's glob resolver has
+      # no such filter, so the patterns are narrowed to `.md` explicitly (the directories also
+      # carry a few images and a shell script that the old pipeline silently dropped).
+      include:
+        - "README.md"
+        - "docs/01-overview/**/*.md"
+        - "docs/02-get-started/**/*.md"
+        - "docs/03-tutorials/**/*.md"
+        - "docs/04-operation-guides/**/*.md"
+        - "docs/06-modules/**/*.md"
+        - "docs/README.md"
+        - "docs/glossary.md"
+
+  # CRD reference sources (SPEC §10.2 openapi renderer). Only for repos that actually carry
+  # config/crd/bases/*.yaml; serverless and telemetry-manager do not and are skipped.
+  - name: istio-crds
+    repo: https://github.com/kyma-project/istio.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+  - name: api-gateway-crds
+    repo: https://github.com/kyma-project/api-gateway.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+  - name: eventing-manager-crds
+    repo: https://github.com/kyma-project/eventing-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+  - name: nats-manager-crds
+    repo: https://github.com/kyma-project/nats-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+  - name: btp-manager-crds
+    repo: https://github.com/kyma-project/btp-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+  - name: keda-manager-crds
+    repo: https://github.com/kyma-project/keda-manager.git
+    ref: main
+    priority: 10
+    resolver:
+      type: glob
+      include: ["config/crd/bases/*.yaml"]
+    render:
+      type: openapi
+
+policy:
+  deny:
+    - "**/CLAUDE.md"
+    - "**/adr/**"
+    - "**/CHANGELOG.md"
+    # serverless carries this tutorial in its sidebar, but docs_sources.json's e2e config
+    # excludes it (external registry setup is not part of the curated corpus).
+    - "**/01-60-set-external-registry.md"
+  archived: warn
+  min_pages_per_source: 1
+
+eval:
+  queries: evaluation/queries.jsonl
+  k: 10
+  max_recall_drop: 0.05

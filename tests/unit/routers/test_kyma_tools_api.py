@@ -122,6 +122,11 @@ class TestSearchEndpoint:
         assert response.status_code == HTTPStatus.OK
         response_data = response.json()
         assert "results" in response_data
+        assert "documents" in response_data
+        assert len(response_data["documents"]) == len(response_data["results"])
+        for document, content in zip(response_data["documents"], response_data["results"], strict=True):
+            assert set(document) == {"title", "url", "module", "content"}
+            assert document["content"] == content
 
     @pytest.mark.parametrize(
         "query",

@@ -32,14 +32,19 @@ from agents.common.utils import (
 )
 from agents.k8s.tools.logs import POD_LOGS_TAIL_LINES_LIMIT
 from agents.kyma.prompts import REACT_AGENT_INSTRUCTIONS, REACT_AGENT_PROMPT
+from agents.kyma.tools.doc_list import DocListTool
+from agents.kyma.tools.doc_read import DocReadTool
 from agents.kyma.tools.query import DEPRECATED_API_VERSIONS
-from agents.kyma.tools.search import SearchKymaDocTool
+from agents.kyma.tools.search import DocSearchTool, SearchKymaDocTool
+from docs.index import DocIndex
+from docs.modules import module_for_kind
 from services.k8s import IK8sClient
 from utils.logging import get_logger
 from utils.models.factory import IModel
 from utils.settings import (
     CHAT_HISTORY_KEEP_MESSAGES,
     CHAT_HISTORY_TOKEN_LIMIT,
+    DOCS_PATH,
     MAIN_MODEL_NAME,
     TOOL_RESPONSE_TOKEN_COUNT_LIMIT,
     TOTAL_CHUNKS_LIMIT,
@@ -65,11 +70,18 @@ class UINavigationContext(BaseModel):
     resource_api_version: str = ""
     namespace: str = ""
 
+    @property
+    def module(self) -> str:
+        """The Kyma module (docs source name) the viewed resource belongs to, or ``""``."""
+        return module_for_kind(self.resource_kind)
+
     def as_context_message(self) -> str:
         """Return a human-readable context string to prepend to the user query."""
         parts = []
         if self.resource_kind:
             parts.append(f"Resource kind: {self.resource_kind}")
+        if self.module:
+            parts.append(f"Kyma module: {self.module} (pass it as `module` to search_kyma_doc)")
         if self.resource_name:
             parts.append(f"Resource name: {self.resource_name}")
         if self.resource_api_version:
@@ -263,7 +275,12 @@ class KymaReActAgent:
     ) -> None:
         """Initialize the agent with the given models, k8s_client, and search_tool."""
         main_model = cast(IModel, models[MAIN_MODEL_NAME])
-        resolved_search_tool = search_tool if search_tool is not None else SearchKymaDocTool(models)
+        if search_tool is not None:
+            resolved_search_tool: SearchKymaDocTool = search_tool
+        else:
+            _index = DocIndex(DOCS_PATH)
+            _index.load()
+            resolved_search_tool = DocSearchTool(_index)
         self._summarizer = ToolResponseSummarizer(model=main_model)
         self._k8s_client = k8s_client
         self._search_tool = resolved_search_tool
@@ -292,6 +309,8 @@ class KymaReActAgent:
         tools: list[BaseTool] = [
             *_make_bound_tools(self._k8s_client, self._summarizer, invoke_ctx),
             self._search_tool,
+            DocReadTool(self._search_tool.index),
+            DocListTool(self._search_tool.index),
         ]
         graph = create_agent(
             model=self._llm,
