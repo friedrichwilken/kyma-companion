@@ -107,9 +107,6 @@ LANGFUSE_MASKING_MODE = config("LANGFUSE_MASKING_MODE", default="REDACTED", cast
 
 MAX_TOKEN_LIMIT_INPUT_QUERY = config("MAX_TOKEN_LIMIT_INPUT_QUERY", default=8000, cast=int)
 
-# RAG
-RAG_RELEVANCY_SCORE_THRESHOLD = config("RAG_RELEVANCY_SCORE_THRESHOLD", default=0.5, cast=float)
-
 # Database
 DATABASE_URL = config("DATABASE_URL", None)
 DATABASE_PORT = config("DATABASE_PORT", cast=int, default=443)

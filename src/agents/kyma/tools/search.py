@@ -127,21 +127,6 @@ class DocSearchTool(BaseTool):
         """
         return self._index.search(query, top_k=top_k)
 
-    async def arun_list(self, query: str, top_k: int = DEFAULT_TOP_K) -> list[str]:
-        """Retrieve document content strings for the given query.
-
-        Kept for backward compatibility with the REST endpoint and existing
-        callers. Implemented on top of ``arun_documents``.
-
-        Args:
-            query: The search query string.
-            top_k: Maximum number of documents to return.
-
-        Returns:
-            List of content strings for matched documents.
-        """
-        return [d.content for d in self._index.search(query, top_k=top_k)]
-
 
 # Backward-compatibility alias so existing tests and callers that reference
 # SearchKymaDocTool continue to work until they are updated.

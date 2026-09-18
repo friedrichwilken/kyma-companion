@@ -51,12 +51,17 @@ def _frontmatter_title(text: str) -> str:
     return match.group(1).strip().strip("'\"")
 
 
+_FENCED_CODE_BLOCK_RE = re.compile(r"^```.*?^```", re.MULTILINE | re.DOTALL)
+
+
 def _extract_title(content: str) -> str:
     """Extract a page title from content.
 
-    Looks for the first ``# `` H1 heading after stripping frontmatter. Falls
-    back to the frontmatter ``title`` key (used by the SAP tutorials, which
-    carry no H1), and finally returns an empty string.
+    Looks for the first ``# `` H1 heading after stripping frontmatter and
+    fenced code blocks (so a commented ``# ...`` line inside a shell or YAML
+    snippet is never mistaken for the title). Falls back to the frontmatter
+    ``title`` key (used by the SAP tutorials, which carry no H1), and finally
+    returns an empty string.
 
     Args:
         content: Full Markdown text (may include frontmatter).
@@ -65,7 +70,8 @@ def _extract_title(content: str) -> str:
         The page title as a plain string (without the leading ``# ``).
     """
     stripped = _strip_frontmatter(content)
-    match = re.search(r"^#\s+(.+)", stripped, re.MULTILINE)
+    without_code_blocks = _FENCED_CODE_BLOCK_RE.sub("", stripped)
+    match = re.search(r"^#\s+(.+)", without_code_blocks, re.MULTILINE)
     if match:
         return match.group(1).strip()
     return _frontmatter_title(content)

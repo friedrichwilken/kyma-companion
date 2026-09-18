@@ -199,8 +199,9 @@ class SearchKymaDocRequest(BaseModel):
 
 
 class SearchKymaDocResult(BaseModel):
-    """A single search result with title, URL, module, and content."""
+    """A single search result with page ID, title, URL, module, and content."""
 
+    page_id: str = Field(..., description="Page identifier in the form '<repo>::<path>'")
     title: str = Field(..., description="Document title")
     url: str = Field(..., description="Source URL")
     module: str | None = Field(None, description="Kyma module name")

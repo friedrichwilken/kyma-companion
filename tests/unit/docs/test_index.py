@@ -471,3 +471,9 @@ def test_extract_title_falls_back_to_frontmatter() -> None:
 def test_extract_title_empty_without_h1_or_frontmatter() -> None:
     """No H1 and no frontmatter yields an empty title."""
     assert _extract_title("## Only a second-level heading\n\nBody.\n") == ""
+
+
+def test_extract_title_ignores_commented_heading_in_code_block() -> None:
+    """A '# ...' comment inside a fenced code block is not mistaken for the H1."""
+    text = "```bash\n# Deploy the app\nkubectl apply -f app.yaml\n```\n\n# Real Title\n\nBody.\n"
+    assert _extract_title(text) == "Real Title"

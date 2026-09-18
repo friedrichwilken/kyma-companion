@@ -72,35 +72,6 @@ async def test_arun(pages: list[DocPage], expected_output: str) -> None:
     assert result == expected_output
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "pages,expected_output",
-    [
-        # Single document
-        ([_make_page(content="Single document content")], ["Single document content"]),
-        # Multiple documents
-        (
-            [_make_page(content="First doc"), _make_page(content="Second doc")],
-            ["First doc", "Second doc"],
-        ),
-        # Empty list
-        ([], []),
-        # Empty content filtered by the mock
-        ([_make_page(content="")], []),
-        # Mixed: some empty, some valid
-        (
-            [_make_page(content="Valid content"), _make_page(content=""), _make_page(content="Another valid")],
-            ["Valid content", "Another valid"],
-        ),
-    ],
-)
-async def test_arun_list(pages: list[DocPage], expected_output: list[str]) -> None:
-    """Test arun_list returns the content strings from the matched pages."""
-    tool = _make_tool(pages)
-    result = await tool.arun_list("test query")
-    assert result == expected_output
-
-
 def test_search_kyma_doc_tool_is_alias() -> None:
     """SearchKymaDocTool is an alias for DocSearchTool."""
     assert SearchKymaDocTool is DocSearchTool

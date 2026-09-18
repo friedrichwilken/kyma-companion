@@ -125,7 +125,7 @@ class TestSearchEndpoint:
         assert "documents" in response_data
         assert len(response_data["documents"]) == len(response_data["results"])
         for document, content in zip(response_data["documents"], response_data["results"], strict=True):
-            assert set(document) == {"title", "url", "module", "content"}
+            assert set(document) == {"page_id", "title", "url", "module", "content"}
             assert document["content"] == content
 
     @pytest.mark.parametrize(

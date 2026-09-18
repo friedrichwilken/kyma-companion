@@ -125,26 +125,3 @@ class TestDocSearchToolArunDocuments:
         tool = _make_tool([])
         result = await tool.arun_documents("query")
         assert result == []
-
-
-class TestDocSearchToolArunList:
-    """Tests for DocSearchTool.arun_list (backward-compat)."""
-
-    @pytest.mark.asyncio
-    async def test_arun_list_returns_content_strings(self) -> None:
-        """arun_list returns plain content strings for each matched page."""
-        pages = [
-            _make_page(title="A", content="Doc A content."),
-            _make_page(title="B", content="Doc B content."),
-        ]
-        tool = _make_tool(pages)
-        result = await tool.arun_list("query")
-
-        assert result == ["Doc A content.", "Doc B content."]
-
-    @pytest.mark.asyncio
-    async def test_arun_list_returns_empty_list_when_no_results(self) -> None:
-        """arun_list returns an empty list when no pages are found."""
-        tool = _make_tool([])
-        result = await tool.arun_list("query")
-        assert result == []

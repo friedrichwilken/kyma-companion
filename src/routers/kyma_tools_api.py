@@ -14,7 +14,7 @@ from agents.kyma.tools.query import (
     fetch_kyma_resource_version,
     kyma_query_tool,
 )
-from agents.kyma.tools.search import DocSearchTool
+from agents.kyma.tools.search import DocSearchTool, page_id
 from docs.index import DocIndex
 from routers.common import (
     API_PREFIX,
@@ -140,6 +140,7 @@ async def search_kyma_documentation(
         results = [doc.content for doc in docs]
         documents = [
             SearchKymaDocResult(
+                page_id=page_id(doc),
                 title=doc.title,
                 url=doc.url,
                 module=doc.module or None,
