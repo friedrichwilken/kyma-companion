@@ -107,18 +107,12 @@ LANGFUSE_MASKING_MODE = config("LANGFUSE_MASKING_MODE", default="REDACTED", cast
 
 MAX_TOKEN_LIMIT_INPUT_QUERY = config("MAX_TOKEN_LIMIT_INPUT_QUERY", default=8000, cast=int)
 
-# RAG
-RAG_RELEVANCY_SCORE_THRESHOLD = config("RAG_RELEVANCY_SCORE_THRESHOLD", default=0.5, cast=float)
-
 # Database
 DATABASE_URL = config("DATABASE_URL", None)
 DATABASE_PORT = config("DATABASE_PORT", cast=int, default=443)
 DATABASE_USER = config("DATABASE_USER", None)
 DATABASE_PASSWORD = config("DATABASE_PASSWORD", None)
-DOCS_TABLE_NAME = config("DOCS_TABLE_NAME", default="kyma_docs")
-HANA_HEALTH_CHECK_CACHE_TTL_SECONDS = config(
-    "HANA_HEALTH_CHECK_CACHE_TTL_SECONDS", default=300, cast=int
-)  # Default 5 minutes
+DOCS_PATH = config("DOCS_PATH", default="/docs")
 
 # Encryption (Base64 encoded)
 default_private_key_path = config_path.parent / "encryption_key.pem"

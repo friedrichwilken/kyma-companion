@@ -76,9 +76,9 @@ def agent(mock_models: dict, mock_k8s_client: MagicMock, mock_graph: MagicMock) 
     patch must stay active for the whole test — hence the ``yield`` inside the
     ``with`` block.
     """
-    search_tool_stub = MagicMock()
+    mock_index = MagicMock()
     with (
-        patch("agents.kyma.react_agent.SearchKymaDocTool", return_value=search_tool_stub),
+        patch("agents.kyma.react_agent.DocIndex", return_value=mock_index),
         patch("agents.kyma.react_agent.create_agent", return_value=mock_graph),
     ):
         instance = KymaReActAgent(

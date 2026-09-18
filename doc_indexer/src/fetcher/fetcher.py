@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -6,9 +7,12 @@ from fetcher.scroller import Scroller
 from fetcher.source import DocumentsSource, SourceType, get_documents_sources
 
 from utils.logging import get_logger
-from utils.utils import download_repo
+from utils.utils import DownloadedRepo, download_repo
 
 logger = get_logger(__name__)
+
+# Name of the per-source metadata file read by the application's DocIndex.
+META_FILE_NAME = "meta.json"
 
 
 def _empty_dir(path: str) -> None:
@@ -26,6 +30,28 @@ def _empty_dir(path: str) -> None:
             shutil.rmtree(entry.path)
         else:
             os.remove(entry.path)
+
+
+def write_meta(output_dir: str, source: DocumentsSource, repo: DownloadedRepo) -> None:
+    """Write ``meta.json`` next to the fetched Markdown files of one source.
+
+    The application's ``DocIndex`` reads this file to attach a repository
+    slug, a module name and a base URL to every page of the source, so that
+    search results carry a citable link pinned to the fetched commit and can
+    be filtered by module.
+    """
+    meta = {
+        "repo": repo.slug,
+        "module": source.name,
+        "base_url": repo.blob_base_url,
+        "commit": repo.commit,
+        "source_url": source.url,
+    }
+    meta_path = os.path.join(output_dir, META_FILE_NAME)
+    with open(meta_path, "w", encoding="utf-8") as fh:
+        json.dump(meta, fh, indent=2)
+        fh.write("\n")
+    logger.info("Wrote source metadata", extra={"path": meta_path, "commit": repo.commit})
 
 
 class DocumentsFetcher:
@@ -61,7 +87,8 @@ class DocumentsFetcher:
         if source.source_type == SourceType.GITHUB:
             logger.debug("Downloading repository", extra={"url": source.url})
             # download and extract the repository tarball (no git required).
-            repo_dir = download_repo(source.url, self.tmp_dir)
+            downloaded = download_repo(source.url, self.tmp_dir)
+            repo_dir = downloaded.path
         else:
             raise ValueError(f"unsupported source_type: {source.source_type}")
 
@@ -73,6 +100,7 @@ class DocumentsFetcher:
         try:
             scroller = Scroller(repo_dir, module_output_dir, source)
             scroller.scroll()
+            write_meta(module_output_dir, source, downloaded)
         except Exception:
             logger.exception("Error while scrolling documents", extra={"source": source.name})
             raise
