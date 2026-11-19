@@ -11,7 +11,7 @@ from typing import Annotated
 from fastapi import Depends, Header, HTTPException
 from langchain_core.embeddings import Embeddings
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from agents.kyma.tools.search import SearchKymaDocTool
 from services.data_sanitizer import DataSanitizer, IDataSanitizer
@@ -361,6 +361,27 @@ async def init_k8s_client(
     )
 
 
+def _get_invalid_auth_headers_detail(error: ValidationError) -> str:
+    """Return a fixed error message that names the invalid K8s auth headers, but never their values."""
+    known_names = set(K8sAuthHeaders.model_fields)
+    known_names.update(
+        field.validation_alias
+        for field in K8sAuthHeaders.model_fields.values()
+        if isinstance(field.validation_alias, str)
+    )
+    invalid_names = sorted(
+        {
+            err["loc"][0]
+            for err in error.errors(include_url=False, include_context=False, include_input=False)
+            if err["loc"] and err["loc"][0] in known_names
+        }
+    )
+    detail = "Invalid cluster authentication headers"
+    if invalid_names:
+        detail += f": {', '.join(str(name) for name in invalid_names)}"
+    return detail
+
+
 async def get_k8s_auth_headers_from_encrypted_payload(
     x_encrypted_key: str,
     x_client_iv: str,
@@ -397,6 +418,13 @@ async def get_k8s_auth_headers_from_encrypted_payload(
         return K8sAuthHeaders.model_validate(auth_headers)
     except HTTPException:
         raise
+    except ValidationError as e:
+        # The message of a validation error contains the input values, so it is neither
+        # returned nor chained to the HTTPException. Only the names of the invalid headers are reported.
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=_get_invalid_auth_headers_detail(e),
+        ) from None
     except ValueError as e:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,

@@ -7,6 +7,7 @@ Covers:
 - build_kyma_a2a_app() factory
 """
 
+import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -228,6 +229,41 @@ class TestKymaAgentExecutorExecute:
             pytest.raises(InternalError),
         ):
             await executor.execute(ctx, event_queue)
+
+    @pytest.mark.asyncio
+    async def test_invalid_auth_headers_values_are_not_returned_or_logged(self, executor, event_queue, caplog):
+        """Execute should not echo values of invalid auth headers in the error or in the logs."""
+        secret_value = "SECRET-VALUE-0123456789"
+        ctx = _make_request_context(
+            text="list pods",
+            metadata={
+                "x-session-id": "sess-1",
+                "x-encrypted-key": "k",
+                "x-client-iv": "iv",
+                "x-target-cluster-encrypted": "enc",
+            },
+        )
+        payload = {"x-cluster-url": "https://api.example.com", "x-k8s-authorization": {"token": secret_value}}
+        mock_encryption = MagicMock()
+        mock_encryption.decrypt = AsyncMock(return_value=json.dumps(payload).encode())
+
+        with (
+            patch("routers.kyma_agent_a2a.init_config") as mock_config,
+            patch("routers.kyma_agent_a2a.Redis"),
+            patch("routers.kyma_agent_a2a.EncryptionCache"),
+            patch("routers.common.KeyStore"),
+            patch("routers.common.Encryption", return_value=mock_encryption),
+            caplog.at_level("DEBUG"),
+        ):
+            mock_config.return_value = MagicMock(sanitization_config=None)
+
+            with pytest.raises(InternalError) as exc_info:
+                await executor.execute(ctx, event_queue)
+
+        assert "Invalid cluster authentication headers: x-k8s-authorization" in str(exc_info.value)
+        assert secret_value not in str(exc_info.value)
+        assert "Invalid cluster authentication headers: x-k8s-authorization" in caplog.text
+        assert secret_value not in caplog.text
 
     @pytest.mark.asyncio
     async def test_context_id_echoed_in_response(self, executor, event_queue):
