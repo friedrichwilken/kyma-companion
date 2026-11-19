@@ -9,7 +9,8 @@ on:
 # Best-effort: this workflow must never block other checks.
 # - contents: read  -> checkout main.
 # - actions: read   -> list/download the metrics artifact produced by the PR's
-#                      (separate) evaluation run via the Actions REST API.
+#                      (separate) evaluation run via the Actions REST API, and read
+#                      that run to check which workflow produced the artifact.
 # The bot PR itself is created with a GitHub App token (see create-release.yml),
 # not GITHUB_TOKEN, so no write permission is needed here.
 permissions:
@@ -38,22 +39,94 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
+          # The merged PR's last commit. The evaluation must have run on exactly this commit.
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY_ID: ${{ github.repository_id }}
+          # The only workflow whose metrics are accepted, and the event it runs on.
+          # pull_request_target always uses the workflow file of the base branch, so a
+          # workflow changed or added by a PR cannot produce a matching run.
+          EVAL_WORKFLOW_PATH: ".github/workflows/pull-evaluation-tests.yaml"
+          EVAL_WORKFLOW_EVENT: "pull_request_target"
+          # Upper bound for the artifact and for metrics.json (the baseline is ~200 KB).
+          MAX_BYTES: 5242880
         run: |
           set -euo pipefail
           NAME="evaluation-metrics-PR-${PR_NUMBER}"
-          # Presence of this artifact encodes "the evaluation run passed" (it is only
-          # uploaded when the evaluation step succeeded). Pick the newest non-expired one.
-          ART="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${NAME}&per_page=100" \
-            --jq '[.artifacts[] | select(.expired==false)] | sort_by(.created_at) | last // empty')"
-          if [ -z "$ART" ]; then
-            echo "::warning::No non-expired ${NAME} artifact found - nothing to update."
-            echo "found=false" >> "$GITHUB_OUTPUT"
+          echo "found=false" >> "$GITHUB_OUTPUT"
+
+          # Any workflow run in the repository can upload an artifact with this name, so
+          # the name alone proves nothing. Only artifacts whose producing run belongs to
+          # this repository and ran for the PR's head commit are candidates; newest first.
+          CANDIDATES="$(gh api --paginate \
+            "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${NAME}&per_page=100" \
+            | jq -r '.artifacts[]
+              | select(.expired == false)
+              | select(.workflow_run.head_sha == env.PR_HEAD_SHA)
+              | select((.workflow_run.repository_id | tostring) == env.REPOSITORY_ID)
+              | select(.size_in_bytes <= (env.MAX_BYTES | tonumber))
+              | [.created_at, .id, .workflow_run.id] | @tsv' | sort -r)"
+
+          # Presence of the artifact encodes "the evaluation run passed" (it is only
+          # uploaded when the evaluation step succeeded). Take the newest candidate whose
+          # run is a run of the evaluation workflow.
+          ART_ID=""
+          while IFS=$'\t' read -r _ id run_id; do
+            [ -n "${id}" ] || continue
+            RUN="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}")"
+            if echo "$RUN" | jq -e '
+                (.path | split("@")[0]) == env.EVAL_WORKFLOW_PATH
+                and .event == env.EVAL_WORKFLOW_EVENT
+                and .head_sha == env.PR_HEAD_SHA
+                and (.repository.id | tostring) == env.REPOSITORY_ID' > /dev/null; then
+              ART_ID="${id}"
+              echo "Using artifact ${id} of run ${run_id}."
+              break
+            fi
+            echo "::warning::Ignoring artifact ${id}: run ${run_id} is not an evaluation run of this PR."
+          done <<< "$CANDIDATES"
+
+          if [ -z "$ART_ID" ]; then
+            echo "::warning::No ${NAME} artifact of an evaluation run on ${PR_HEAD_SHA} found - nothing to update."
             exit 0
           fi
-          ART_URL="$(echo "$ART" | jq -r '.archive_download_url')"
-          gh api "$ART_URL" > metrics.zip
-          unzip -o metrics.zip -d _metrics
-          test -f _metrics/metrics.json
+
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ART_ID}/zip" > metrics.zip
+
+          # Look at the archive before reading anything from it: it must contain exactly
+          # one entry, the regular file metrics.json (no directory, symlink, absolute or
+          # ../ path, no second file).
+          ENTRIES="$(unzip -Z1 metrics.zip)"
+          if [ "$ENTRIES" != "metrics.json" ]; then
+            echo "::warning::Unexpected content in artifact ${ART_ID} - nothing to update."
+            exit 0
+          fi
+          if [ "$(unzip -Z -s metrics.zip metrics.json | cut -c1)" != "-" ]; then
+            echo "::warning::metrics.json in artifact ${ART_ID} is not a regular file - nothing to update."
+            exit 0
+          fi
+
+          # Write the content to a new file instead of unpacking the archive, and stop
+          # reading at the size limit, whatever size the archive declares.
+          rm -rf _metrics
+          mkdir _metrics
+          unzip -p metrics.zip metrics.json | head -c "$((MAX_BYTES + 1))" > _metrics/metrics.json || true
+          if [ "$(wc -c < _metrics/metrics.json)" -gt "$MAX_BYTES" ]; then
+            echo "::warning::metrics.json in artifact ${ART_ID} is larger than ${MAX_BYTES} bytes - nothing to update."
+            exit 0
+          fi
+
+          # Exactly one JSON document with the same top-level shape as
+          # tests/blackbox/baseline_metrics.json. --slurp, because `jq -e` alone only
+          # looks at the last document of a file that contains several.
+          if ! jq -e --slurp '
+              length == 1
+              and (.[0] | type == "object"
+                and (.summary | type == "object")
+                and (.scenarios | type == "array")
+                and (.run | type == "object"))' _metrics/metrics.json > /dev/null; then
+            echo "::warning::metrics.json in artifact ${ART_ID} is not a valid metrics report - nothing to update."
+            exit 0
+          fi
           echo "found=true" >> "$GITHUB_OUTPUT"
 
       - name: Generate GitHub App token
