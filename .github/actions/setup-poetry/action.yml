@@ -6,9 +6,9 @@ inputs:
     description: "Python version to install"
     required: true
   poetry-version:
-    description: "Poetry version to install (default: latest)"
+    description: "Poetry version to install. Keep the default in sync with the version that generated the poetry.lock files."
     required: false
-    default: ""
+    default: "2.5.1"
   cache-dependency-path:
     description: "Path to poetry.lock used for cache key (default: **/poetry.lock)"
     required: false
@@ -22,11 +22,7 @@ runs:
       env:
         POETRY_VERSION: ${{ inputs.poetry-version }}
       run: |
-        if [ -n "$POETRY_VERSION" ]; then
-          pipx install "poetry==$POETRY_VERSION"
-        else
-          pipx install poetry
-        fi
+        pipx install "poetry==$POETRY_VERSION"
         echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
     - name: Setup Python

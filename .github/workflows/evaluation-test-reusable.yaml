@@ -33,7 +33,12 @@ on:
 # global env variables.
 env:
   DOCKER_TIMEOUT: 30
-  K3D_VERSION: "v5.9.0" # Required K3d version.
+  K3D_VERSION: "v5.9.0" # Required K3d version. Also selects the tag the K3d install script is fetched from.
+  KUBECTL_VERSION: "v1.37.2" # Kubectl version, verified against the published SHA-256 checksum.
+  # Commit of kyma-project/kyma-infrastructure-manager the Runtime CRD is taken from.
+  # To bump: use the SHA of a newer commit on the main branch of that repository.
+  KIM_COMMIT: "24ff8c15fe98360d6144a41eb704cf36452cb4d2"
+  REDIS_STACK_CHART_VERSION: "0.4.21" # Version of the redis-stack Helm chart.
   K3S_IMAGE: ${{ inputs.K3S_IMAGE }}
 jobs:
   evaluation-tests:
@@ -52,7 +57,10 @@ jobs:
 
       - name: K3d Setup - Install Kubectl CLI
         run: |
-          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          rm kubectl.sha256
           chmod +x ./kubectl
           mv ./kubectl /usr/local/bin/kubectl
           kubectl version --client
@@ -60,7 +68,7 @@ jobs:
       - name: K3d Setup - Install K3d CLI
         id: install-k3d
         run: |
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
+          curl -fsSL "https://raw.githubusercontent.com/k3d-io/k3d/${K3D_VERSION}/install.sh" | TAG=${K3D_VERSION} bash
           k3d --version
           k3d_version=$(k3d --version | cut -d " " -f 3 | head -1 | xargs)
           if [ "$k3d_version" != "${K3D_VERSION}" ]; then
@@ -112,7 +120,7 @@ jobs:
 
       - name: KIM CRD Setup - Install Runtime CRD
         run: |
-          kubectl apply -f https://raw.githubusercontent.com/kyma-project/kyma-infrastructure-manager/refs/heads/main/config/crd/bases/infrastructuremanager.kyma-project.io_runtimes.yaml
+          kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma-infrastructure-manager/${KIM_COMMIT}/config/crd/bases/infrastructuremanager.kyma-project.io_runtimes.yaml"
 
       - name: KIM CRD Setup - Create kcp-system namespace and apply test Runtime CRs
         run: |
@@ -125,7 +133,7 @@ jobs:
           kubectl create namespace redis
           helm repo add redis-stack https://redis-stack.github.io/helm-redis-stack/
           echo "Installing Redis using Helm..."
-          helm install --wait redis-stack redis-stack/redis-stack --set auth.enabled=false -n redis
+          helm install --wait redis-stack redis-stack/redis-stack --version "${REDIS_STACK_CHART_VERSION}" --set auth.enabled=false -n redis
 
       - name: Redis Setup - Change NodePort
         run: |

@@ -22,6 +22,10 @@ on:
 permissions:
   contents: read
 
+# Poetry version used by the jobs below; keep it in sync with the version that generated the poetry.lock files.
+env:
+  POETRY_VERSION: "2.5.1"
+
 jobs:
   unit-tests:
     name: Release unit tests
@@ -42,7 +46,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          pipx install "poetry==${POETRY_VERSION}"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
@@ -75,7 +79,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          pipx install "poetry==${POETRY_VERSION}"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies

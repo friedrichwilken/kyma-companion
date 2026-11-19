@@ -43,6 +43,7 @@ env:
   REPOSITORY_FULL_NAME: "${{ github.repository }}" # <owner>/<repository-name>.
   RELEASE_TAG: "${{ inputs.name }}"
   PYTHON_VERSION: "3.14"
+  POETRY_VERSION: "2.5.1" # keep in sync with the version that generated the poetry.lock files.
 
 jobs:
   validate-input-params:
@@ -112,7 +113,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          pipx install "poetry==${POETRY_VERSION}"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
@@ -163,7 +164,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          pipx install "poetry==${POETRY_VERSION}"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
