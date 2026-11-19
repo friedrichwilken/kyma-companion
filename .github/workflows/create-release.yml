@@ -36,7 +36,10 @@ on:
         default: ""
         required: true
 
-permissions: write-all
+# Default for every job. A job that needs more declares it itself, see the comments there.
+# Tag creation uses a GitHub App token, not GITHUB_TOKEN, so it needs no write permission here.
+permissions:
+  contents: read
 
 # global env variables.
 env:
@@ -48,6 +51,8 @@ jobs:
   validate-input-params:
     name: Validate input parameters
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -85,7 +90,8 @@ jobs:
     needs: [validate-input-params, get-image-sha]
     runs-on: ubuntu-latest
     environment: e2e
-    permissions: read-all
+    permissions:
+      contents: read # checkout
     env:
       RELEASE_BRANCH: ${{ needs.validate-input-params.outputs.release_branch }}
     steps:
@@ -136,7 +142,8 @@ jobs:
     needs: [validate-input-params, get-image-sha]
     runs-on: ubuntu-latest
     environment: e2e
-    permissions: read-all
+    permissions:
+      contents: read # checkout
     env:
       RELEASE_BRANCH: ${{ needs.validate-input-params.outputs.release_branch }}
     steps:
@@ -188,6 +195,8 @@ jobs:
     name: Get Release branch head commit SHA
     runs-on: ubuntu-latest
     needs: validate-input-params
+    permissions:
+      contents: read # read the release branch head commit via the API
     env:
       RELEASE_BRANCH: ${{ needs.validate-input-params.outputs.release_branch }}
     outputs:
@@ -204,6 +213,9 @@ jobs:
     name: Wait for unit tests of release branch head
     needs: get-image-sha
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
+      checks: read # wait-for-commit-check lists the check runs of the commit
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -247,6 +259,9 @@ jobs:
     name: Run evaluation tests
     uses: kyma-project/kyma-companion/.github/workflows/evaluation-test-reusable.yaml@main
     needs: get-image-sha
+    # A called workflow cannot get more than the calling job grants. The reusable workflow only checks out code.
+    permissions:
+      contents: read
     secrets: inherit
     with:
       IMAGE_NAME: ${{ vars.COMPANION_IMAGE_NAME }}:${{ needs.get-image-sha.outputs.sha }}
@@ -257,6 +272,8 @@ jobs:
     name: Run indexer e2e tests (pre-release)
     uses: kyma-project/kyma-companion/.github/workflows/e2e-tests-doc-indexer-reusable.yaml@main
     needs: get-image-sha
+    permissions:
+      contents: read # checkout in the reusable workflow
     secrets: inherit
     with:
       IMAGE_NAME: "${{ vars.IMAGE_NAME_INDEXER }}:${{ needs.get-image-sha.outputs.sha }}"
@@ -277,6 +294,9 @@ jobs:
       ]
     runs-on: ubuntu-latest
     environment: e2e
+    # The checkout and the tag push use the GitHub App token, so GITHUB_TOKEN stays read-only.
+    permissions:
+      contents: read
     env:
       RELEASE_BRANCH: ${{ needs.validate-input-params.outputs.release_branch }}
     steps:
@@ -322,6 +342,9 @@ jobs:
     name: Wait for image build job
     needs: [validate-input-params, create-git-tag]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
+      checks: read # wait-for-commit-check lists the check runs of the tag
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -363,6 +386,8 @@ jobs:
     name: Run indexer e2e tests
     uses: kyma-project/kyma-companion/.github/workflows/e2e-tests-doc-indexer-reusable.yaml@main
     needs: wait-for-build
+    permissions:
+      contents: read # checkout in the reusable workflow
     secrets: inherit
     with:
       IMAGE_NAME: "${{ vars.IMAGE_NAME_INDEXER }}:${{ inputs.name }}"
@@ -372,6 +397,8 @@ jobs:
     name: Create draft release
     needs: [wait-for-build, run-e2e-tests-indexer]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create_draft_release.sh creates the draft release with GITHUB_TOKEN
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -396,6 +423,8 @@ jobs:
     name: Check release pre-requisites
     needs: [create-draft, wait-for-build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
 
     steps:
       - name: Checkout code
@@ -418,6 +447,11 @@ jobs:
     needs: ["check-prerequisites"]
     if: ${{ needs.check-prerequisites.result == 'success' }}
     uses: kyma-project/compliancy/.github/workflows/notify-release-report.yml@main
+    # The token of this job is read-only. If the called workflow declares more than this, the run
+    # is rejected at startup with a message that names the missing permission; add only that one.
+    permissions:
+      contents: read
+    # TODO: pass only the secrets the called workflow declares instead of inheriting all of them.
     secrets: inherit
     with:
       release_version: ${{ inputs.name }}
