@@ -24,7 +24,7 @@ src/                        # Application source
     kyma_agent_a2a.py       # A2A protocol endpoint for the Kyma agent
     k8s_tools_api.py        # REST endpoints for K8s tools
     kyma_tools_api.py       # REST endpoints for Kyma tools
-  services/                 # Kubernetes, HANA, Redis, Langfuse, encryption integrations
+  services/                 # Kubernetes, HANA, Redis, encryption integrations
   rag/                      # RAG retriever and reranker
   utils/                    # Logging, config, model factory
 tests/
