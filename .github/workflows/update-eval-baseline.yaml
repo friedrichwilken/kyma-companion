@@ -115,12 +115,15 @@ jobs:
             exit 0
           fi
 
-          # Same top-level shape as tests/blackbox/baseline_metrics.json.
-          if ! jq -e '
-              type == "object"
-              and (.summary | type == "object")
-              and (.scenarios | type == "array")
-              and (.run | type == "object")' _metrics/metrics.json > /dev/null; then
+          # Exactly one JSON document with the same top-level shape as
+          # tests/blackbox/baseline_metrics.json. --slurp, because `jq -e` alone only
+          # looks at the last document of a file that contains several.
+          if ! jq -e --slurp '
+              length == 1
+              and (.[0] | type == "object"
+                and (.summary | type == "object")
+                and (.scenarios | type == "array")
+                and (.run | type == "object"))' _metrics/metrics.json > /dev/null; then
             echo "::warning::metrics.json in artifact ${ART_ID} is not a valid metrics report - nothing to update."
             exit 0
           fi
