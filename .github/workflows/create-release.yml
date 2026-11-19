@@ -447,11 +447,13 @@ jobs:
     needs: ["check-prerequisites"]
     if: ${{ needs.check-prerequisites.result == 'success' }}
     uses: kyma-project/compliancy/.github/workflows/notify-release-report.yml@main
-    # The token of this job is read-only. If the called workflow declares more than this, the run
-    # is rejected at startup with a message that names the missing permission; add only that one.
+    # The called workflow declares no permissions and does not use GITHUB_TOKEN; it sends the
+    # dispatch with its own GitHub App token.
     permissions:
       contents: read
-    # TODO: pass only the secrets the called workflow declares instead of inheriting all of them.
+    # The called workflow declares no secrets under workflow_call, so its secrets can only be
+    # passed with `inherit` (it reads COMPLIANCY_APP_ID_GITHUB_COM, COMPLIANCY_APP_PRIVATE_KEY_GITHUB_COM
+    # and COMPLIANCY_SLACK_WEBHOOK_URL).
     secrets: inherit
     with:
       release_version: ${{ inputs.name }}
