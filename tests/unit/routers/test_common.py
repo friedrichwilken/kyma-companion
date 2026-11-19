@@ -483,3 +483,55 @@ async def test_get_k8s_auth_headers_from_encrypted_payload(
         assert isinstance(result, K8sAuthHeaders), description
         for field, value in (expected_fields or {}).items():
             assert getattr(result, field) == value, f"{description}: field {field}"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "description, payload, expected_detail",
+    [
+        pytest.param(
+            "wrongly typed credential fields are named, their values are not returned",
+            {
+                **_VALID_PAYLOAD,
+                "x-k8s-authorization": {"token": "SECRET-VALUE-0123456789"},
+                "X-Client-Key-Data": ["SECRET-VALUE-0123456789"],
+            },
+            "Invalid cluster authentication headers: x-client-key-data, x-k8s-authorization",
+            id="wrong_type_credentials",
+        ),
+        pytest.param(
+            "wrongly typed cluster url is named, its value is not returned",
+            {**_VALID_PAYLOAD, "x-cluster-url": {"SECRET-VALUE-0123456789": "SECRET-VALUE-0123456789"}},
+            "Invalid cluster authentication headers: x-cluster-url",
+            id="wrong_type_cluster_url",
+        ),
+    ],
+)
+async def test_get_k8s_auth_headers_from_encrypted_payload_does_not_echo_values(
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    description: str,
+    payload: dict,
+    expected_detail: str,
+):
+    # Given:
+    secret_value = "SECRET-VALUE-0123456789"
+    monkeypatch.setattr("routers.common.KeyStore", Mock(return_value=Mock()))
+    mock_encryption_instance = Mock()
+    mock_encryption_instance.decrypt = AsyncMock(return_value=json.dumps(payload).encode())
+    monkeypatch.setattr("routers.common.Encryption", Mock(return_value=mock_encryption_instance))
+
+    # When:
+    with caplog.at_level("DEBUG"), pytest.raises(HTTPException) as exc_info:
+        await get_k8s_auth_headers_from_encrypted_payload(
+            "enc-key", "iv", "session-123", "enc-data", AsyncMock(spec=IEncryptionCache)
+        )
+
+    # Then:
+    assert exc_info.value.status_code == HTTPStatus.BAD_REQUEST, description
+    assert exc_info.value.detail == expected_detail, description
+    assert secret_value not in str(exc_info.value.detail), description
+    assert secret_value not in caplog.text, description
+    # the validation error (which contains the input values) must not be chained to the HTTPException.
+    assert exc_info.value.__cause__ is None, description
+    assert exc_info.value.__suppress_context__ is True, description
