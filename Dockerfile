@@ -40,6 +40,10 @@ FROM cgr.dev/chainguard/wolfi-base:latest@${WOLFI_BASE_DIGEST} AS builder
 
 ARG PYTHON_VERSION=3.14.10
 ARG GLIBC_MIN=2.44
+# Poetry release that installs the locked dependencies. Keep it equal to the
+# version named in the first line of poetry.lock; Renovate does not track
+# this ARG, so it is bumped by hand together with the lock file.
+ARG POETRY_VERSION=2.5.1
 
 # Toolchain and development headers for the CPython build:
 #   build-base             gcc, binutils (strip, readelf), make, pkgconf and
@@ -207,7 +211,7 @@ COPY pyproject.toml poetry.lock ./
 #                                   public API and stay.
 #    strip removes debug symbols from every shared object in the venv;
 #    wheels on PyPI ship unstripped.
-RUN python3 -m pip install --no-cache-dir "poetry>=2.1" \
+RUN python3 -m pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
   && poetry config virtualenvs.in-project true \
   && poetry install --only main --no-interaction --no-ansi \
   && rm -rf ~/.config/pypoetry ~/.cache/pypoetry ~/.cache/pip \

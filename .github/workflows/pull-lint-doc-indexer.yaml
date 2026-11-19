@@ -26,15 +26,11 @@ jobs:
           ../scripts/shell/extract-python-version.sh
           echo "Got PYTHON_VERSION=${PYTHON_VERSION}"
 
-      - name: Setup Python
-        uses: actions/setup-python@v7
+      - name: Setup Python and Poetry
+        uses: kyma-project/kyma-companion/.github/actions/setup-poetry@main
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          cache-dependency-path: doc_indexer/poetry.lock
 
       - name: Install dependencies
         working-directory: ./doc_indexer

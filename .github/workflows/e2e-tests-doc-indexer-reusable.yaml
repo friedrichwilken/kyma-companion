@@ -18,7 +18,8 @@ on:
         description: "Git ref to checkout for test assets (e.g. release branch SHA). Defaults to main."
 
 env:
-  K3D_VERSION: "v5.9.0"
+  K3D_VERSION: "v5.9.0" # Also selects the tag the K3d install script is fetched from.
+  KUBECTL_VERSION: "v1.37.2" # Kubectl version, verified against the published SHA-256 checksum.
   NAMESPACE: "doc-indexer"
 
 jobs:
@@ -33,14 +34,17 @@ jobs:
 
       - name: Install Kubectl
         run: |
-          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          rm kubectl.sha256
           chmod +x ./kubectl
           mv ./kubectl /usr/local/bin/kubectl
           kubectl version --client
 
       - name: Install K3d
         run: |
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
+          curl -fsSL "https://raw.githubusercontent.com/k3d-io/k3d/${K3D_VERSION}/install.sh" | TAG=${K3D_VERSION} bash
           k3d --version
 
       - name: Create K3d cluster
