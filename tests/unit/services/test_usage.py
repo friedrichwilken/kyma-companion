@@ -1,3 +1,4 @@
+import time
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
@@ -14,6 +15,9 @@ from services.metrics import (
 )
 from services.usage import (
     RequestMetricsCallback,
+    UsageExceedReport,
+    UsageModel,
+    UsageTracker,
     UsageTrackerCallback,
     _parse_usage,
     _parse_usage_model,
@@ -191,6 +195,131 @@ class TestUsageTrackerCallback:
         # the metric should be increased.
         after_metric_value = CustomMetrics().registry.get_sample_value(metric_name, labels)
         assert after_metric_value > before_metric_value
+
+
+def test_usage_model_epoch_is_time_of_creation():
+    before = time.time()
+    usage = UsageModel(input=1, output=1, total=2)
+
+    assert before <= usage.epoch <= time.time()
+
+
+class TestUsageTracker:
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("token_limit", [-1, -5])
+    async def test_negative_limit_disables_the_check(self, token_limit):
+        mock_memory = Mock()
+        mock_memory.alist_llm_usage_records = AsyncMock(return_value=[{"input": 1, "output": 1, "total": 10**9}])
+        usage_tracker = UsageTracker(memory=mock_memory, token_limit=token_limit, reset_interval_sec=600)
+
+        assert await usage_tracker.ais_usage_limit_exceeded("test_cluster") is None
+        mock_memory.alist_llm_usage_records.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_zero_limit_without_records_is_exceeded(self):
+        mock_memory = Mock()
+        mock_memory.alist_llm_usage_records = AsyncMock(return_value=[])
+        usage_tracker = UsageTracker(memory=mock_memory, token_limit=0, reset_interval_sec=600)
+
+        report = await usage_tracker.ais_usage_limit_exceeded("test_cluster")
+
+        assert report is not None
+        assert 0 <= report.reset_seconds_left <= 600  # noqa: PLR2004
+
+    @pytest.mark.asyncio
+    async def test_reset_seconds_left_is_not_negative(self):
+        mock_memory = Mock()
+        mock_memory.alist_llm_usage_records = AsyncMock(
+            return_value=[{"input": 1, "output": 1, "total": 500, "epoch": time.time() - 10_000}]
+        )
+        usage_tracker = UsageTracker(memory=mock_memory, token_limit=400, reset_interval_sec=600)
+
+        report = await usage_tracker.ais_usage_limit_exceeded("test_cluster")
+
+        assert report is not None
+        assert report.reset_seconds_left == 0
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "test_description, token_limit, usage_records, expected_report",
+        [
+            (
+                "should return None when token limit is -1",
+                -1,
+                [],
+                None,
+            ),
+            (
+                "should return None when token usage is below the limit",
+                200,
+                [
+                    {
+                        "input": 100,
+                        "output": 50,
+                        "total": 150,
+                        "epoch": time.time(),
+                    }
+                ],
+                None,
+            ),
+            (
+                "should return report when token usage is above the limit",
+                400,
+                [
+                    {
+                        "input": 100,
+                        "output": 150,
+                        "total": 250,
+                        "epoch": time.time() - 20,  # 20 seconds old record
+                    },
+                    {
+                        "input": 100,
+                        "output": 150,
+                        "total": 250,
+                        "epoch": time.time() - 10,  # 10 seconds old record
+                    },
+                ],
+                UsageExceedReport(
+                    cluster_id="test_cluster",
+                    token_limit=400,
+                    total_tokens_used=500,
+                    reset_seconds_left=600,
+                ),
+            ),
+        ],
+    )
+    async def test_is_usage_limit_exceeded(self, test_description, token_limit, usage_records, expected_report):
+        # Given
+        reset_interval_sec = 600
+        mock_memory = Mock()
+        mock_memory.alist_llm_usage_records = AsyncMock()
+        mock_memory.alist_llm_usage_records.return_value = usage_records
+        usage_tracker = UsageTracker(
+            memory=mock_memory,
+            token_limit=token_limit,
+            reset_interval_sec=reset_interval_sec,
+        )
+
+        # When
+        report = await usage_tracker.ais_usage_limit_exceeded("test_cluster")
+
+        # Then
+        if token_limit == -1 or expected_report is None:
+            assert report is None
+            return
+
+        # for comparison, set the reset_seconds_left to the actual report.
+        # we will check the reset_seconds_left separately.
+        expected_report.reset_seconds_left = report.reset_seconds_left
+        assert report == expected_report
+        mock_memory.alist_llm_usage_records.assert_called_once_with("test_cluster", reset_interval_sec)
+
+        # check the reset_seconds_left.
+        latest_record = max(usage_records, key=lambda record: record["epoch"])
+        expected_reset_seconds_left = int(float(reset_interval_sec) - (time.time() - latest_record["epoch"]))
+        # reset_seconds_left can be off by 5 second due to dynamic time.time().
+        accepted_offset = 5
+        assert abs(report.reset_seconds_left - expected_reset_seconds_left) <= accepted_offset
 
 
 @pytest.mark.parametrize(

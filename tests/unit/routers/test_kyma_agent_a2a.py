@@ -42,6 +42,7 @@ def _make_request_context(
     ctx.message = message
     ctx.get_user_input.return_value = text
     ctx.metadata = metadata or {}
+    ctx.call_context.state = {}
     return ctx
 
 
@@ -92,6 +93,15 @@ class TestKymaAgentExecutorExecute:
     def event_queue(self):
         """Return an in-memory event queue."""
         return EventQueueLegacy()
+
+    @pytest.fixture(autouse=True)
+    def usage_limit_not_exceeded(self):
+        """Skip the usage limit check, which is covered by test_kyma_agent_a2a_limits.py."""
+        with (
+            patch("routers.kyma_agent_a2a.check_token_usage", new_callable=AsyncMock),
+            patch("routers.kyma_agent_a2a.get_cluster_id", return_value="cluster"),
+        ):
+            yield
 
     @pytest.mark.asyncio
     async def test_raises_invalid_params_when_message_is_none(self, executor, event_queue):
