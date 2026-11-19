@@ -54,7 +54,9 @@ jobs:
     with:
       IMAGE_NAME: "europe-docker.pkg.dev/kyma-project/dev/kyma-companion:PR-${{ github.event.number }}"
       TEST_REPO_FULLNAME: ${{ github.event.pull_request.head.repo.full_name }}
-      TEST_REF: ${{ github.event.pull_request.head.ref }}
+      # Pin the commit that triggered this run. A branch name would resolve to whatever is on
+      # the branch when the job starts, including commits pushed after the `e2e` approval.
+      TEST_REF: ${{ github.event.pull_request.head.sha }}
       PR_NUMBER: ${{ github.event.number }}
 
   # Deploy the HTML report rendered by the reusable evaluation workflow to GitHub Pages.
