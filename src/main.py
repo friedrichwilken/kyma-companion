@@ -237,7 +237,9 @@ def handle_http_exception(
 
 app.include_router(k8s_tools_router)
 app.include_router(kyma_tools_router)
-app.mount("/api/agent/kyma", build_kyma_a2a_app(base_url=KYMA_A2A_BASE_URL))
+kyma_a2a_app = build_kyma_a2a_app(base_url=KYMA_A2A_BASE_URL)
+kyma_a2a_app.add_exception_handler(HTTPException, custom_http_exception_handler)  # type: ignore[arg-type]
+app.mount("/api/agent/kyma", kyma_a2a_app)
 app.include_router(cluster_region_router)
 app.include_router(public_key_router)
 app.include_router(probes_router)

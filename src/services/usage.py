@@ -23,6 +23,15 @@ class UsageModel(BaseModel):
     epoch: float = time.time()
 
 
+class UsageExceedReport(BaseModel):
+    """Usage exceed report model."""
+
+    cluster_id: str
+    token_limit: int
+    total_tokens_used: int
+    reset_seconds_left: int
+
+
 class UsageTrackerCallback(AsyncCallbackHandler):
     """langChain callback handler to track the token usage.
     Reference: https://python.langchain.com/docs/concepts/callbacks/
@@ -190,6 +199,43 @@ class RequestMetricsCallback(AsyncCallbackHandler):
             "tool_call_count": len(self.tool_calls),
             "tool_call_counts": tool_call_counts,
         }
+
+
+class UsageTracker:
+    """Usage tracker to check the token usage."""
+
+    def __init__(self, memory: IUsageMemory, token_limit: int, reset_interval_sec: int):
+        self.memory = memory
+        self.reset_interval_sec: int = reset_interval_sec
+        self.token_limit: int = token_limit
+
+    async def adelete_expired_records(self, cluster_id: str) -> None:
+        """Delete the expired records for the given cluster_id."""
+        await self.memory.adelete_expired_llm_usage_records(cluster_id, self.reset_interval_sec)
+
+    async def ais_usage_limit_exceeded(self, cluster_id: str) -> UsageExceedReport | None:
+        """Check if the token limit is exceeded for the given cluster_id."""
+        if self.token_limit == -1:
+            return None
+        records = await self.memory.alist_llm_usage_records(cluster_id, self.reset_interval_sec)
+        # parse the records as Pydantic model to verify the structure.
+        records = [UsageModel(**record) for record in records]
+        total_usage = sum(record.total for record in records)
+
+        # return if token usage limit is not exceeded.
+        if total_usage < self.token_limit:
+            return None
+
+        # find the latest record to calculate the reset_seconds_left
+        latest_record = max(records, key=lambda record: record.epoch)
+        reset_seconds_left = int(float(self.reset_interval_sec) - (time.time() - latest_record.epoch))
+
+        return UsageExceedReport(
+            cluster_id=cluster_id,
+            token_limit=self.token_limit,
+            total_tokens_used=total_usage,
+            reset_seconds_left=reset_seconds_left,
+        )
 
 
 def _parse_usage(response: LLMResult) -> dict[str, Any] | None:

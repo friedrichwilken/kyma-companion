@@ -100,6 +100,8 @@ KYMA_AGENT_CONVERSATION_INSTANCE_PREFIX = config(
 )
 REDIS_SSL_ENABLED = config("REDIS_SSL_ENABLED", default=False)
 
+MAX_TOKEN_LIMIT_INPUT_QUERY = config("MAX_TOKEN_LIMIT_INPUT_QUERY", default=8000, cast=int)
+
 # RAG
 RAG_RELEVANCY_SCORE_THRESHOLD = config("RAG_RELEVANCY_SCORE_THRESHOLD", default=0.5, cast=float)
 # Document retrieval strategy: "reranker" (default), "vector", or "fusion". Set before starting the agent.
@@ -128,6 +130,7 @@ ENCRYPTION_PRIVATE_KEY_PATH = config("ENCRYPTION_PRIVATE_KEY_PATH", default=defa
 NONCE_REPLAY_WINDOW_SECONDS = config("NONCE_REPLAY_WINDOW_SECONDS", default=300, cast=int)  # 5 minutes
 
 # Token limits
+TOKEN_LIMIT_PER_CLUSTER = config("TOKEN_LIMIT_PER_CLUSTER", 5000000, cast=int)
 TOKEN_USAGE_RESET_INTERVAL = config("TOKEN_USAGE_RESET_INTERVAL", 86400, cast=int)  # 24 hours
 
 

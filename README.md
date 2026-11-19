@@ -115,6 +115,14 @@ To use a configuration file from a different location, set the `CONFIG_PATH` env
 
 `ALLOWED_K8S_DOMAINS` is a required JSON list of cluster domains that the companion may connect to, for example, `["kyma.ondemand.com"]`. The `x-cluster-url` host must equal an entry or be a subdomain of one, and the URL must use `https`. The application refuses to start if the list is empty or missing. See `config/config-example.json`.
 
+The A2A endpoint enforces the following limits:
+
+| Key | Default | Description |
+|---|---|---|
+| `TOKEN_LIMIT_PER_CLUSTER` | `5000000` | Maximum number of LLM tokens a cluster can use within `TOKEN_USAGE_RESET_INTERVAL`. The cluster is identified by its cluster URL. When the limit is reached, requests are rejected with HTTP status `429`. Set to `-1` to disable the limit. |
+| `TOKEN_USAGE_RESET_INTERVAL` | `86400` | Time window in seconds for `TOKEN_LIMIT_PER_CLUSTER`. |
+| `MAX_TOKEN_LIMIT_INPUT_QUERY` | `8000` | Maximum number of tokens in the user query. Larger queries are rejected with HTTP status `400`. |
+
 ### Tracing
 
 
