@@ -79,6 +79,16 @@
       ]
     },
     {
+      "description": "Keep kyma-project actions and reusable workflows on @main instead of pinning them to a digest",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "kyma-project/**"
+      ],
+      "pinDigests": false
+    },
+    {
       "matchManagers": [
         "dockerfile"
       ],
