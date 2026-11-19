@@ -9,9 +9,11 @@ Exposed routes (relative to the mount point /api/agent/kyma):
   POST /chat                         – A2A JSON-RPC endpoint
 """
 
+import re
 from collections.abc import Awaitable, Callable
 from http import HTTPStatus
 from typing import Any, cast
+from urllib.parse import urlparse
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.context import ServerCallContext
@@ -65,6 +67,10 @@ logger = get_logger(__name__)
 # Key in the A2A call context state for an HTTPException that must reach the client as HTTP status.
 HTTP_EXCEPTION_STATE_KEY = "http_exception"
 
+# A cluster host name has at least two labels; the second one is the cluster ID.
+MIN_CLUSTER_HOST_LABELS = 2
+_CLUSTER_ID_PATTERN = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?")
+
 
 def _build_human_content(query: str, ui_context: UINavigationContext) -> str:
     """Prepend the UI navigation context message to the user query if available.
@@ -113,6 +119,24 @@ def _raise_recorded_http_exception(
     return wrapper
 
 
+def get_cluster_id(cluster_url: str) -> str:
+    """Return the ID of the cluster under which its token usage is recorded.
+
+    The ID is the second label of the host name of the cluster URL, for example `c-123`
+    for `https://api.c-123.kyma.example.com`. It must be a lower-case DNS label, because
+    it is part of Redis keys: it cannot contain the key separator `_`, Redis pattern
+    characters or upper-case variants of the same ID.
+    """
+    try:
+        host = urlparse(cluster_url).hostname or ""
+    except ValueError:
+        host = ""
+    labels = host.split(".")
+    if len(labels) < MIN_CLUSTER_HOST_LABELS or _CLUSTER_ID_PATTERN.fullmatch(labels[1]) is None:
+        raise HTTPException(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail="Invalid cluster URL.")
+    return labels[1]
+
+
 def enforce_query_token_limit(query: str) -> None:
     """Enforce query token limit to input request."""
     token_count = compute_string_token_count(query, MAIN_MODEL_NAME)
@@ -123,8 +147,6 @@ def enforce_query_token_limit(query: str) -> None:
 
 async def check_token_usage(cluster_id: str, usage_tracker: UsageTracker) -> None:
     """Check if the token usage limit is exceeded for the cluster."""
-    # Delete expired records before checking the usage limit.
-    await usage_tracker.adelete_expired_records(cluster_id)
     report = await usage_tracker.ais_usage_limit_exceeded(cluster_id)
     if report is not None:
         raise HTTPException(
@@ -197,20 +219,22 @@ class KymaAgentExecutor(AgentExecutor):
             data_sanitizer = DataSanitizer(config.sanitization_config)
             k8s_client = K8sClient(k8s_auth_headers=k8s_auth_headers, data_sanitizer=data_sanitizer)
 
-            cluster_id = k8s_client.get_api_server().split(".")[1]
-            usage_memory = AsyncRedisSaver(redis_conn.get_connection())
-            await self._enforce_limits(context, query, cluster_id, cast(IUsageMemory, usage_memory))
-
-            models = _ModelsRegistry(config).models
-            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=_SearchToolRegistry(models).tool)
-
-            chat_history = await load_conversation_history(redis_conn, session_id)
             ui_context = UINavigationContext(
                 resource_kind=str(metadata.get("resourceType", "")),
                 resource_name=str(metadata.get("resourceName", "")),
                 resource_api_version=str(metadata.get("groupVersion", "")),
                 namespace=str(metadata.get("namespace", "")),
             )
+            human_content = _build_human_content(query, ui_context)
+
+            cluster_id = get_cluster_id(k8s_client.get_api_server())
+            usage_memory = AsyncRedisSaver(redis_conn.get_connection())
+            await self._enforce_limits(context, human_content, cluster_id, cast(IUsageMemory, usage_memory))
+
+            models = _ModelsRegistry(config).models
+            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=_SearchToolRegistry(models).tool)
+
+            chat_history = await load_conversation_history(redis_conn, session_id)
 
             request_metrics = RequestMetricsCallback()
             callbacks: list[BaseCallbackHandler] = [
@@ -220,7 +244,6 @@ class KymaAgentExecutor(AgentExecutor):
 
             answer = await agent.ainvoke(query, chat_history=chat_history, ui_context=ui_context, callbacks=callbacks)
 
-            human_content = _build_human_content(query, ui_context)
             new_messages = [*chat_history, HumanMessage(content=human_content), AIMessage(content=answer)]
             await save_conversation_history(redis_conn, session_id, new_messages)
 

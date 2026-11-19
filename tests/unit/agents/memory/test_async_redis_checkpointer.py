@@ -1,6 +1,6 @@
-import asyncio
 import json
 import time
+from unittest.mock import patch
 
 import fakeredis
 import pytest
@@ -8,11 +8,9 @@ import pytest_asyncio
 
 from agents.memory.async_redis_checkpointer import (
     AsyncRedisSaver,
-    _extract_time_from_llm_usage_key,
-    _get_llm_usage_key_filter,
+    _get_llm_usage_index_key,
     _get_llm_usage_key_prefix,
     _make_llm_usage_key,
-    _safe_decode,
 )
 
 
@@ -46,54 +44,47 @@ class TestAsyncRedisSaver:
             ttl_value = await fake_async_redis.ttl(key)
             assert ttl_value > 0
 
-    async def test_adelete_expired_llm_usage_records(self, async_redis_saver, fake_async_redis):
-        num_of_records = 3
-        cluster_id = f"cluster_usage_record_deletion_test1_{time.time()}"
-        sample_data = {"usage": 100}
-        ttl = 2
-        for _ in range(num_of_records):
-            await async_redis_saver.awrite_llm_usage(cluster_id, sample_data)
+    async def test_awrite_llm_usage_adds_key_to_index(self, async_redis_saver, fake_async_redis):
+        key = await async_redis_saver.awrite_llm_usage("cluster1", {"total": 1}, 60)
 
-        await asyncio.sleep(2)
-
-        for _ in range(num_of_records):
-            await async_redis_saver.awrite_llm_usage(cluster_id, sample_data)
-
-        all_keys = await fake_async_redis.keys(_get_llm_usage_key_filter(cluster_id))
-        assert len(all_keys) == 2 * num_of_records
-
-        await async_redis_saver.adelete_expired_llm_usage_records(cluster_id, ttl)
-
-        remaining_keys = await fake_async_redis.keys(_get_llm_usage_key_filter(cluster_id))
-        assert len(remaining_keys) == num_of_records
-        for key in remaining_keys:
-            assert _extract_time_from_llm_usage_key(_safe_decode(key)) > time.time() - ttl
+        index_key = _get_llm_usage_index_key("cluster1")
+        assert await fake_async_redis.zrange(index_key, 0, -1) == [key.encode()]
+        assert 0 < await fake_async_redis.ttl(index_key) <= 60  # noqa: PLR2004
+        # the index is not listed as a usage record.
+        assert await fake_async_redis.keys("llm_usage_*") == [key.encode()]
 
     async def test_alist_llm_usage_records(self, async_redis_saver, fake_async_redis):
-        num_of_records = 3
-        cluster_id1 = f"cluster_list_llm_usage_records_test1_{time.time()}"
-        cluster_id2 = f"cluster_list_llm_usage_records_test2_{time.time()}"
-        ttl = 3
-        for _ in range(num_of_records):
-            await async_redis_saver.awrite_llm_usage(cluster_id2, {"epoch": time.time()})
+        ttl = 100
+        now = time.time()
+        with patch("agents.memory.async_redis_checkpointer.time.time", return_value=now - ttl - 1):
+            await async_redis_saver.awrite_llm_usage("cluster1", {"total": 1})
+        with patch("agents.memory.async_redis_checkpointer.time.time", return_value=now - 10):
+            await async_redis_saver.awrite_llm_usage("cluster1", {"total": 2})
+            await async_redis_saver.awrite_llm_usage("cluster2", {"total": 4})
 
-        for _ in range(num_of_records):
-            await async_redis_saver.awrite_llm_usage(cluster_id1, {"epoch": time.time()})
+        records = await async_redis_saver.alist_llm_usage_records("cluster1", ttl)
 
-        await asyncio.sleep(ttl + 2)
+        assert records == [{"total": 2}]
+        # the expired entry is removed from the index.
+        assert await fake_async_redis.zcard(_get_llm_usage_index_key("cluster1")) == 1
 
-        for _ in range(num_of_records):
-            await async_redis_saver.awrite_llm_usage(cluster_id1, {"epoch": time.time()})
+    async def test_alist_llm_usage_records_skips_expired_records(self, async_redis_saver, fake_async_redis):
+        key = await async_redis_saver.awrite_llm_usage("cluster1", {"total": 1}, 60)
+        await fake_async_redis.delete(key)
 
-        records = await async_redis_saver.alist_llm_usage_records(cluster_id1, ttl)
+        assert await async_redis_saver.alist_llm_usage_records("cluster1", 60) == []
 
-        assert len(records) == num_of_records
+    async def test_alist_llm_usage_records_does_not_scan_key_space(self, async_redis_saver, fake_async_redis):
+        await async_redis_saver.awrite_llm_usage("cluster1", {"total": 1}, 60)
 
-        all_keys = await fake_async_redis.keys(_get_llm_usage_key_filter(cluster_id1))
-        assert len(all_keys) == 2 * num_of_records
+        with (
+            patch.object(fake_async_redis, "keys", side_effect=AssertionError("KEYS")),
+            patch.object(fake_async_redis, "scan", side_effect=AssertionError("SCAN")),
+        ):
+            assert await async_redis_saver.alist_llm_usage_records("cluster1", 60) == [{"total": 1}]
 
-        for record in records:
-            assert record["epoch"] > time.time() - ttl
+    async def test_alist_llm_usage_records_without_index(self, async_redis_saver):
+        assert await async_redis_saver.alist_llm_usage_records("cluster1", 60) == []
 
 
 class TestUtilityFunctions:
@@ -124,25 +115,3 @@ class TestUtilityFunctions:
         expected_parts_count = 4
         assert len(parts) == expected_parts_count
         assert float(parts[-1]) > 0
-
-    @pytest.mark.parametrize(
-        "cluster_id, expected_filter",
-        [
-            ("cluster1", "llm_usage_cluster1_*"),
-            ("test-cluster", "llm_usage_test-cluster_*"),
-            ("123", "llm_usage_123_*"),
-        ],
-    )
-    def test_get_llm_usage_key_filter(self, cluster_id, expected_filter):
-        assert _get_llm_usage_key_filter(cluster_id) == expected_filter
-
-    @pytest.mark.parametrize(
-        "key, expected_time",
-        [
-            ("llm_usage_cluster1_1633036800.123456", 1633036800.123456),
-            ("llm_usage_test-cluster_1633036800.654321", 1633036800.654321),
-            ("llm_usage_123_1633036800.789012", 1633036800.789012),
-        ],
-    )
-    def test_extract_time_from_llm_usage_key(self, key, expected_time):
-        assert _extract_time_from_llm_usage_key(key) == expected_time

@@ -119,9 +119,9 @@ The A2A endpoint enforces the following limits:
 
 | Key | Default | Description |
 |---|---|---|
-| `TOKEN_LIMIT_PER_CLUSTER` | `5000000` | Maximum number of LLM tokens a cluster can use within `TOKEN_USAGE_RESET_INTERVAL`. The cluster is identified by its cluster URL. When the limit is reached, requests are rejected with HTTP status `429`. Set to `-1` to disable the limit. |
+| `TOKEN_LIMIT_PER_CLUSTER` | `5000000` | Maximum number of LLM tokens a cluster can use within `TOKEN_USAGE_RESET_INTERVAL`. The cluster is identified by the second label of the host name of its cluster URL, for example `c-123` in `https://api.c-123.kyma.example.com`. When the limit is reached, requests are rejected with HTTP status `429`. Set to `-1` to disable the limit. |
 | `TOKEN_USAGE_RESET_INTERVAL` | `86400` | Time window in seconds for `TOKEN_LIMIT_PER_CLUSTER`. |
-| `MAX_TOKEN_LIMIT_INPUT_QUERY` | `8000` | Maximum number of tokens in the user query. Larger queries are rejected with HTTP status `400`. |
+| `MAX_TOKEN_LIMIT_INPUT_QUERY` | `8000` | Maximum number of tokens in the user query, including the resource context sent with it. Larger queries are rejected with HTTP status `400`. |
 
 ### Tracing
 

@@ -5,7 +5,7 @@ from uuid import UUID
 import pydantic
 from langchain_core.callbacks import AsyncCallbackHandler
 from langchain_core.outputs import LLMResult
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from agents.memory.async_redis_checkpointer import IUsageMemory
 from routers.probes import IUsageTrackerProbe
@@ -20,7 +20,8 @@ class UsageModel(BaseModel):
     input: int
     output: int
     total: int
-    epoch: float = time.time()
+    # the time the usage was recorded, not the time this module was imported.
+    epoch: float = Field(default_factory=time.time)
 
 
 class UsageExceedReport(BaseModel):
@@ -209,13 +210,9 @@ class UsageTracker:
         self.reset_interval_sec: int = reset_interval_sec
         self.token_limit: int = token_limit
 
-    async def adelete_expired_records(self, cluster_id: str) -> None:
-        """Delete the expired records for the given cluster_id."""
-        await self.memory.adelete_expired_llm_usage_records(cluster_id, self.reset_interval_sec)
-
     async def ais_usage_limit_exceeded(self, cluster_id: str) -> UsageExceedReport | None:
-        """Check if the token limit is exceeded for the given cluster_id."""
-        if self.token_limit == -1:
+        """Check if the token limit is exceeded for the given cluster_id. A negative limit disables the check."""
+        if self.token_limit < 0:
             return None
         records = await self.memory.alist_llm_usage_records(cluster_id, self.reset_interval_sec)
         # parse the records as Pydantic model to verify the structure.
@@ -227,8 +224,8 @@ class UsageTracker:
             return None
 
         # find the latest record to calculate the reset_seconds_left
-        latest_record = max(records, key=lambda record: record.epoch)
-        reset_seconds_left = int(float(self.reset_interval_sec) - (time.time() - latest_record.epoch))
+        latest_epoch = max((record.epoch for record in records), default=time.time())
+        reset_seconds_left = max(0, int(float(self.reset_interval_sec) - (time.time() - latest_epoch)))
 
         return UsageExceedReport(
             cluster_id=cluster_id,
