@@ -10,17 +10,14 @@ Exposed routes (relative to the mount point /api/agent/kyma):
 """
 
 import re
-from collections.abc import Awaitable, Callable
 from http import HTTPStatus
 from typing import Any, cast
 from urllib.parse import urlparse
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
-from a2a.server.context import ServerCallContext
 from a2a.server.events import EventQueue
 from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.routes import create_agent_card_routes, create_jsonrpc_routes
-from a2a.server.routes.common import DefaultServerCallContextBuilder
+from a2a.server.routes import create_agent_card_routes
 from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities, AgentCard, AgentInterface, AgentSkill
 from a2a.types.a2a_pb2 import Message, Part, Role
@@ -31,14 +28,17 @@ from google.protobuf.struct_pb2 import Struct
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.messages import AIMessage, HumanMessage
 from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import Response
 from starlette.routing import Route
 
 from agents.common.constants import ERROR_RATE_LIMIT_CODE
 from agents.common.utils import compute_string_token_count
 from agents.kyma.react_agent import KymaReActAgent, UINavigationContext
 from agents.memory.async_redis_checkpointer import AsyncRedisSaver, IUsageMemory
+from routers.a2a_http_status import (
+    create_jsonrpc_routes_with_http_status,
+    is_recorded_http_exception,
+    record_http_exception,
+)
 from routers.common import (
     _ModelsRegistry,
     _SearchToolRegistry,
@@ -64,9 +64,6 @@ from utils.utils import create_session_id
 
 logger = get_logger(__name__)
 
-# Key in the A2A call context state for an HTTPException that must reach the client as HTTP status.
-HTTP_EXCEPTION_STATE_KEY = "http_exception"
-
 # A cluster host name has at least two labels; the second one is the cluster ID.
 MIN_CLUSTER_HOST_LABELS = 2
 _CLUSTER_ID_PATTERN = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?")
@@ -86,37 +83,6 @@ def _build_human_content(query: str, ui_context: UINavigationContext) -> str:
     if context_message.strip():
         return f"{context_message}\n\n{query}"
     return query
-
-
-class _CallContextBuilder(DefaultServerCallContextBuilder):
-    """Builds the call context and keeps it on the request for `_raise_recorded_http_exception`."""
-
-    def build(self, request: Request) -> ServerCallContext:
-        """Build the ServerCallContext and store it in the request state."""
-        call_context = super().build(request)
-        request.state.call_context = call_context
-        return call_context
-
-
-def _raise_recorded_http_exception(
-    endpoint: Callable[[Request], Awaitable[Response]],
-) -> Callable[[Request], Awaitable[Response]]:
-    """Wrap the JSON-RPC endpoint to raise the HTTPException recorded by the executor.
-
-    The A2A request handler converts executor exceptions into JSON-RPC errors with
-    HTTP status 200. Raising the recorded exception here lets the exception handler
-    of the application answer with the HTTP status instead.
-    """
-
-    async def wrapper(request: Request) -> Response:
-        response = await endpoint(request)
-        call_context = getattr(request.state, "call_context", None)
-        exc = call_context.state.get(HTTP_EXCEPTION_STATE_KEY) if call_context else None
-        if exc is not None:
-            raise exc
-        return response
-
-    return wrapper
 
 
 def get_cluster_id(cluster_url: str) -> str:
@@ -162,6 +128,23 @@ async def check_token_usage(cluster_id: str, usage_tracker: UsageTracker) -> Non
             },
             headers={"Retry-After": str(report.reset_seconds_left)},
         )
+
+
+async def enforce_limits(
+    context: RequestContext, human_content: str, cluster_id: str, usage_memory: IUsageMemory
+) -> None:
+    """Enforce the query size limit and the token usage limit of the cluster.
+
+    `human_content` is the query together with the UI context, as sent to the model.
+    A violation is recorded, so that the client receives its HTTP status.
+    """
+    try:
+        enforce_query_token_limit(human_content)
+        usage_tracker = UsageTracker(usage_memory, TOKEN_LIMIT_PER_CLUSTER, TOKEN_USAGE_RESET_INTERVAL)
+        await check_token_usage(cluster_id, usage_tracker)
+    except HTTPException as exc:
+        record_http_exception(context, exc)
+        raise
 
 
 class KymaAgentExecutor(AgentExecutor):
@@ -219,22 +202,23 @@ class KymaAgentExecutor(AgentExecutor):
             data_sanitizer = DataSanitizer(config.sanitization_config)
             k8s_client = K8sClient(k8s_auth_headers=k8s_auth_headers, data_sanitizer=data_sanitizer)
 
+            models = _ModelsRegistry(config).models
+            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=_SearchToolRegistry(models).tool)
+
+            chat_history = await load_conversation_history(redis_conn, session_id)
             ui_context = UINavigationContext(
                 resource_kind=str(metadata.get("resourceType", "")),
                 resource_name=str(metadata.get("resourceName", "")),
                 resource_api_version=str(metadata.get("groupVersion", "")),
                 namespace=str(metadata.get("namespace", "")),
             )
+
             human_content = _build_human_content(query, ui_context)
 
+            # Enforce the limits before the model is used.
             cluster_id = get_cluster_id(k8s_client.get_api_server())
             usage_memory = AsyncRedisSaver(redis_conn.get_connection())
-            await self._enforce_limits(context, human_content, cluster_id, cast(IUsageMemory, usage_memory))
-
-            models = _ModelsRegistry(config).models
-            agent = KymaReActAgent(models=models, k8s_client=k8s_client, search_tool=_SearchToolRegistry(models).tool)
-
-            chat_history = await load_conversation_history(redis_conn, session_id)
+            await enforce_limits(context, human_content, cluster_id, cast(IUsageMemory, usage_memory))
 
             request_metrics = RequestMetricsCallback()
             callbacks: list[BaseCallbackHandler] = [
@@ -267,8 +251,8 @@ class KymaAgentExecutor(AgentExecutor):
             await event_queue.enqueue_event(response_message)
 
         except HTTPException as exc:
-            if context.call_context.state.get(HTTP_EXCEPTION_STATE_KEY) is exc:
-                # Returned as HTTP status by the exception handler of the application.
+            if is_recorded_http_exception(context, exc):
+                # Answered with the HTTP status by the exception handler of the application.
                 raise
             logger.error(f"HTTP error in A2A Kyma executor: {exc.detail}")
             raise InternalError(message=str(exc.detail)) from exc
@@ -280,21 +264,6 @@ class KymaAgentExecutor(AgentExecutor):
         except Exception as exc:
             logger.exception("Unexpected error in A2A Kyma executor")
             raise InternalError(message="Unexpected error during agent execution") from exc
-
-    @staticmethod
-    async def _enforce_limits(context: RequestContext, query: str, cluster_id: str, usage_memory: IUsageMemory) -> None:
-        """Enforce the query size limit and the token usage limit of the cluster.
-
-        A violation is recorded in the call context, so that it reaches the client as HTTP status.
-        """
-        try:
-            enforce_query_token_limit(query)
-            # Check rate limitation
-            usage_tracker = UsageTracker(usage_memory, TOKEN_LIMIT_PER_CLUSTER, TOKEN_USAGE_RESET_INTERVAL)
-            await check_token_usage(cluster_id, usage_tracker)
-        except HTTPException as exc:
-            context.call_context.state[HTTP_EXCEPTION_STATE_KEY] = exc
-            raise
 
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         """Cancel is not supported for this agent.
@@ -361,12 +330,7 @@ def build_kyma_a2a_app(base_url: str = "http://localhost:8000/api/agent/kyma") -
 
     routes: list[Route] = []
     routes.extend(create_agent_card_routes(agent_card))
-    routes.extend(
-        Route(route.path, _raise_recorded_http_exception(route.endpoint), methods=["POST"])
-        for route in create_jsonrpc_routes(
-            request_handler, "/chat", context_builder=_CallContextBuilder(), enable_v0_3_compat=True
-        )
-    )
+    routes.extend(create_jsonrpc_routes_with_http_status(request_handler, "/chat"))
 
     app = Starlette(routes=routes)
     return app

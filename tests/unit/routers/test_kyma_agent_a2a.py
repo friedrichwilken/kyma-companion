@@ -26,8 +26,8 @@ from starlette.testclient import TestClient
 from agents.common.constants import ERROR_RATE_LIMIT_CODE
 from agents.kyma.react_agent import UINavigationContext
 from main import app
+from routers.a2a_http_status import HTTP_EXCEPTION_STATE_KEY
 from routers.kyma_agent_a2a import (
-    HTTP_EXCEPTION_STATE_KEY,
     KymaAgentExecutor,
     _build_human_content,
     build_kyma_a2a_app,
