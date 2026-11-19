@@ -59,7 +59,7 @@ jobs:
       - name: Generate GitHub App token
         id: app-token
         if: steps.fetch.outputs.found == 'true'
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
         with:
           # Reuse the same GitHub App configuration as create-release.yml.
           app-id: ${{ vars.AIFORCE_APP_ID }}

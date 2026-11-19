@@ -11,14 +11,16 @@
     "tests/blackbox/pyproject.toml",
     "Dockerfile",
     "doc_indexer/Dockerfile",
-    ".github/workflows/**"
+    ".github/workflows/**",
+    ".github/actions/**"
   ],
   "extends": [
     "config:recommended",
     ":semanticCommits",
     ":semanticCommitTypeAll(chore)",
     ":semanticCommitScopeDisabled",
-    ":enableVulnerabilityAlerts"
+    ":enableVulnerabilityAlerts",
+    "helpers:pinGitHubActionDigests"
   ],
   "minimumReleaseAge": "4 days",
   "enabledManagers": [
