@@ -2,14 +2,16 @@
 
 ## Security Gate for `pull_request_target` Workflows
 
-A `pull_request_target` workflow runs with the secrets and token of the base repository, also for pull requests from forks. Any job in such a workflow that checks out pull request code or uses secrets **must** be gated by the `e2e` environment, which requires codeowner approval before the job starts. Flag a violation if any of the following are true:
+A `pull_request_target` workflow runs with the secrets and token of the base repository, also for pull requests from forks. Any job in such a workflow that checks out, builds or runs pull request code **must** be gated by the `e2e` environment, which requires codeowner approval before the job starts. This includes passing the pull request head (`head.sha`, `head.ref`, `head.repo.full_name`) to a reusable workflow or an image build. Flag a violation if any of the following are true:
 
-1. **Missing environment gate** — A job checks out pull request code or uses secrets, but neither declares `environment: e2e` itself nor depends (directly or transitively through `needs`) on a job that does. A job that calls a reusable workflow cannot declare an environment, so it must either depend on a gate job or call a reusable workflow whose jobs declare `environment: e2e`.
+1. **Missing environment gate** — A job checks out, builds or runs pull request code, but neither declares `environment: e2e` itself nor depends (directly or transitively through `needs`) on a job that does. A job that calls a reusable workflow cannot declare an environment, so it must either depend on a gate job or call a reusable workflow whose jobs declare `environment: e2e`.
 2. **Environment is not a literal** — The gate is written as an expression, for example `environment: ${{ matrix.env_name }}`. An expression can evaluate to an empty value for some matrix legs or inputs, and those runs are then not gated. The value must be the literal `e2e`.
 3. **Checkout by branch name** — The pull request code is checked out with `github.event.pull_request.head.ref`, or that value is passed on as the ref to check out. A branch can move after the approval was given. The checkout must use `github.event.pull_request.head.sha`.
 4. **Unsafe checkout outside a gated job** — `allow-unsafe-pr-checkout: true` is set in a job that is not gated as described in 1, or it is set without the `# Safe: ...` comment that names the gate.
-5. **Gate removed or weakened** — A PR modifies an existing `pull_request_target` workflow and removes the `environment: e2e` line, replaces it with an expression, removes a `needs` dependency on the gate job, or adds a job that is not covered by the gate.
+5. **Gate removed or weakened** — A PR modifies an existing `pull_request_target` workflow and removes the `environment: e2e` line, replaces it with an expression, removes a `needs` dependency on the gate job, or adds a job that checks out, builds or runs pull request code and is not covered by the gate.
 6. **Wrong trigger** — A workflow that only runs tests or linting and needs no secrets uses `pull_request_target`. It belongs on `pull_request`.
+
+Not a violation: a job that checks out only the base branch (or nothing), runs no pull request code, and uses secrets or the token for repository maintenance, for example `update-eval-baseline.yaml` and `cleanup-eval-baseline-artifacts.yaml` (triggered on `closed`, gated by a label condition, documented in a header comment). In such jobs, check instead that pull request data (branch name, title, artifacts produced by pull request runs) reaches `run:` scripts only through `env:` variables and is validated before use, never through `${{ }}` interpolation into the script.
 
 ### Expected Pattern
 
