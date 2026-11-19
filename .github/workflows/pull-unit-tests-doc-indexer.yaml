@@ -1,0 +1,57 @@
+name: Doc Indexer Unit Tests
+
+# The unit tests need no secrets. They run on `pull_request` (not `pull_request_target`),
+# so PR code only ever gets a read-only token, no secrets and a PR-scoped cache.
+# The integration tests, which need secrets, are in pull-tests-doc-indexer.yaml.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - "main"
+      - "release-**"
+    paths:
+      - "doc_indexer/**"
+      - ".github/workflows/pull-unit-tests-doc-indexer.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    # The check name is kept from the former matrix job in pull-tests-doc-indexer.yaml.
+    name: Tests (unit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        working-directory: ./doc_indexer
+        run: |
+          ../scripts/shell/extract-python-version.sh
+          echo "Got PYTHON_VERSION=${PYTHON_VERSION}"
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        working-directory: ./doc_indexer
+        run: poetry install --with test
+
+      - name: Run unit tests
+        working-directory: ./doc_indexer
+        env:
+          LOG_LEVEL: "DEBUG"
+          DOCS_SOURCES_FILE_PATH: "./docs_sources.json"
+          DOCS_PATH: "/test-data"
+          DOCS_TABLE_NAME: "kc_pr_${{ github.event.pull_request.number }}"
+        run: |
+          poetry run poe test-unit

@@ -11,7 +11,7 @@ name: Release unit tests
 # has to be repeated. Start it with "Use workflow from: release-x.y". Starting it from main is rejected.
 #
 # **IMPORTANT**: If any changes are made to how to run the unit tests, make sure to update the steps
-# in the unit-test.yaml and pull-tests-doc-indexer.yaml workflows as well.
+# in the unit-test.yaml and pull-unit-tests-doc-indexer.yaml workflows as well.
 
 on:
   push:

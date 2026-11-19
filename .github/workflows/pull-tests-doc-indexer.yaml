@@ -1,5 +1,8 @@
 name: Doc Indexer Tests
 
+# The unit tests live in pull-unit-tests-doc-indexer.yaml. They need no secrets, so they
+# run on `pull_request` and never execute PR code in the context of the base repository.
+
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -13,25 +16,22 @@ on:
 permissions: read-all
 
 jobs:
-  tests:
+  integration-tests:
+    name: Tests (integration)
     runs-on: ubuntu-latest
-    environment: ${{ matrix.env_name }}
+    # Keep this a literal value (no expression), so the approval gate can never resolve
+    # to an empty environment for a job that checks out PR code.
+    environment: e2e
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - test-type: unit
-          - test-type: integration
-            env_name: e2e
-    name: Tests (${{ matrix.test-type }})
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
+          # Safe: the `environment: e2e` gate above requires codeowner approval before
+          # this job runs, so secrets are never exposed to unreviewed fork code.
           allow-unsafe-pr-checkout: true
 
       - name: Extract Python version
@@ -54,19 +54,7 @@ jobs:
         working-directory: ./doc_indexer
         run: poetry install --with test
 
-      - name: Run unit tests
-        if: matrix.test-type == 'unit'
-        working-directory: ./doc_indexer
-        env:
-          LOG_LEVEL: "DEBUG"
-          DOCS_SOURCES_FILE_PATH: "./docs_sources.json"
-          DOCS_PATH: "/test-data"
-          DOCS_TABLE_NAME: "kc_pr_${{ github.event.pull_request.number }}"
-        run: |
-          poetry run poe test-unit
-
       - name: Run integration tests
-        if: matrix.test-type == 'integration'
         working-directory: ./doc_indexer
         env:
           LOG_LEVEL: "DEBUG"
