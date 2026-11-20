@@ -1,0 +1,345 @@
+name: Pull Checks
+
+# All checks that run PR code without secrets live in this one workflow.
+#
+# The last job, `all-checks`, is the only check that branch protection has to require for them.
+# It depends on every other job through `needs`, so it finishes as soon as they do. To add a
+# check, add a job and list it in `needs` of `all-checks`. No branch protection change is needed.
+#
+# Do not use `paths` or `paths-ignore` on the trigger. A workflow that is filtered out never
+# reports `all-checks`, and the PR could not be merged. The `changes` job decides which jobs
+# run instead; a job that is skipped that way counts as passed.
+#
+# Checks that need secrets run on `pull_request_target` in their own workflows and are not
+# covered by `all-checks`.
+
+on:
+  pull_request:
+    branches:
+      - "main"
+      - "release-**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    outputs:
+      companion-lint: ${{ steps.detect.outputs.companion-lint }}
+      companion-test: ${{ steps.detect.outputs.companion-test }}
+      doc-indexer: ${{ steps.detect.outputs.doc-indexer }}
+      tests-blackbox: ${{ steps.detect.outputs.tests-blackbox }}
+      workflows: ${{ steps.detect.outputs.workflows }}
+      composite-actions: ${{ steps.detect.outputs.composite-actions }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          # The PR is checked out as a merge commit. Its first parent is the base branch,
+          # so two commits are enough to list the files the PR changes.
+          fetch-depth: 2
+
+      - name: Detect changed areas
+        id: detect
+        run: |
+          set -euo pipefail
+
+          companion_lint=false
+          companion_test=false
+          doc_indexer=false
+          tests_blackbox=false
+          workflows=false
+          composite_actions=false
+
+          # File names come from the PR. They are only matched here, never printed or evaluated.
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              doc_indexer/*) doc_indexer=true ;;
+              tests/blackbox/*) tests_blackbox=true ;;
+              .github/workflows/*) workflows=true ;;
+              .github/actions/*) composite_actions=true ;;
+            esac
+
+            # A file that matches no pattern counts as companion code, so new paths are checked by default.
+            case "$file" in
+              docs/* | doc_indexer/* | tests/blackbox/* | *.md | CODEOWNERS | LICENSE) ;;
+              *) companion_lint=true ;;
+            esac
+
+            case "$file" in
+              docs/* | doc_indexer/* | *.md | CODEOWNERS | LICENSE | renovate.json) ;;
+              *) companion_test=true ;;
+            esac
+          done < <(git diff --name-only -z HEAD^1 HEAD)
+
+          {
+            echo "companion-lint=${companion_lint}"
+            echo "companion-test=${companion_test}"
+            echo "doc-indexer=${doc_indexer}"
+            echo "tests-blackbox=${tests_blackbox}"
+            echo "workflows=${workflows}"
+            echo "composite-actions=${composite_actions}"
+          } | tee -a "$GITHUB_OUTPUT"
+
+  code-linter:
+    name: "Run mypy linting"
+    needs: changes
+    if: needs.changes.outputs.companion-lint == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        run: ./scripts/shell/extract-python-version.sh
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: poetry install --with dev
+
+      - name: Run linting
+        run: poetry run poe lint
+
+      - name: Run type checking
+        run: poetry run poe typecheck
+
+      - name: Run code formatting check
+        run: poetry run poe format
+
+  ## **IMPORTANT**: If any changes are made to how to run the unit tests. Make sure to update the steps for unit-tests
+  ## in the release-unit-tests.yaml workflow as well.
+  unit-test:
+    needs: changes
+    if: needs.changes.outputs.companion-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        run: ./scripts/shell/extract-python-version.sh
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: poetry install --with dev
+
+      - name: Create config.json
+        run: |
+          mkdir -p config
+          echo '{"mock-key": "mock-value"}' > config/config.json
+
+      - name: Run tests
+        run: poetry run poe test
+
+  lint-doc-indexer:
+    name: Lint doc indexer
+    needs: changes
+    if: needs.changes.outputs.doc-indexer == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        working-directory: ./doc_indexer
+        run: |
+          ../scripts/shell/extract-python-version.sh
+          echo "Got PYTHON_VERSION=${PYTHON_VERSION}"
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        working-directory: ./doc_indexer
+        run: poetry install --with test
+
+      - name: Run lint
+        working-directory: ./doc_indexer
+        run: |
+          ls
+          poetry run poe codecheck
+
+  lint-tests-blackbox:
+    name: Lint blackbox tests
+    needs: changes
+    if: needs.changes.outputs.tests-blackbox == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        working-directory: ./tests/blackbox
+        run: |
+          ../../scripts/shell/extract-python-version.sh
+          echo "Got PYTHON_VERSION=${PYTHON_VERSION}"
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        working-directory: ./tests/blackbox
+        run: poetry install --with test
+
+      - name: Run lint
+        working-directory: ./tests/blackbox
+        run: |
+          ls
+          poetry run poe codecheck
+
+  actionlint:
+    name: Run actionlint
+    needs: changes
+    if: needs.changes.outputs.workflows == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Run actionlint
+        uses: rhysd/actionlint@v1.7.12
+
+  # Branch protection requires this check by its job id. Do not rename it.
+  markdown-link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: gaurav-nelson/github-action-markdown-link-check@1.0.17
+        with:
+          use-verbose-mode: 'no'
+          config-file: '.mlc.config.json'
+          folder-path: '.'
+          max-depth: -1
+
+  # The two jobs below test the composite actions defined in .github/actions/.
+  # They are the only jobs that call the actions via path (./.github/actions/...)
+  # rather than @main, so that changes to the actions can be verified on a
+  # branch before they are merged and become available via the @main reference.
+  test-setup-poetry:
+    name: Test setup-poetry action
+    needs: changes
+    if: needs.changes.outputs.composite-actions == 'true' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        run: ./scripts/shell/extract-python-version.sh
+
+      - name: Run setup-poetry
+        uses: ./.github/actions/setup-poetry
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-dependency-path: poetry.lock
+
+      - name: Verify Poetry is available
+        run: poetry --version
+
+  test-install-poetry-deps:
+    name: Test install-poetry-deps action
+    needs: changes
+    if: needs.changes.outputs.composite-actions == 'true' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Extract Python version
+        id: python-version
+        run: ./scripts/shell/extract-python-version.sh
+
+      - name: Run setup-poetry
+        uses: ./.github/actions/setup-poetry
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-dependency-path: tests/blackbox/poetry.lock
+
+      - name: Run install-poetry-deps
+        uses: ./.github/actions/install-poetry-deps
+        with:
+          working-directory: tests/blackbox
+          args: "--with dev"
+
+      - name: Verify installation
+        working-directory: tests/blackbox
+        run: poetry run python --version
+
+  # Branch protection requires this check by its job id. Do not rename it.
+  all-checks:
+    # Without `always()` this job is skipped when a job in `needs` fails,
+    # and branch protection counts a skipped required check as passed.
+    if: always()
+    needs:
+      - changes
+      - code-linter
+      - unit-test
+      - lint-doc-indexer
+      - lint-tests-blackbox
+      - actionlint
+      - markdown-link-check
+      - test-setup-poetry
+      - test-install-poetry-deps
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Check the results of all jobs
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+
+          jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<< "$NEEDS"
+
+          # `changes` decides what the other jobs do, so it has to succeed.
+          # Every other job has to succeed or be skipped by its `if`.
+          if ! jq -e '
+            .changes.result == "success"
+            and all(.[]; .result == "success" or .result == "skipped")
+          ' <<< "$NEEDS" > /dev/null; then
+            echo "::error::At least one job failed or was cancelled."
+            exit 1
+          fi
